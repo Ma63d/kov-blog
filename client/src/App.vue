@@ -5,6 +5,7 @@
     <p>
       Welcome to your Vue.js app!
     </p>
+
     <p>
       To get a better understanding of how this boilerplate works, check out
       <a href="http://vuejs-templates.github.io/webpack" target="_blank">its documentation</a>.
@@ -23,7 +24,7 @@
 </template>
 
 <script>
-import Hello from './components/Hello'
+import Hello from 'components/Hello'
 
 export default {
   components: {

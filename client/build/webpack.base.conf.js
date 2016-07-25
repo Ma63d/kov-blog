@@ -2,6 +2,8 @@ var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
+console.log(path.resolve(__dirname, '../src/assets'));
+console.log(path.resolve(__dirname, '../src/components'));
 
 module.exports = {
   entry: {
