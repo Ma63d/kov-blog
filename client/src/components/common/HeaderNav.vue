@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header class="top-nav-container">
     <nav class="top-nav">
       <a href="javascript:;" class="vertical-center nav-logo">
         <img src="../../assets/img/logo.png" class="logo vertical-center-content" alt="">
@@ -12,12 +12,11 @@
       </ul>
     </nav>
   </header>
-
 </template>
 <style lang="stylus">
   @import "../../stylus/_settings.styl"
   $header-height = 40px
-  header
+  .top-nav-container
     box-shadow 0 0 4px rgba(0,0,0,0.25)
   .top-nav
     max-width  850px
@@ -26,7 +25,6 @@
     padding 25px 0
   .nav-logo
     display inline-block
-    width 150px
     .logo
       margin-right 6px
   .logo
@@ -34,10 +32,17 @@
     height 40px
   .brand
     font-size 1.5em
-    line-height $header-height
     color $dark
     font-family $logo-font
     font-weight 500
+  /**
+    fixme! 留作以后的slogan样式
+  */
+  /*.slogan
+    font-size 1.3em
+    color $light
+    font-family $logo-font
+    font-weight 500*/
   .nav-link-container
     float right
     list-style-type none
