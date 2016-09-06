@@ -1,8 +1,12 @@
 import Vue from 'vue'
-import App from './App'
+import Router from 'vue-router'
+import routes from './routes'
+import Blog from './Blog'
 
-/* eslint-disable no-new */
-new Vue({
-  el: 'body',
-  components: { App }
-})
+import './stylus/index.styl'
+
+Vue.use(Router)
+
+const router = new Router()
+routes(router)
+router.start(Blog, 'blog')
