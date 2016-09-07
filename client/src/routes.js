@@ -3,16 +3,20 @@
  */
 import List from 'components/PostList.vue'
 import Post from 'components/Post.vue'
+import Tag from 'components/Tag.vue'
 export default (router)=>{
   router.map({
-    '/post/list':{
+    '/posts':{
       component: List
     },
-    '/post/:postId':{
+    '/posts/:postId':{
       component: Post
-    }
+    },
+    '/tags':{
+      component: Tag
+    },
   })
   router.redirect({
-    '*': '/post/list'
+    '*': '/posts'
   })
 }

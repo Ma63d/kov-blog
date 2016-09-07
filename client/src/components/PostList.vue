@@ -3,7 +3,7 @@
     <!--这个div用来避免这个组件成为片段实例-->
     <article class="post">
       <header>
-        <h2><a v-link="'/post/1'">这是一个标题</a></h2>
+        <h2><a v-link="'/posts/1'">这是一个标题</a></h2>
         <h4>
           2016/09/06 10:28
         </h4>
@@ -21,7 +21,7 @@
       </footer>
 
     </article>
-    <pagination next-link="'/post/list'" :prev="false"></pagination>
+    <pagination next-link="'/posts'" :prev="false"></pagination>
   </div>
 
 </template>

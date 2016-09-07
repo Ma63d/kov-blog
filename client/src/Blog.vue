@@ -9,7 +9,7 @@
       </router-view>
     </main>
     <footer class="copyright">
-      去尼玛的Copyrights. 自豪的采用Chuck纯手工搭建的博客.
+      Copyrights滚粗. 自豪的采用Chuck纯手工搭建的博客.
     </footer>
   </div>
 </template>
