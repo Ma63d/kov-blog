@@ -1,6 +1,6 @@
-@import '_settings'
-@import '_syntax'
-@import '_font.styl'
+@import "_settings"
+@import "_syntax"
+@import "_font"
 //css reset
 
 body,h1,h2,h3,h4,h5,h6,p,ul,ol,form
@@ -60,32 +60,6 @@ em
 p
   word-spacing 0.05em
 
-button()
-  display inline-block
-  font-weight 700
-  color #fff
-  background-color lighten($green, 8%)
-  transition all .15s ease
-  &:hover
-    background-color lighten($green, 15%)
-    -webkit-transform scale(1.03)
-    transform scale(1.03)
-
-.button
-  button()
-  font-family $code-font
-  border-bottom 2px solid darken($green, 12%)
-  padding 12px 14px
-  border-radius 4px
-
-
-.small-button
-  button()
-  padding 4px 8px 5px
-  border-radius 4px
-  width 140px
-  margin 0 5px
-
 .highlight
   overflow-x auto
   position relative
@@ -127,13 +101,6 @@ button()
     content 'CSS'
 
 
-
-
-
-@media screen and (max-width: 720px)
-  body
-    -webkit-text-size-adjust none
-    font-size 14px
 
 .vertical-center
   &::before
@@ -438,14 +405,71 @@ button()
 .lh24
   line-height 24px
 
-.fix:after,.fix:before
-  display block
-  content "clear"
-  height 0
-  clear both
-  overflow hidden
-  visibility hidden
 
+.clearfix:after
+  content: '';
+  display: block;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+.flash-bar
+  box-sizing border-box
+  width 100%
+  padding 15px
+  color #fff
+  border 1px solid transparent
+  border-radius 0
+  &.success
+    background-color $blue
+    border-color $blue
+  &.danger
+    background-color $red
+    border-color $red
+  &.info
+    background-color $darkGrey
+    border-color $darkGrey
+    text-align center
+.btn
+  border 1px solid transparent
+  border-radius 3px
+  padding 6px 10px
+  text-align center
+  vertical-align middle
+  &.btn-save
+    color #fff
+    background-color $green
+    border-color $green
+  &.btn-info
+    color #fff
+    background-color $blue
+    border-color $blue
+  &.btn-cancel
+    color #fff
+    background-color $red
+    border-color $red
+  &.btn-block
+    width 100%
+    box-sizing border-box
+.form-control
+  box-sizing border-box
+  padding 10px 8px
+  width 100%
+  height auto
+  box-shadow none
+  border 1px solid #e7e9ed
+  background-color #fff
+  outline 0
+  &.top
+    border-radius 5px 5px 0 0
+    margin-bottom 0
+  &.bottom
+    border-radius 0 0 5px 5px
+    border-top 0
+    margin-bottom 20px
+
+
+h3
+  font-size 26px
 
 
 /*这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕*/

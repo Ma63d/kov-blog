@@ -70,6 +70,10 @@ function* create(){
   }
 }
 function* articleList(next){
+  /**
+   * @param page 文章列表页码 从1开始
+   * @param limit 每页文章数量
+   * */
   const limit = ~~this.query.limit,
     page = ~~this.query.page;
   utils.print(limit);
@@ -80,31 +84,63 @@ function* articleList(next){
   }else{
     skip = limit * (page - 1)
   }
-  const articleArr = yield Article.find({hidden:false})
-    .populate('tags')
-    .select('title author visits tags createTime lastEditTime excerpt')
-    .limit(limit).skip(skip).exec().catch(err => {
-    utils.logger.error(err);
-    this.throw(500,'内部错误')
-  });
+  const {articleArr,totalNumber} = yield {
+    articleArr: Article.find({hidden:false})
+      .populate('tags')
+      .select('title author visits tags createTime lastEditTime excerpt')
+      .limit(limit).skip(skip).exec().catch(err => {
+        utils.logger.error(err);
+        this.throw(500,'内部错误')
+      }),
+    totalNumber: Article.count().exec().catch(err => {
+      utils.logger.error(err);
+      this.throw(500,'内部错误')
+    })
+  }
   this.status = 200;
-  utils.print(articleArr);
+  const resultArr = [];
+  if(articleArr.length){
+    articleArr.forEach((article,index,arr)=>{
+      article = article.toObject();
+      article.createTime = new Date(article.createTime).format('yyyy-MM-dd hh:mm');
+      resultArr.push(article);
+      utils.print(article);
+    })
+  }
+
+  utils.print(resultArr);
   this.body = {
     success:true,
-    data:articleArr
+    data:{
+      articles:resultArr,
+      total:totalNumber
+    }
   }
 }
 function* articleDetail(next){
   const id = this.params.id;
-  const article = yield Article.findOne({_id:id,hidden:false})
+  const article = (yield Article.findOne({_id:id,hidden:false})
     .populate('tags')
     .select('title author visits tags createTime lastEditTime excerpt content')
     .exec().catch(err => {
       utils.logger.error(err);
       this.throw(500,'内部错误')
-    });
+    })).toObject();
   this.status = 200;
-  utils.print(article);
+  if(article){
+    article.createTime = new Date(article.createTime).format('yyyy-MM-dd hh:mm');
+    ({ nextArticle:article.nextArticle, prevArticle:article.prevArticle } = yield {
+      nextArticle: Article.findOne({_id: {$gt: article._id}},'title _id').exec().catch(err => {
+        utils.logger.error(err);
+        this.throw(500,'内部错误')
+      }),
+      prevArticle: Article.findOne({_id: {$lt: article._id}},'title _id').sort({_id:-1}).exec().catch(err => {
+        utils.logger.error(err);
+        this.throw(500,'内部错误')
+      })
+    })
+  }
+
   this.body = {
     success:true,
     data:article
@@ -163,4 +199,21 @@ function* hiddenArticleDetail(next){
     success:true,
     data:article
   }
+}
+Date.prototype.format = function (fmt) {
+  var o = {
+    'M+': this.getMonth() + 1,                 //月份
+    'd+': this.getDate(),                    //日
+    'h+': this.getHours(),                   //小时
+    'm+': this.getMinutes(),                 //分
+    's+': this.getSeconds(),                 //秒
+    'q+': Math.floor((this.getMonth() + 3) / 3), //季度
+    'S': this.getMilliseconds()             //毫秒
+  };
+  if (/(y+)/.test(fmt))
+    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+  for (var k in o)
+    if (new RegExp('(' + k + ')').test(fmt))
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
+  return fmt;
 }

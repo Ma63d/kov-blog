@@ -8,7 +8,7 @@ console.log(path.resolve(__dirname, '../src/components'));
 
 module.exports = {
   entry: {
-    app: './client/src/main.js'
+    app: './admin/src/main.js'
   },
   output: {
     path: config.build.assetsRoot,

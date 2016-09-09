@@ -5,6 +5,10 @@ import Blog from './Blog'
 
 import './stylus/index.styl'
 
+window.HOST = {
+  api: 'http://localhost:3000/'
+}
+
 Vue.use(Router)
 
 const router = new Router()

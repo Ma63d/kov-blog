@@ -3,20 +3,19 @@
     <!--这个div用来避免这个组件成为片段实例-->
     <article class="post">
       <header>
-        <h1>这是一个标题</h1>
+        <h1>{{title}}</h1>
         <h4>
-          2016/09/06 10:28
+          {{createTime}}
         </h4>
       </header>
       <p>
-        After 300+ commits, 8 alphas, 4 betas and 2 release candidates, today I am very proud to announce the release of
-        After 300+ commits, 8 alphas, 4 betas and 2 release candidates, today I am very proud to announce the release of
+        {{content}}
       </p>
-      <div class="fix">
-        <span class="tag"><a href="" class="tag-link active">javascript</a></span><span class="tag"><a href="" class="tag-link active">javascript</a></span>
+      <div class="fix" v-for="tag in tags">
+        <span class="tag"><a href="" class="tag-link active">{{tag.name}}</a></span>
       </div>
     </article>
-    <pagination next-link="'/blog/list'" :prev="false" :next-word="'第二篇文章'"></pagination>
+    <pagination :next="nextArticle !== null" :next-link="nextArticle?'/posts/'+nextArticle._id:''" :next-word="nextArticle&&nextArticle.title" :prev="prevArticle !== null" :prev-link="prevArticle?'/posts/'+prevArticle._id:''" :prev-word="prevArticle&&prevArticle.title" ></pagination>
   </div>
 </template>
 <style lang="stylus">
@@ -37,12 +36,37 @@
 </style>
 <script>
   import Pagination from './common/Pagination.vue'
+  import service from '../services/post/index'
   export default {
     components:{
       Pagination
     },
     data () {
       return {
+        'id':'',
+        'title': '',
+        'author': '',
+        'createTime': '',
+        'excerpt': '',
+        'content': '',
+        'lastEditTime': null,
+        'tags': [],
+        'visits': 0,
+        'nextArticle':null,
+        'prevArticle':null
+      }
+    },
+    route:{
+      data({to}){
+        return service.getPost(to.params.postId).then(res=>{
+          if(res.success === true){
+            res.data.id = res.data._id;
+            delete res.data._id;
+            return res.data;
+          }
+        }).catch(err=>{
+          alert('网络错误,请刷新重试');
+        })
       }
     }
   }

@@ -4,7 +4,7 @@
     <main class="content blog">
       <router-view
         keep-alive
-        transition
+        transition="fade"
         transition-mode="out-in">
       </router-view>
     </main>
@@ -24,7 +24,11 @@
 </script>
 
 <style lang="stylus">
-  @import "./stylus/_settings.styl"
+.fade-transition
+  transition: opacity .2s ease
+.fade-enter, .fade-leave
+  opacity: 0;
+@import "./stylus/_settings.styl"
 .content
   max-width  850px
   box-sizing border-box
