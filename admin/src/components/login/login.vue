@@ -1,9 +1,9 @@
 <template>
   <div>
-    <header>
-      <!--<img src="../../asset/img/neotel.png" alt="neotel">-->
+    <header class="banner">
+      <img src="../../assets/img/logo.png" class="banner-logo" alt="logo">
     </header>
-    <div id="container">
+    <div class="center-box">
       <div class="flash-bar danger" v-show="loginErr">登录失败</div>
       <section class="login-box">
         <div class="login-header">
@@ -30,6 +30,7 @@
 <script>
   import service from "../../services/login/index.js"
   import state from "../../store/index.js"
+  import md5 from 'md5'
   export default {
     data:()=>({
     username:"",
@@ -38,16 +39,19 @@
   }),
   methods:{
     login(){
-      service.createToken(this.username,this.password).then((res)=>{
+      service.createToken(this.username,md5(this.password).toUpperCase()).then((res)=>{
         if(true === res.success){
           state.token = res.data.token;
           state.uid = res.data.uid;
           state.name = res.data.name;
-          //this.$route.router.replace('index')
+          sessionStorage.setItem('token',res.data.token);
+          this.$route.router.replace('posts');
         }else{
           this.loginErr = true;
         }
-    })
+      }).catch(err=>{
+        this.loginErr = true;
+      })
     }
   }
   }
@@ -55,14 +59,14 @@
 </script>
 
 <style lang="stylus" scoped>
-  header
+  .banner
     padding 10px 0
     text-align center
     border-bottom 1px solid #EEE
     margin-bottom 20px
-    img
+    .banner-logo
       height  35px
-  #container
+  .center-box
     max-width 400px
     margin 0 auto
     padding 32px 15px

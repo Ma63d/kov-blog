@@ -19,9 +19,9 @@ router.beforeEach(function({from,to,next,redirect}){
   if(true !== to.authPage){
     if(undefined === state.token) {
       if(null !== (state.token = sessionStorage.getItem('token')) ){
-        redirect('login');
-      }else{
         next();
+      }else{
+        redirect('login');
       }
     }else{
       if(null === state.token){

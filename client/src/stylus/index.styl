@@ -3,7 +3,7 @@
 @import '_font.styl'
 //css reset
 
-body,h1,h2,h3,h4,h5,h6,p,ul,ol,form
+body,ul,ol,form
   margin 0
 
 ul,ol
@@ -60,31 +60,6 @@ em
 p
   word-spacing 0.05em
 
-button()
-  display inline-block
-  font-weight 700
-  color #fff
-  background-color lighten($green, 8%)
-  transition all .15s ease
-  &:hover
-    background-color lighten($green, 15%)
-    -webkit-transform scale(1.03)
-    transform scale(1.03)
-
-.button
-  button()
-  font-family $code-font
-  border-bottom 2px solid darken($green, 12%)
-  padding 12px 14px
-  border-radius 4px
-
-
-.small-button
-  button()
-  padding 4px 8px 5px
-  border-radius 4px
-  width 140px
-  margin 0 5px
 
 .highlight
   overflow-x auto
