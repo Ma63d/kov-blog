@@ -31,9 +31,9 @@
   </div>
 </template>
 <style lang="stylus">
-  @import '~simplemde/dist/simplemde.min.css'
+  @import '../../stylus/simplemde.styl'
   @import '../../stylus/_settings.styl'
-  $border = 1px solid #aaa
+  $border = 1px solid #bbb
   .container-with-aside
     margin-left 45px
     height 100%
@@ -54,6 +54,8 @@
     height 100%
   .post-list
     border-top $border
+    list-style none
+    padding 0
   .post-list-item
     padding 5px 10px
     border-bottom $border
@@ -76,6 +78,7 @@
     box-sizing border-box
   .editor-preview,
   .editor-preview-side
+    background white
     padding: 0.2em 1.4em 0;
     img
       max-width 100%
@@ -153,12 +156,69 @@
         font-size 14px
     figure, p
       margin-left 0
+    pre
+      overflow-x auto
+      position relative
+      background-color $codebg
+      padding .8em .8em .4em
+      line-height 1.1em
+      border-radius $radius
+      code
+        display block
+        padding 1.2em 1.4em
+        line-height 1.5em
+        margin 0
+        color #525252
+        border-radius 0
+        white-space pre
+        &.lang-html, &.lang-javascript, &.lang-bash, &.lang-css
+          &:after
+            position absolute
+            top 0
+            right 0
+            color #ccc
+            text-align right
+            font-size .75em
+            padding 5px 10px 0
+            line-height 15px
+            height 15px
+            font-weight 600
+        &.lang-html code:after
+          content 'HTML'
+        &.lang-javascript:after
+          content 'JS'
+        &.lang-bash:after
+          content 'Shell'
+        &.lang-css:after
+          content 'CSS'
 
 
 </style>
 <script>
   import NavAside from '../Common/NavAside.vue'
   import SimpleMDE from 'simplemde/dist/simplemde.min.js'
+  import marked from 'marked';
+  const languages = ['1c','abnf','accesslog','actionscript','ada','apache','applescript','cpp','arduino','armasm','xml','asciidoc','aspectj','autohotkey','autoit','avrasm','awk','axapta','bash','basic','bnf','brainfuck','cal','capnproto','ceylon','clojure','clojure-repl','cmake','coffeescript','coq','cos','crmsh','crystal','cs','csp','css','d','markdown','dart','delphi','diff','django','dns','dockerfile','dos','dsconfig','dts','dust','ebnf','elixir','elm','ruby','erb','erlang-repl','erlang','excel','fix','fortran','fsharp','gams','gauss','gcode','gherkin','glsl','go','golo','gradle','groovy','haml','handlebars','haskell','haxe','hsp','htmlbars','http','inform7','ini','irpf90','java','javascript','json','julia','kotlin','lasso','ldif','less','lisp','livecodeserver','livescript','lsl','lua','makefile','mathematica','matlab','maxima','mel','mercury','mipsasm','mizar','perl','mojolicious','monkey','moonscript','nginx','nimrod','nix','nsis','objectivec','ocaml','openscad','oxygene','parser3','pf','php','pony','powershell','processing','profile','prolog','protobuf','puppet','purebasic','python','q','qml','r','rib','roboconf','rsl','ruleslanguage','rust','scala','scheme','scilab','scss','smali','smalltalk','sml','sqf','sql','stan','stata','step21','stylus','subunit','swift','taggerscript','yaml','tap','tcl','tex','thrift','tp','twig','typescript','vala','vbnet','vbscript','vbscript-html','verilog','vhdl','vim','x86asm','xl','xquery','zephir'];
+  import highlight from 'highlight.js'
+  highlight.configure({
+    classPrefix: ''     // don't append class prefix
+  })
+  marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    pedantic: false,
+    sanitize: false,
+    tables: true,
+    breaks: true,
+    smartLists: true,
+    smartypants: true,
+    highlight: function (code,lang) {
+      if(!~languages.indexOf(lang)){
+        return highlight.highlightAuto(code).value;
+      }
+      return highlight.highlight(lang,code).value;
+    }
+  });
   export default{
     data(){
       return{
@@ -169,7 +229,13 @@
       data(){
         this.$nextTick(()=>{
 
-          new SimpleMDE({ element: document.getElementById('editor') })
+          new SimpleMDE({
+            autoDownloadFontAwesome:false,
+            element: document.getElementById('editor'),
+            previewRender: function(plainText) {
+              return marked(plainText); // Returns HTML from a custom parser
+            },
+          })
 
         })
       }

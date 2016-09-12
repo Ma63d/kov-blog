@@ -8,6 +8,8 @@ import adminComponent from "./Admin.vue"
 import state from "./store/index.js"
 import routerMap from "./routes.js"
 
+require('font-awesome/css/font-awesome.min.css')
+
 window.HOST = {
   api: 'http://localhost:3000/'
 }

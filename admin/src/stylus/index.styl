@@ -9,10 +9,6 @@ html,body
 body,ul,ol,form
   margin 0
 
-ul,ol
-  padding-left 0
-  list-style-type none
-
 a
   img
     border 0
@@ -62,47 +58,6 @@ em
 
 p
   word-spacing 0.05em
-
-.highlight
-  overflow-x auto
-  position relative
-  background-color $codebg
-  padding .8em .8em .4em
-  line-height 1.1em
-  border-radius $radius
-  table, tr, td
-    width 100%
-    border-collapse collapse
-    padding 0
-    margin 0
-  .gutter
-    width 1.5em
-  .code
-    pre
-      padding 1.2em 1.4em
-      line-height 1.5em
-      margin 0
-  &.html, &.js, &.bash, &.css
-    .code:after
-      position absolute
-      top 0
-      right 0
-      color #ccc
-      text-align right
-      font-size .75em
-      padding 5px 10px 0
-      line-height 15px
-      height 15px
-      font-weight 600
-  &.html .code:after
-    content 'HTML'
-  &.js .code:after
-    content 'JS'
-  &.bash .code:after
-    content 'Shell'
-  &.css .code:after
-    content 'CSS'
-
 
 
 .vertical-center

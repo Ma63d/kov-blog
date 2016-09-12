@@ -33,6 +33,9 @@
     width 80%
   .aside-nav
     border-top 1px solid $medium
+  .aside-nav-list
+    list-style none
+    padding 0
   .aside-nav-item
     padding 20px 0
   .aside-menu
