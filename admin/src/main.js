@@ -36,16 +36,24 @@ router.beforeEach(function({from,to,next,redirect}){
     //login页
     if(undefined === state.token) {
       if(null !== (state.token = sessionStorage.getItem('token')) ){
-        next();
+        if(undefined !== from.path){
+          redirect(from.path);
+        }else{
+          redirect('posts');
+        }
       }else{
-        redirect(from.path);
+        next();
       }
     }else{
       if(null === state.token ){
         next();
         return;
       }
-      redirect(from.path);
+      if(undefined !== from.path){
+        redirect(from.path);
+      }else{
+        redirect('posts');
+      }
     }
   }
 })

@@ -33,13 +33,12 @@
 <style lang="stylus">
   @import '../../stylus/simplemde.styl'
   @import '../../stylus/_settings.styl'
-  $border = 1px solid #bbb
   .container-with-aside
-    margin-left 45px
+    margin-left 70px
     height 100%
   .post-list-column
     float left
-    border-right $border
+    border-right 1px solid $border
     height 100%
     width 200px
   .post-add
@@ -53,12 +52,12 @@
     overflow auto
     height 100%
   .post-list
-    border-top $border
+    border-top 1px solid $border
     list-style none
     padding 0
   .post-list-item
     padding 5px 10px
-    border-bottom $border
+    border-bottom 1px solid $border
   .post-thumb
     h3
       margin .8em 0
@@ -80,6 +79,46 @@
   .editor-preview-side
     background white
     padding: 0.2em 1.4em 0;
+    font-family $body-font
+    font-size $body-font-size
+    -webkit-font-smoothing antialiased
+    -moz-osx-font-smoothing grayscale
+    color $medium
+
+    a
+      text-decoration none
+      color $medium
+
+    :focus
+      outline 0
+
+    img
+      border none
+
+    h1, h2, h3, h4, strong
+      font-weight 600
+      color $dark
+
+    code, pre
+      font-family $code-font
+      font-size $code-font-size
+      background-color $codebg
+      -webkit-font-smoothing initial
+      -moz-osx-font-smoothing initial
+
+    code
+      color #e96900
+      padding 3px 5px
+      margin 0 2px
+      border-radius 2px
+      white-space nowrap
+
+    em
+      color $light
+
+    p
+      word-spacing 0.05em
+
     img
       max-width 100%
     span.light

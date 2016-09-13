@@ -11,6 +11,9 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
 })
 
 module.exports = merge(baseWebpackConfig, {
+  output: {
+    publicPath: config.dev.assetsPublicPath,
+  },
   module: {
     loaders: utils.styleLoaders()
   },

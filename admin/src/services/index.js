@@ -17,8 +17,6 @@ function checkStatus ([status,statusText,data]) {
   }
 }
 
-
-
 export default{
   get (url, param = {}, headers = {}, host = HOST.api) {
 

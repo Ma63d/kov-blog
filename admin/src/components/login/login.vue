@@ -4,7 +4,7 @@
       <img src="../../assets/img/logo.png" class="banner-logo" alt="logo">
     </header>
     <div class="center-box">
-      <div class="flash-bar danger" v-show="loginErr">登录失败</div>
+      <div class="flash-bar danger" v-show="loginErr">登录失败 {{loginErrMsg}}</div>
       <section class="login-box">
         <div class="login-header">
           <h3>
@@ -35,7 +35,8 @@
     data:()=>({
     username:"",
     password:"",
-    loginErr:false
+    loginErr:false,
+    loginErrMsg:''
   }),
   methods:{
     login(){
@@ -50,6 +51,7 @@
           this.loginErr = true;
         }
       }).catch(err=>{
+        this.loginErrMsg = err.error_message.error;
         this.loginErr = true;
       })
     }
@@ -58,7 +60,8 @@
 
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
+  @import '../../stylus/_settings.styl'
   .banner
     padding 10px 0
     text-align center
@@ -76,12 +79,65 @@
       box-shadow 0 0px 2px #CCC
       padding 15px
       .login-header
-        h3
-          text-align center
-          font-weight 300
-          line-height 1.5
-          margin 0 0 10px 0
+        text-align center
+        line-height 1.5
+        margin 0 0 10px 0
       .login-button-Container
         width 200px
         margin 0 auto
+  .flash-bar
+    box-sizing border-box
+    width 100%
+    padding 15px
+    color #fff
+    border 1px solid transparent
+    border-radius: 6px;
+    margin-bottom: 10px;
+    &.success
+      background-color $blue
+      border-color $blue
+    &.danger
+      background-color $red
+      border-color $red
+    &.info
+      background-color $darkGrey
+      border-color $darkGrey
+      text-align center
+  .btn
+    border 1px solid transparent
+    border-radius 3px
+    padding 6px 10px
+    text-align center
+    vertical-align middle
+    &.btn-save
+      color #fff
+      background-color $green
+      border-color $green
+    &.btn-info
+      color #fff
+      background-color $blue
+      border-color $blue
+    &.btn-cancel
+      color #fff
+      background-color $red
+      border-color $red
+    &.btn-block
+      width 100%
+      box-sizing border-box
+  .form-control
+    box-sizing border-box
+    padding 10px 8px
+    width 100%
+    height auto
+    box-shadow none
+    border 1px solid #e7e9ed
+    background-color #fff
+    outline 0
+    &.top
+      border-radius 5px 5px 0 0
+      margin-bottom 0
+    &.bottom
+      border-radius 0 0 5px 5px
+      border-top 0
+      margin-bottom 20px
 </style>

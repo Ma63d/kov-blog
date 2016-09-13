@@ -10,54 +10,15 @@ body,ul,ol,form
   margin 0
 
 a
+  text-decoration none
+  color inherit
+
+a
   img
     border 0
 
 img
   border 0
-
-//custom style
-body
-  font-family $body-font
-  font-size $body-font-size
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  color $medium
-  margin 0
-
-a
-  text-decoration none
-  color $medium
-
-:focus
-  outline 0
-
-img
-  border none
-
-h1, h2, h3, h4, strong
-  font-weight 600
-  color $dark
-
-code, pre
-  font-family $code-font
-  font-size $code-font-size
-  background-color $codebg
-  -webkit-font-smoothing initial
-  -moz-osx-font-smoothing initial
-
-code
-  color #e96900
-  padding 3px 5px
-  margin 0 2px
-  border-radius 2px
-  white-space nowrap
-
-em
-  color $light
-
-p
-  word-spacing 0.05em
 
 
 .vertical-center
@@ -370,60 +331,7 @@ p
   height: 0;
   visibility: hidden;
   clear: both;
-.flash-bar
-  box-sizing border-box
-  width 100%
-  padding 15px
-  color #fff
-  border 1px solid transparent
-  border-radius 0
-  &.success
-    background-color $blue
-    border-color $blue
-  &.danger
-    background-color $red
-    border-color $red
-  &.info
-    background-color $darkGrey
-    border-color $darkGrey
-    text-align center
-.btn
-  border 1px solid transparent
-  border-radius 3px
-  padding 6px 10px
-  text-align center
-  vertical-align middle
-  &.btn-save
-    color #fff
-    background-color $green
-    border-color $green
-  &.btn-info
-    color #fff
-    background-color $blue
-    border-color $blue
-  &.btn-cancel
-    color #fff
-    background-color $red
-    border-color $red
-  &.btn-block
-    width 100%
-    box-sizing border-box
-.form-control
-  box-sizing border-box
-  padding 10px 8px
-  width 100%
-  height auto
-  box-shadow none
-  border 1px solid #e7e9ed
-  background-color #fff
-  outline 0
-  &.top
-    border-radius 5px 5px 0 0
-    margin-bottom 0
-  &.bottom
-    border-radius 0 0 5px 5px
-    border-top 0
-    margin-bottom 20px
+
 
 
 /*这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕*/
