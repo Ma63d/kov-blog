@@ -29,7 +29,6 @@
 
 <script>
   import service from "../../services/login/index.js"
-  import state from "../../store/index.js"
   import md5 from 'md5'
   export default {
     data:()=>({
@@ -42,9 +41,6 @@
     login(){
       service.createToken(this.username,md5(this.password).toUpperCase()).then((res)=>{
         if(true === res.success){
-          state.token = res.data.token;
-          state.uid = res.data.uid;
-          state.name = res.data.name;
           sessionStorage.setItem('token',res.data.token);
           this.$route.router.replace('posts');
         }else{

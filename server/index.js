@@ -25,6 +25,8 @@ jwt.co_verify = function(jwtString, secretOrPublicKey, options){
     jwt.verify(jwtString, secretOrPublicKey, options,cb);
   }
 }
+
+
 co(function*() {
   mongoose.connect(config.mongoConfig.url,config.mongoConfig.opts);
   /**
@@ -46,7 +48,8 @@ co(function*() {
   onerror(app);
   app.on('error',function(err,ctx){
     if((ctx.status === 404 && err.status === undefined) || err.status === 500){
-      utils.logger.error('server error', err, ctx);
+      utils.logger.error('server error', err);
+      utils.logger.error(ctx);
     }
     utils.print(err);
   })

@@ -20,7 +20,7 @@ function checkStatus ([status,statusText,data]) {
 export default{
   get (url, param = {}, headers = {}, host = HOST.api) {
 
-    let reqHeaders = new Headers()
+    let reqHeaders = new Headers(headers)
     reqHeaders.append('Accept', 'application/json');
     var query = []
     Object.keys(param).forEach((item) => {
@@ -41,7 +41,7 @@ export default{
       .then(checkStatus)
   },
   patch (url, param = {}, headers = {}, host = HOST.api) {
-    let reqHeaders = new Headers()
+    let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json')
     reqHeaders.append('Accept', 'application/json')
 
@@ -60,7 +60,7 @@ export default{
       .then(checkStatus)
   },
   post (url, param = {}, headers = {}, host = HOST.api) {
-    let reqHeaders = new Headers()
+    let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json')
     reqHeaders.append('Accept', 'application/json')
 
@@ -78,7 +78,7 @@ export default{
       .then(checkStatus)
   },
   put (url, param = {}, headers = {}, host = HOST.api) {
-    let reqHeaders = new Headers()
+    let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json')
     reqHeaders.append('Accept', 'application/json')
 
@@ -97,7 +97,7 @@ export default{
       .then(checkStatus)
   },
   delete (url, param = {}, headers = {}, host = HOST.api) {
-    let reqHeaders = new Headers()
+    let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json')
     reqHeaders.append('Accept', 'application/json')
 

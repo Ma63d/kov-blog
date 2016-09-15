@@ -3,14 +3,14 @@
     <img class="sidebar-logo" src="../../assets/img/logo.png" alt="logo">
     <nav class="aside-nav">
       <ul class="aside-nav-list">
-        <li class="aside-nav-item"><button type="button" class="aside-nav-button"><i class="icon-wenzhang iconfont"></i></button>  </li>
+        <li class="aside-nav-item"><a class="aside-nav-button" v-link="{ path: '/posts', activeClass: 'active' }"><i class="icon-wenzhang iconfont"></i></a>  </li>
         <!--<li class="aside-nav-item"><i class="icon-biaoqian iconfont"></i> </li>-->
       </ul>
     </nav>
     <nav class="aside-menu">
       <ul class="aside-nav-list">
-        <li class="aside-nav-item"><button type="button" class="aside-nav-button"><i class="icon-ordinaryset iconfont"></i></button></li>
-        <li class="aside-nav-item"><button type="button" class="aside-nav-button"><i class="icon-icon11 iconfont"></i> </button></li>
+        <li class="aside-nav-item"><a class="aside-nav-button"><i class="icon-ordinaryset iconfont"></i></a></li>
+        <li class="aside-nav-item"><a class="aside-nav-button"><i class="icon-icon11 iconfont"></i> </a></li>
       </ul>
     </nav>
   </aside>
@@ -42,14 +42,22 @@
   .aside-nav-item
     padding 20px 0
   .aside-nav-button
+    display inline-block
+    box-sizing border-box
     width 45px
     height 45px
     background #fff
     padding 0
-    padding-top 1px
+    padding-top 10px
     border 1px solid $border
     border-radius 50%
     color $green
+    &.active
+      border 1px solid $green
+    &:hover
+      color white
+      background $green
+      border 1px solid $green
     .iconfont
       font-size 22px
   .aside-menu
@@ -62,8 +70,7 @@
   export default{
     data(){
       return{
-        msg:'hello vue'
       }
-    }
+    },
   }
 </script>
