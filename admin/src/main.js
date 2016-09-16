@@ -6,12 +6,16 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import adminComponent from "./Admin.vue"
 import routerMap from "./routes.js"
+import md2Text from './filters/md2Text'
 
 require('font-awesome/css/font-awesome.min.css')
 
 window.HOST = {
   api: 'http://localhost:3000/'
 }
+
+
+Vue.filter('md2Text', md2Text);
 
 Vue.use(VueRouter)
 var router = new VueRouter();

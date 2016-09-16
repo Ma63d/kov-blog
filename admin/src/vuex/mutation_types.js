@@ -1,6 +1,6 @@
 /**
  * Created by chuck7 on 16/7/30.
  */
-export const ARTICLE_FOCUS = 'ARTICLE_FOCUS';
-export const ARTICLE_Edit = 'ARTICLE_Edit';
-export const ARTICLE_SAVE = 'ARTICLE_SAVE';
+export const POST_FOCUS = 'POST_FOCUS';
+export const POST_Edit = 'POST_Edit';
+export const POST_SAVE = 'POST_SAVE';

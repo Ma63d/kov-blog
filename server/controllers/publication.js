@@ -56,6 +56,8 @@ function* create(){
     draft.draftPublished = true;
     draft.lastEditTime = new Date();
     const articleOption = draft.toObject();
+    delete articleOption._id;
+    delete articleOption.id;
     delete articleOption.draftPublished;
     delete articleOption.article;
     articleOption.createTime = articleOption.lastEditTime

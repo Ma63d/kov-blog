@@ -56,6 +56,7 @@ function* draftList(){
   const draftArr = yield Draft.find()
     .select('title tags createTime lastEditTime excerpt article draftPublished')
     .populate('tags')
+    .sort({ lastEditTime: -1})
     .exec().catch(err => {
     utils.logger.error(err);
     this.throw(500,'内部错误')
@@ -99,16 +100,14 @@ function* draftDetail(){
 function* modify(){
   const id = this.params.id;
   const modifyOption = this.request.body;
-  const contentArr = modifyOption.content.split('<!-- more -->');
-  if(contentArr.length > 1){
-    modifyOption.content = contentArr[1];
-    modifyOption.excerpt = contentArr[0];
-  }else{
-    modifyOption.content = contentArr[0];
+  if(modifyOption.content){
+    const contentArr = modifyOption.content.split('<!-- more -->');
+    if(contentArr.length > 1){
+      modifyOption.excerpt = contentArr[0];
+    }
   }
   modifyOption.lastEditTime = new Date();
   modifyOption.draftPublished = false;
-  utils.print(modifyOption);
   let result = yield Draft.findByIdAndUpdate(id,{$set:modifyOption},{new:true}).exec()
     .catch(err => {
       if(err.name === 'CastError'){

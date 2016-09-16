@@ -5,12 +5,11 @@
     <section class="post-list-column">
       <h3 class="post-list-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add"></i></h3>
       <ul class="post-list">
-        <li class="post-list-item" v-for="post in postList">
+        <li class="post-list-item" v-for="post in postList" @click="focus(post['id'])">
           <article class="post-thumb">
-            <h3 class="post-title"><a href="">{{post['title']}}</a></h3>
+            <h3 class="post-title"><a href="javascript:;">{{post['title']}}</a></h3>
             <h6 class="post-time">{{post['lastEditTime']}}</h6>
-            <p class="post-content">
-              {{post['excerpt']}}
+            <p class="post-content" v-text="post['excerpt'] | md2Text">
             </p>
           </article>
         </li>
@@ -48,7 +47,8 @@
     list-style none
     padding 0
   .post-list-item
-    padding 10px 25px
+    margin 0 25px
+    padding 20px 0
     border-bottom 1px solid $border
   .post-thumb
     .post-title
@@ -59,7 +59,9 @@
       padding-bottom 0
       a
         color $dark
-        &:hover
+    &:hover
+      .post-title
+        a
           border-bottom 2px solid $green
     .post-content
       color $light
@@ -81,17 +83,24 @@
   import NavAside from '../Common/NavAside.vue'
   import Editor from '../Common/Editor.vue'
   import service from '../../services/posts/index'
+  import {focusOnPost} from '../../vuex/actions/post'
+  import {currentPost,postSaved} from '../../vuex/getters/post'
   export default{
     data(){
       return{
-        postList:[]
+        postList:[],
       }
     },
     route:{
       data(){
         return service.getDraftList().then((res)=>{
           if(res.success){
-            return {postList:res.data};
+            if(res.data.length){
+              this.focusOnPost(res.data[0]['id'])
+            }
+            return {
+              postList:res.data
+            };
           }else{
             return Promise.reject();
           }
@@ -103,6 +112,22 @@
     components:{
       NavAside,
       Editor
+    },
+    vuex: {
+      getters: {
+        currentPost,
+        postSaved
+      },
+      actions:{
+        focusOnPost
+      }
+    },
+    methods:{
+      focus(id){
+        if(id !== this.currentPost){
+          this.focusOnPost(id)
+        }
+      }
     }
   }
 </script>

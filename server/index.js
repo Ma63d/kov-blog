@@ -38,7 +38,7 @@ co(function*() {
     maxAge: 7 * 24 * 60 * 60,
     // 7 days 预请求头有效期
     credentials: true,
-    methods: 'GET, HEAD, OPTIONS, PUT, POST, DELETE',
+    methods: 'GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE',
     headers: 'Content-Type, Accept, Authorization'
   }))
 

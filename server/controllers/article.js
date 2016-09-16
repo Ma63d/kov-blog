@@ -82,6 +82,7 @@ function* articleList(next){
     articleArr: Article.find({hidden:false})
       .populate('tags')
       .select('title visits tags createTime lastEditTime excerpt')
+      .sort({ createTime: -1})
       .limit(limit).skip(skip).exec().catch(err => {
         utils.logger.error(err);
         this.throw(500,'内部错误')
