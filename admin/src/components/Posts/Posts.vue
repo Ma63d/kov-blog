@@ -3,20 +3,11 @@
     <nav-aside>
     </nav-aside>
     <section class="post-list-column">
-      <h3 class="post-list-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add"></i></h3>
-      <ul class="post-list">
-        <li class="post-list-item" v-for="post in postList" @click="focus(post['id'])">
-          <article class="post-thumb">
-            <h3 class="post-title"><a href="javascript:;">{{post['title']}}</a></h3>
-            <h6 class="post-time">{{post['lastEditTime']}}</h6>
-            <p class="post-content" v-text="post['excerpt'] | md2Text">
-            </p>
-          </article>
-        </li>
-      </ul>
+      <h3 class="post-list-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add" @click="createPost"></i></h3>
+      <post-list></post-list>
     </section>
     <div class="post-edit">
-      <editor></editor>
+      <editor v-if="null !== currentPostId"></editor>
     </div>
   </div>
 </template>
@@ -32,6 +23,7 @@
     height 100%
     width 300px
   .post-add
+    cursor pointer
     float right
     margin-right 10px
     margin-top 2px
@@ -42,90 +34,46 @@
   .post-edit
     overflow auto
     height 100%
-  .post-list
-    border-top 1px solid $border
-    list-style none
-    padding 0
-  .post-list-item
-    margin 0 25px
-    padding 20px 0
-    border-bottom 1px solid $border
-  .post-thumb
-    .post-title
-      font-size 16px
-      line-height 1.3
-      font-weight 400
-      margin 0 0 4px
-      padding-bottom 0
-      a
-        color $dark
-    &:hover
-      .post-title
-        a
-          border-bottom 2px solid $green
-    .post-content
-      color $light
-      font-size 12px
-      font-weight 400
-      line-height 17px
-      margin 0
-    .post-time
-      color $light
-      margin 0 0 6px
-  .post-thumb-content
-    white-space nowrap
-    overflow hidden
-    text-overflow ellipsis
-
 
 </style>
 <script>
   import NavAside from '../Common/NavAside.vue'
   import Editor from '../Common/Editor.vue'
+  import PostList from '../Common/PostList.vue'
   import service from '../../services/posts/index'
-  import {focusOnPost} from '../../vuex/actions/post'
-  import {currentPost,postSaved} from '../../vuex/getters/post'
+  import {getAllPost,createPost} from '../../vuex/actions/post'
+  import {postSaved,postTitleSaved} from '../../vuex/getters/post'
   export default{
     data(){
       return{
-        postList:[],
       }
     },
     route:{
       data(){
-        return service.getDraftList().then((res)=>{
-          if(res.success){
-            if(res.data.length){
-              this.focusOnPost(res.data[0]['id'])
-            }
-            return {
-              postList:res.data
-            };
-          }else{
-            return Promise.reject();
-          }
-        }).catch(err=>{
-          alert('网络错误');
-        })
+        this.getAllPost();
       }
     },
     components:{
       NavAside,
-      Editor
+      Editor,
+      PostList
     },
     vuex: {
       getters: {
-        currentPost,
-        postSaved
+        postSaved,
+        postTitleSaved
       },
       actions:{
-        focusOnPost
+        getAllPost,
+        createPost
       }
     },
     methods:{
-      focus(id){
-        if(id !== this.currentPost){
-          this.focusOnPost(id)
+      newPost(){
+        if(!this.postSaved || !this.postTitleSaved){
+          alert('当前文章正在保存中,请稍后重试');
+        }else{
+          this.createPost();
         }
       }
     }

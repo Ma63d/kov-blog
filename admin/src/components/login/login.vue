@@ -100,19 +100,27 @@
       border-color $darkGrey
       text-align center
   .btn
+    cursor pointer
     border 1px solid transparent
     border-radius 3px
     padding 6px 10px
     text-align center
     vertical-align middle
+    outline 0
     &.btn-save
       color #fff
       background-color $green
       border-color $green
     &.btn-info
       color #fff
-      background-color $blue
-      border-color $blue
+      background-color $grey
+      border-color $grey
+    &.btn-border
+      color $dark
+      background-color white
+      border-color $grey
+      &:hover
+        border-color $green
     &.btn-cancel
       color #fff
       background-color $red
@@ -121,12 +129,13 @@
       width 100%
       box-sizing border-box
   .form-control
+    color $black
     box-sizing border-box
     padding 10px 8px
     width 100%
     height auto
     box-shadow none
-    border 1px solid #e7e9ed
+    border 1px solid $border
     background-color #fff
     outline 0
     &.top

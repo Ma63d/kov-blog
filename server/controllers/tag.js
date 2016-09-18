@@ -22,7 +22,7 @@ function* tokenList(next){
 }
 function* create(next){
   const tagName = this.request.body.name;
-  if(tagName === undefined || tagName.length < 0){
+  if(undefined === tagName || 0 === tagName.length){
     this.throw(400,'标签名缺失');
   }
   const tag = yield Tag.findOne({name:tagName}).exec().catch(err => {
@@ -30,7 +30,7 @@ function* create(next){
     this.throw(500,'内部错误')
   });
   utils.print(tag);
-  if(tag === null){
+  if(tag !== null){
     this.throw(403,'tag已存在')
   }
   const newTag = new Tag({
@@ -43,6 +43,9 @@ function* create(next){
   utils.print(result);
   this.status = 200;
   this.body = {
-    success:true
+    success:true,
+    data:{
+      id:result.id
+    }
   }
 }

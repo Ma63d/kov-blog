@@ -42,6 +42,7 @@
   .aside-nav-item
     padding 20px 0
   .aside-nav-button
+    cursor pointer
     display inline-block
     box-sizing border-box
     width 45px

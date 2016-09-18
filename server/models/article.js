@@ -29,8 +29,8 @@ const articleSchema =  new Schema( {
     ref: 'comment'
   }]
 },{ versionKey: false,skipVersioning: { tags: true }});
-articleSchema.set('toJSON', { getters: true});
-articleSchema.set('toObject', { getters: true});
+articleSchema.set('toJSON', { getters: true, virtuals: true});
+articleSchema.set('toObject', { getters: true, virtuals: true});
 articleSchema.path('createTime').get(function (v) {
   return new Date(v).format('yyyy-MM-dd hh:mm:ss');
 });

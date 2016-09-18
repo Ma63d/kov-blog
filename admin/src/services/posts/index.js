@@ -18,4 +18,16 @@ export default {
   modifyDraftTags(id,tags){
     return api.patch('drafts/'+id,{tags},{Authorization:'Bearer '+sessionStorage.getItem('token')});
   },
+  createTags(tagName){
+    return api.post('tags',{name:tagName},{Authorization:'Bearer '+sessionStorage.getItem('token')})
+  },
+  createDraft(title){
+    return api.post('drafts',{title:title},{Authorization:'Bearer '+sessionStorage.getItem('token')})
+  },
+  publish(id){
+    return api.post('publications',{draftId:id},{Authorization:'Bearer '+sessionStorage.getItem('token')})
+  },
+  deleteDraft(id){
+    return api.delete('drafts/'+id,undefined,{Authorization:'Bearer '+sessionStorage.getItem('token')})
+  }
 }

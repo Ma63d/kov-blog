@@ -26,6 +26,8 @@ function* create(){
     draft.draftPublished = true;
     draft.lastEditTime = new Date();
     const articleOption = draft.toObject();
+    delete articleOption._id;
+    delete articleOption.id;
     delete articleOption.draftPublished;
     delete articleOption.article;
     delete articleOption.createTime;
@@ -34,7 +36,7 @@ function* create(){
         utils.logger.error(err);
         this.throw(500,'内部错误')
       }),
-      article: Article.findByIdAndUpdate(draft.article,{$set:articleOption},{new:true}).exec()
+      article: Article.findByIdAndUpdate(draft.article,{$set:articleOption},{new:true}).populate('tags').exec()
         .catch(err => {
           if(err.name === 'CastError'){
             this.throw(400,'article id 不存在');

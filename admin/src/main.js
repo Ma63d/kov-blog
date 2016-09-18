@@ -4,6 +4,7 @@
 import "./stylus/index.styl"
 import Vue from "vue";
 import VueRouter from "vue-router";
+import MessageBox from 'vue-msgbox'
 import adminComponent from "./Admin.vue"
 import routerMap from "./routes.js"
 import md2Text from './filters/md2Text'
@@ -13,7 +14,7 @@ require('font-awesome/css/font-awesome.min.css')
 window.HOST = {
   api: 'http://localhost:3000/'
 }
-
+window.alert = MessageBox
 
 Vue.filter('md2Text', md2Text);
 
@@ -40,6 +41,6 @@ router.beforeEach(function({from,to,next,redirect}){
     }
   }
 })
-
+window.alert = MessageBox
 
 router.start(adminComponent, '#app')
