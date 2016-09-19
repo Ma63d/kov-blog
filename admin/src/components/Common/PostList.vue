@@ -59,11 +59,12 @@
 </style>
 <script>
   import {focusOnPost} from '../../vuex/actions/post'
-  import {currentPostId,postSaved,postList,postTitleSaved} from '../../vuex/getters/post'
+  import {currentPostId,currentPostIndex,postSaved,postList,postTitleSaved} from '../../vuex/getters/post'
   export default {
     vuex: {
       getters: {
         currentPostId,
+        currentPostIndex,
         postSaved,
         postList,
         postTitleSaved
@@ -73,13 +74,13 @@
       }
     },
     methods:{
-      focus(id){
+      focus(index){
         if(!this.postSaved || !this.postTitleSaved){
           alert('当前文章正在保存中,请稍后重试');
           return;
         }
-        if(id !== this.currentPostId){
-          this.focusOnPost(id)
+        if(index !== this.currentPostIndex){
+          this.focusOnPost(index)
         }
       },
     }

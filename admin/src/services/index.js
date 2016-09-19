@@ -31,7 +31,7 @@ export default{
     })
     var params = query.length ? '?' + query.join('&') : ''  // fixme
     url = host + url + params
-    console.log(host, params)
+    console.log(url, params)
     var init = {
       method: 'GET',
       headers: reqHeaders,

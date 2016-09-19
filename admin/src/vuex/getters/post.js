@@ -10,6 +10,9 @@ export const articleIdOfPost =({post}) => {
 export const currentPostId = ({post}) => {
   return post.currentPostId;
 }
+export const currentPostIndex = ({post}) => {
+  return post.currentPostIndex;
+}
 export const postTitle = ({post}) => {
   return post.title;
 }

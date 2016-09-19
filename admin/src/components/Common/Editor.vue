@@ -19,7 +19,7 @@
         <button type="button" class="btn btn-border r" v-show="articleIdOfPost === null" @click="deletePost">删除草稿</button>
       </div>
     </div>
-    <textarea id="editor"></textarea>
+    <textarea id="editor" style="opacity: 0"></textarea>
   </section>
 </template>
 <style lang="stylus">
@@ -49,10 +49,12 @@
     color $light
     border-bottom 2px solid $light
     margin-right 20px
+    .iconfont
+      display none
     &:hover
       color $green
       border-bottom 2px solid $green
-      .delete-tag
+      .iconfont
         display inline
     &.active
       color $green
@@ -296,7 +298,7 @@
       return{
         //用以标识 是切换文章导致的codemirror的change事件还是 手工输入引起的change事件
         //切换文章引起的change事件则没必要对内容和title进行保存
-        change:false,
+        change:true,
         draftPublished:'',
         tags:[],
         tagsToAdd:[],
@@ -339,19 +341,25 @@
       if(null !== this.currentPostId){
         service.getDraft(this.currentPostId).then(res => {
           if(res.success){
-          this.tagNew = '';
-          this.tagInput = false;
-          this.tags = res.data.tags;
-          this.$nextTick(()=>{
-            smde.value(res.data.content);
-        })
-        }
+            this.tagNew = '';
+            this.tagInput = false;
+            this.tags = res.data.tags;
+            this.$nextTick(()=>{
+              smde.value(res.data.content);
+            })
+          }
       }).catch(err => {
-          console.log(err);
+        console.log(err);
         alert('网络错误,获取文章失败');
       })
       }
     },
+    beforeDestroy(){
+      smde.toTextArea();
+      let editor = document.getElementById('editor');
+      editor.outerHTML = editor.outerHTML;
+    },
+
     vuex: {
       getters: {
         currentPostId,
