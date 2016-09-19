@@ -1,5 +1,5 @@
 <template>
-  <ul class="post-list">
+  <ul class="post-list reset-list">
     <li class="post-list-item" v-for="post in postList" @click="focus($index)">
       <article class="post-thumb" :class="[post['draftPublished']?'published':post['article']?'updated':'',{'active':post['id'] === currentPostId}]">
         <h3 class="post-title"><a href="javascript:;">{{post['title']}}</a></h3>
@@ -14,8 +14,6 @@
   @import '../../stylus/_settings.styl'
   .post-list
     border-top 1px solid $border
-    list-style none
-    padding 0
   .post-list-item
     cursor pointer
     margin 0 25px

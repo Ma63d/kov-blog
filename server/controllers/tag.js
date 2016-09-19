@@ -10,7 +10,12 @@ module.exports.init = router => {
   router.get('/tags', tokenList);
 }
 function* tokenList(next){
-  const tagList = yield Tag.find().exec().catch(err => {
+  const queryStartWith = this.query['start-with'];
+  const queryOption = {};
+  if(undefined !== queryStartWith){
+    queryOption.name = {$regex:'^'+queryStartWith}
+  }
+  const tagList = yield Tag.find(queryOption).exec().catch(err => {
     utils.logger.error(err);
     this.throw(500,'内部错误')
   });
@@ -31,7 +36,15 @@ function* create(next){
   });
   utils.print(tag);
   if(tag !== null){
-    this.throw(403,'tag已存在')
+    this.status = 200;
+    //标签已存在
+    this.body = {
+      success:false,
+      data:{
+        id:tag.id
+      }
+    }
+    return;
   }
   const newTag = new Tag({
     name:tagName

@@ -42,7 +42,7 @@
   import PostList from '../Common/PostList.vue'
   import service from '../../services/posts/index'
   import {getAllPost,createPost} from '../../vuex/actions/post'
-  import {postSaved,postTitleSaved} from '../../vuex/getters/post'
+  import {postSaved,postTitleSaved,currentPostId} from '../../vuex/getters/post'
   export default{
     data(){
       return{
@@ -61,7 +61,8 @@
     vuex: {
       getters: {
         postSaved,
-        postTitleSaved
+        postTitleSaved,
+        currentPostId
       },
       actions:{
         getAllPost,

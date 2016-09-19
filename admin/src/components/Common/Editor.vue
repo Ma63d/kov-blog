@@ -6,8 +6,13 @@
     <div class="clearfix">
       <div class="half-container">
         <i class="icon-biaoqian iconfont" style="margin-right:5px"></i>
-        <span class="tag" v-for="tag in tags">{{tag['name']}} <i class="icon-chacha iconfont delete-tag" @click="deleteTag(tag.id)"></i></span><span class="tag active" @click="tagInput = true">
-        <span v-show="!tagInput">+</span> <input type="text" class="tag-input" v-show="tagInput" v-model="tagNew" placeholder="使用回车键提交" @keyup.13="submitTag"></span>
+        <span class="tag" v-for="tag in tags">{{tag['name']}} <i class="icon-chacha iconfont delete-tag" @click="deleteTag(tag.id)"></i></span>
+        <div class="tag active">
+          <span v-show="!tagInput" @click="addTag()" >+</span> <input type="text" class="tag-input" v-show="tagInput" v-model="tagNew" placeholder="使用回车键提交" @keyup.13="submitTag">
+          <ul class="search-list reset-list" v-if="tagInput" v-show="tagsToAdd.length">
+            <li class="search-item" @click="submitTag(tag['name'])" v-for="tag in tagsToAdd">{{tag['name']}}</li>
+          </ul>
+        </div>
       </div>
       <div class="half-container">
         <button type="button" class="btn btn-save r" @click="publish">发布文章</button>
@@ -52,6 +57,25 @@
     &.active
       color $green
       border-bottom 2px solid $green
+      position relative
+  .search-list
+    position absolute
+    top 25px
+    left -6px
+    z-index 100
+    width 100%
+    padding 5px
+    background white
+    border: 1px solid $border
+    border-radius 4px
+    box-shadow 0 6px 12px rgba(0,0,0,.03)
+  .search-item
+    color $light
+    padding-left 4px
+    &:hover
+      color  $green
+    &+&
+      padding-top 10px
   .delete-tag
     display none
     position absolute
@@ -62,6 +86,7 @@
     border none
     background transparent
     color $green
+    font-size 14px
     outline 0
   .editor-toolbar
     border-left 0
@@ -274,6 +299,7 @@
         change:false,
         draftPublished:'',
         tags:[],
+        tagsToAdd:[],
         tagNew:'',
         tagInput:false,
       }
@@ -309,6 +335,22 @@
         }
         postDraft()
       });
+      this.change = true;
+      if(null !== this.currentPostId){
+        service.getDraft(this.currentPostId).then(res => {
+          if(res.success){
+          this.tagNew = '';
+          this.tagInput = false;
+          this.tags = res.data.tags;
+          this.$nextTick(()=>{
+            smde.value(res.data.content);
+        })
+        }
+      }).catch(err => {
+          console.log(err);
+        alert('网络错误,获取文章失败');
+      })
+      }
     },
     vuex: {
       getters: {
@@ -350,31 +392,42 @@
           })
         }
       },
+      tagNew(val){
+        this.searchTags(val)
+      }
     },
     methods:{
-      submitTag(){
+      submitTag(val){
         this.tagInput = false;
-        let tag = trim(this.tagNew);
+        let tag;
+        if('string' === typeof val){
+          tag = val;
+        }else{
+          tag = trim(this.tagNew);
+        }
         this.tagNew = '';
         if(tag === ''){
           return;
         }
         service.createTags(tag).then(res => {
-          if(res.success){
-            let newTagArr = []
-            for(let i of this.tags){
-              newTagArr.push(i.id)
-            }
-            newTagArr.push(res.data.id);
-            return service.modifyDraftTags(this.currentPostId,newTagArr).then(res => {
-              if(res.success){
-                this.tags = res.data.tags;
-                this.postTagsModify(res.data.lastEditTime);
-              }
-            }).catch(err => {
-              alert('网络错误,增加标签失败')
-            })
+          let id = res.data.id;
+          if(this.tags.some(item => item.id === id)){
+            return;
           }
+          let newTagArr = this.tags.map(item => {
+            return item.id
+          })
+          newTagArr.push(id);
+          return service.modifyDraftTags(this.currentPostId,newTagArr).then(res => {
+            if(res.success){
+              this.tags = res.data.tags;
+              this.postTagsModify(res.data.lastEditTime);
+            }
+          }).catch(err => {
+            alert('网络错误,增加标签失败')
+          })
+        }).catch(err => {
+          alert('网络错误,增加标签失败')
         })
       },
       deleteTag(id){
@@ -409,6 +462,18 @@
         //这就导致切换文章时,title也被上传一次,
         //这与设想的只在用户更改后才上传的逻辑相违背
         updateTitleWithDebounce.call(this,e.target.value);
+      },
+      addTag(){
+        this.tagInput = true;
+        this.tagNew = ''
+        this.searchTags('');
+      },
+      searchTags(val){
+        service.searchTagWithWord(val).then(res=>{
+          if(res.success){
+            this.tagsToAdd = res.data;
+          }
+        })
       }
     }
   }

@@ -54,7 +54,13 @@ function* create(){
   }
 }
 function* draftList(){
-  const draftArr = yield Draft.find()
+  const tag = this.query.tag,
+    queryOpt = {};
+  if(tag !== undefined){
+    queryOpt.tags= {"$all":[tag]}
+  }
+  utils.print(queryOpt);
+  const draftArr = yield Draft.find(queryOpt)
     .select('title tags createTime lastEditTime excerpt article draftPublished')
     .populate('tags')
     .sort({ lastEditTime: -1})

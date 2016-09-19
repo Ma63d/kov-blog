@@ -3,8 +3,8 @@
  */
 import * as types from '../mutation_types'
 import service from '../../services/posts/index'
-export const getAllPost = ({ dispatch }) =>{
-  return service.getDraftList().then(res=>{
+export const getAllPost = ({ dispatch },tags) =>{
+  return service.getDraftList(tags).then(res=>{
     if(res.success){
       dispatch(types.RECEIVE_ALL_POSTS,res.data);
       if(res.data.length){
