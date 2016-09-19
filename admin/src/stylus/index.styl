@@ -1,0 +1,344 @@
+@import "_settings"
+@import "_syntax"
+@import "_font"
+@import "~vue-msgbox/lib/vue-msgbox.css";
+html,body
+  height 100%
+  color $black
+//css reset
+
+body,ul,ol,form
+  margin 0
+
+a
+  text-decoration none
+  color inherit
+
+a
+  img
+    border 0
+
+img
+  border 0
+
+
+.vertical-center
+  &::before
+    content " "
+    display inline-block
+    height 100%
+    width 0
+    vertical-align middle
+
+.vertical-center-content
+  display inline-block
+  vertical-align middle
+
+//css common style
+//plz not used in common component
+.l
+  float left
+
+.r
+  float right
+
+.cl
+  clear both
+
+.n
+  font-weight normal
+  font-style normal
+
+.b
+  font-weight bold
+
+.i
+  font-style italic
+
+.tc
+  text-align center
+
+.tr
+  text-align right
+
+.tl
+  text-align left
+
+.tdl
+  text-decoration underline
+
+.tdn,.tdnhover,a.tdl:hover
+  text-decoration none
+
+.g0
+  color #000000
+
+.g3
+  color #333333
+
+.g6
+  color #666666
+
+.g9
+  color #999999
+
+.red
+  color red
+
+.wh
+  color white
+
+.f0
+  font-size 0
+
+.f10
+  font-size 10px
+
+.f12
+  font-size 12px
+
+.f13
+  font-size 13px
+
+.f14
+  font-size 14px
+
+.f16
+  font-size 16px
+
+.f20
+  font-size 20px
+
+.f24
+  font-size 24px
+
+.vm
+  vertical-align middle
+
+.vtb
+  vertical-align text-bottom
+
+.vt
+  vertical-align top
+
+.vn
+  vertical-align -2px
+
+.vimg
+  margin-bottom -3px
+
+.m0
+  margin 0
+
+.ml1
+  margin-left 1px
+
+.ml2
+  margin-left 2px
+
+.ml5
+  margin-left 5px
+
+.ml10
+  margin-left 10px
+
+.ml20
+  margin-left 20px
+
+.mr1
+  margin-right 1
+
+.mr2
+  margin-right 2px
+
+.mr5
+  margin-right 5px
+
+.mr10
+  margin-right 10px
+
+.mr20
+  margin-right 20px
+
+.mt1
+  margin-top 1
+
+.mt2
+  margin-top 2px
+
+.mt5
+  margin-top 5px
+
+.mt10
+  margin-top 10px
+
+.mt20
+  margin-top 20px
+
+.mb1
+  margin-bottom 1px
+
+.mb2
+  margin-bottom 2px
+
+.mb5
+  margin-bottom 5px
+
+.mb10
+  margin-bottom 10px
+
+.mb20
+  margin-bottom 20px
+.ml-1
+  margin-left -1px
+
+.mt-1
+  margin-top -1px
+
+.p1
+  padding 1px
+
+.pl1
+  padding-left 1px
+
+.pt1
+  padding-top 1px
+.pr0
+  padding-right 1px
+.pr1
+  padding-right 1px
+
+.pb1
+  padding-bottom 1px
+.pb52
+  padding-bottom 52px
+
+.p2
+  padding 2px
+
+.pl2
+  padding-left 2px
+
+.pt2
+  padding-top 2px
+
+.pr2
+  padding-right 2px
+
+.pb2
+  padding-bottom 2px
+
+.pl5
+  padding-left 5px
+
+.p5
+  padding 5px
+
+.pt5
+  padding-top 5px
+
+.pr5
+  padding-right 5px
+
+.pb5
+  padding-bottom 5px
+
+.p10
+  padding 10px
+
+.pl10
+  padding-left 10px
+
+.pt10
+  padding-top 10px
+
+.pr10
+  padding-right 10px
+
+.pb10
+  padding-bottom 10px
+
+.p20
+  padding 20px
+
+.pl20
+  padding-left 20px
+
+.pt20
+  padding-top 20px
+
+.pr20
+  padding-right 20px
+
+.pb20
+  padding-bottom 20px
+
+.rel
+  position relative
+
+.abs
+  position absolute
+
+.dn
+  display none
+
+.db
+  display block
+
+.df
+  display flex
+
+.dib
+  -moz-inline-stack inline-block
+  display inline-block
+
+.di
+  display inline
+
+.ovh
+  overflow hidden
+
+.ovs
+  overflow scroll
+
+.vh
+  visibility hidden
+
+.vv
+  visibility visible
+
+.lh14
+  line-height 14px
+
+.lh16
+  line-height 16px
+
+.lh18
+  line-height 18px
+
+.lh20
+  line-height 20px
+
+.lh22
+  line-height 22px
+
+.lh24
+  line-height 24px
+
+.reset-list
+  list-style none
+  padding-left 0
+
+.clearfix:after
+  content: '';
+  display: block;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+
+
+
+/*这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕*/
+[v-cloak] {
+  display: none
+}
