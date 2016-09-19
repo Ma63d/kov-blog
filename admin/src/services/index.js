@@ -10,6 +10,9 @@ function checkStatus ([status,statusText,data]) {
   if(status >= 200 && status < 300){
     return data;
   }else{
+    if(401 === status && 'token expired' === data.error){
+      alert('token已过期,请重新登录');
+    }
     let error = new Error(statusText);
     error.status = status;
     error.error_message = data;

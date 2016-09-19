@@ -1,8 +1,8 @@
 /**
  * Created by chuck7 on 16/7/30.
  */
-import article from './article';
+import post from './post';
 const moduleMap = {
-  article
+  post
 };
 export default moduleMap;

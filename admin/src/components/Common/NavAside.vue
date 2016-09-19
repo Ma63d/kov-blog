@@ -4,7 +4,7 @@
     <nav class="aside-nav">
       <ul class="aside-nav-list">
         <li class="aside-nav-item"><a class="aside-nav-button" v-link="{ path: '/posts', activeClass: 'active' }"><i class="icon-wenzhang iconfont"></i></a>  </li>
-        <!--<li class="aside-nav-item"><i class="icon-biaoqian iconfont"></i> </li>-->
+        <li class="aside-nav-item"><a class="aside-nav-button" v-link="{ path: '/tags', activeClass: 'active' }"><i class="icon-biaoqian iconfont"></i></a> </li>
       </ul>
     </nav>
     <nav class="aside-menu">
@@ -42,6 +42,7 @@
   .aside-nav-item
     padding 20px 0
   .aside-nav-button
+    cursor pointer
     display inline-block
     box-sizing border-box
     width 45px

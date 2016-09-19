@@ -10,7 +10,12 @@ module.exports.init = router => {
   router.get('/tags', tokenList);
 }
 function* tokenList(next){
-  const tagList = yield Tag.find().exec().catch(err => {
+  const queryStartWith = this.query['start-with'];
+  const queryOption = {};
+  if(undefined !== queryStartWith){
+    queryOption.name = {$regex:'^'+queryStartWith}
+  }
+  const tagList = yield Tag.find(queryOption).exec().catch(err => {
     utils.logger.error(err);
     this.throw(500,'内部错误')
   });
@@ -22,7 +27,7 @@ function* tokenList(next){
 }
 function* create(next){
   const tagName = this.request.body.name;
-  if(tagName === undefined || tagName.length < 0){
+  if(undefined === tagName || 0 === tagName.length){
     this.throw(400,'标签名缺失');
   }
   const tag = yield Tag.findOne({name:tagName}).exec().catch(err => {
@@ -30,8 +35,16 @@ function* create(next){
     this.throw(500,'内部错误')
   });
   utils.print(tag);
-  if(tag === null){
-    this.throw(403,'tag已存在')
+  if(tag !== null){
+    this.status = 200;
+    //标签已存在
+    this.body = {
+      success:false,
+      data:{
+        id:tag.id
+      }
+    }
+    return;
   }
   const newTag = new Tag({
     name:tagName
@@ -43,6 +56,9 @@ function* create(next){
   utils.print(result);
   this.status = 200;
   this.body = {
-    success:true
+    success:true,
+    data:{
+      id:result.id
+    }
   }
 }

@@ -11,6 +11,11 @@ export default (router)=>{
     },
     '/posts':{
       component:PostsView
+    },
+    '/tags':{
+      component: function (resolve) {
+        require(['components/Tags/Tags.vue'], resolve)
+      },
     }
   })
   router.redirect({

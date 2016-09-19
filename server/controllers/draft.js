@@ -9,6 +9,7 @@ module.exports.init = router => {
   router.patch('/drafts/:id', mw.verify_token, modify)
   router.get('/drafts', mw.verify_token, draftList);
   router.get('/drafts/:id', mw.verify_token, draftDetail)
+  router.delete('/drafts/:id', mw.verify_token,deleteDraft)
 }
 function* create(){
   /**
@@ -53,9 +54,16 @@ function* create(){
   }
 }
 function* draftList(){
-  const draftArr = yield Draft.find()
+  const tag = this.query.tag,
+    queryOpt = {};
+  if(tag !== undefined){
+    queryOpt.tags= {"$all":[tag]}
+  }
+  utils.print(queryOpt);
+  const draftArr = yield Draft.find(queryOpt)
     .select('title tags createTime lastEditTime excerpt article draftPublished')
     .populate('tags')
+    .sort({ lastEditTime: -1})
     .exec().catch(err => {
     utils.logger.error(err);
     this.throw(500,'内部错误')
@@ -99,17 +107,17 @@ function* draftDetail(){
 function* modify(){
   const id = this.params.id;
   const modifyOption = this.request.body;
-  const contentArr = modifyOption.content.split('<!-- more -->');
-  if(contentArr.length > 1){
-    modifyOption.content = contentArr[1];
-    modifyOption.excerpt = contentArr[0];
-  }else{
-    modifyOption.content = contentArr[0];
+  if(modifyOption.content){
+    const contentArr = modifyOption.content.split('<!-- more -->');
+    if(contentArr.length > 1){
+      modifyOption.excerpt = contentArr[0];
+    }else{
+      modifyOption.excerpt = '';
+    }
   }
   modifyOption.lastEditTime = new Date();
   modifyOption.draftPublished = false;
-  utils.print(modifyOption);
-  let result = yield Draft.findByIdAndUpdate(id,{$set:modifyOption},{new:true}).exec()
+  let result = yield Draft.findByIdAndUpdate(id,{$set:modifyOption},{new:true}).populate('tags').exec()
     .catch(err => {
       if(err.name === 'CastError'){
         this.throw(400,'id不存在');
@@ -126,5 +134,32 @@ function* modify(){
   this.body = {
     success:true,
     data:result
+  }
+}
+function* deleteDraft(){
+  const id = this.params.id;
+  const draft = yield Draft.findOne({_id:id})
+    .select('article')
+    .exec().catch(err => {
+      utils.logger.error(err);
+      this.throw(500,'内部错误')
+    })
+  //如果该草稿已经发布为文章,则改草稿不能删除,
+  //因为草稿是查看其对应的文章的入口
+  //功能上只提供把已发布的文章隐藏
+  //和未发布为文章的草稿删除
+  if(null === draft){
+    this.throw(400,'id不存在');
+  }
+  if(null !== draft.article){
+    this.throw(403,'已发布文章的草稿不能删除');
+  }
+  const result = yield Draft.remove({_id:id}).exec().catch(err => {
+    utils.logger.error(err);
+    this.throw(500,'内部错误')
+  });
+  this.status = 200;
+  this.body = {
+    success:true,
   }
 }

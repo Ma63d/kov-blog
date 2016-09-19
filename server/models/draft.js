@@ -27,8 +27,8 @@ const draftSchema =  new Schema( {
 },{ versionKey: false,
   skipVersioning: { tags: true }
 });
-draftSchema.set('toJSON', { getters: true});
-draftSchema.set('toObject', { getters: true});
+draftSchema.set('toJSON', { getters: true, virtuals: true});
+draftSchema.set('toObject', { getters: true, virtuals: true});
 draftSchema.path('createTime').get(function (v) {
   return new Date(v).format('yyyy-MM-dd hh:mm:ss');
 });
