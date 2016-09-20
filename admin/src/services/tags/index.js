@@ -7,9 +7,9 @@ export default {
     return api.get('tags',undefined);
   },
   modifyTag(id,name){
-    return api.patch('tags/'+id,{name},{Authorization:'Bearer '+sessionStorage.getItem('token')});
+    return api.patch('tags/'+id,{name});
   },
   deleteTag(id){
-    return api.delete('tags/'+id,undefined,{Authorization:'Bearer '+sessionStorage.getItem('token')});
+    return api.delete('tags/'+id,undefined);
   }
 }

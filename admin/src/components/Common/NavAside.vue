@@ -9,8 +9,8 @@
     </nav>
     <nav class="aside-menu">
       <ul class="aside-nav-list">
-        <li class="aside-nav-item"><a class="aside-nav-button"><i class="icon-ordinaryset iconfont"></i></a></li>
-        <li class="aside-nav-item"><a class="aside-nav-button"><i class="icon-icon11 iconfont"></i> </a></li>
+        <!--<li class="aside-nav-item"><a class="aside-nav-button"><i class="icon-ordinaryset iconfont"></i></a></li>-->
+        <li class="aside-nav-item"><a class="aside-nav-button" @click="deleteToken()"><i class="icon-icon11 iconfont"></i> </a></li>
       </ul>
     </nav>
   </aside>
@@ -68,10 +68,12 @@
     bottom 0
 </style>
 <script>
+  import {deleteToken} from '../../vuex/actions/token'
   export default{
-    data(){
-      return{
+    vuex:{
+      actions:{
+        deleteToken
       }
-    },
+    }
   }
 </script>

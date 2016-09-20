@@ -8,7 +8,7 @@ import MessageBox from 'vue-msgbox'
 import adminComponent from "./Admin.vue"
 import routerMap from "./routes.js"
 import md2Text from './filters/md2Text'
-
+import store from './vuex/store'
 require('font-awesome/css/font-awesome.min.css')
 
 window.HOST = {
@@ -22,15 +22,16 @@ Vue.use(VueRouter)
 var router = new VueRouter();
 routerMap(router)
 router.beforeEach(function({from,to,next,redirect}){
+  //console.log(store.state.token.token)
   if(true !== to.authPage){
-    if(null === sessionStorage.getItem('token')) {
+    if(null === store.state.token.token) {
       redirect('login');
     }else{
       next();
     }
   }else{
     //login页
-    if(null === sessionStorage.getItem('token')) {
+    if(null === store.state.token.token) {
       next();
     }else{
       if(undefined !== from.path){
@@ -44,3 +45,6 @@ router.beforeEach(function({from,to,next,redirect}){
 window.alert = MessageBox
 
 router.start(adminComponent, '#app')
+export {
+  router
+}

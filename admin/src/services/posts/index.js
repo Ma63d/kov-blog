@@ -8,34 +8,34 @@ export default {
     if(undefined !== tag){
       queryObj = {tag};
     }
-    return api.get('drafts',queryObj,{Authorization:'Bearer '+sessionStorage.getItem('token')});
+    return api.get('drafts',queryObj);
   },
   getDraft(id){
-    return api.get('drafts/'+id,undefined,{Authorization:'Bearer '+sessionStorage.getItem('token')});
+    return api.get('drafts/'+id,undefined);
   },
   modifyDraftContent(id,content){
-    return api.patch('drafts/'+id,{content},{Authorization:'Bearer '+sessionStorage.getItem('token')});
+    return api.patch('drafts/'+id,{content});
   },
   modifyDraftTitle(id,title){
-    return api.patch('drafts/'+id,{title},{Authorization:'Bearer '+sessionStorage.getItem('token')});
+    return api.patch('drafts/'+id,{title});
   },
   modifyDraftTags(id,tags){
-    return api.patch('drafts/'+id,{tags},{Authorization:'Bearer '+sessionStorage.getItem('token')});
+    return api.patch('drafts/'+id,{tags});
   },
   createTags(tagName){
-    return api.post('tags',{name:tagName},{Authorization:'Bearer '+sessionStorage.getItem('token')})
+    return api.post('tags',{name:tagName})
   },
   getAllTags(){
     return api.get('tags',undefined);
   },
   createDraft(title){
-    return api.post('drafts',{title:title},{Authorization:'Bearer '+sessionStorage.getItem('token')})
+    return api.post('drafts',{title:title})
   },
   publish(id){
-    return api.post('publications',{draftId:id},{Authorization:'Bearer '+sessionStorage.getItem('token')})
+    return api.post('publications',{draftId:id})
   },
   deleteDraft(id){
-    return api.delete('drafts/'+id,undefined,{Authorization:'Bearer '+sessionStorage.getItem('token')})
+    return api.delete('drafts/'+id,undefined)
   },
   searchTagWithWord(keyword){
     return api.get('tags',{'start-with':keyword})

@@ -17,7 +17,13 @@
 </style>
 <script>
   import store from './vuex/store'
+  import {deleteToken} from './vuex/actions/token'
   export default {
-    store
+    store,
+    vuex:{
+      actions:{
+        deleteToken
+      }
+    }
   }
 </script>

@@ -15,3 +15,5 @@ export const POST_LAST_EDIT_TIME = 'POST_LAST_EDIT_TIME';
 export const POST_TAG_MODIFY = 'POST_TAG_MODIFY';
 export const POST_CREATE = 'POST_CREATE';
 
+export const TOKEN_CREATE = 'TOKEN_CREATE';
+export const TOKEN_DELETE = 'TOKEN_DELETE';

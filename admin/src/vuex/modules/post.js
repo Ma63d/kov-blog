@@ -1,7 +1,6 @@
 /**
  * Created by chuck7 on 16/7/30.
  */
-import Vue from 'vue'
 import {
   RECEIVE_ALL_POSTS,
   POST_FOCUS,
