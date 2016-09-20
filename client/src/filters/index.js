@@ -24,5 +24,6 @@ marked.setOptions({
   }
 });
 export function markdown(str){
-  return marked(str);
+  let result  = marked(str);
+  return result;
 }
