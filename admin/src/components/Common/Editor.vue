@@ -48,6 +48,7 @@
     font-size 14px
     color $light
     border-bottom 2px solid $light
+    margin-top 5px
     margin-right 20px
     .iconfont
       display none
@@ -221,13 +222,13 @@
     figure, p
       margin-left 0
     pre
-      overflow-x auto
       position relative
       background-color $codebg
       padding .8em .8em .4em
       line-height 1.1em
       border-radius $radius
       code
+        overflow-x auto
         display block
         padding 1.2em 1.4em
         line-height 1.5em
@@ -247,7 +248,7 @@
             line-height 15px
             height 15px
             font-weight 600
-        &.lang-html code:after
+        &.lang-html:after
           content 'HTML'
         &.lang-javascript:after
           content 'JS'

@@ -11,7 +11,7 @@ export default {
     return api.get('drafts',queryObj);
   },
   getDraft(id){
-    return api.get('drafts/'+id,undefined);
+    return api.get('drafts/'+id);
   },
   modifyDraftContent(id,content){
     return api.patch('drafts/'+id,{content});
@@ -26,7 +26,7 @@ export default {
     return api.post('tags',{name:tagName})
   },
   getAllTags(){
-    return api.get('tags',undefined);
+    return api.get('tags');
   },
   createDraft(title){
     return api.post('drafts',{title:title})
@@ -35,7 +35,7 @@ export default {
     return api.post('publications',{draftId:id})
   },
   deleteDraft(id){
-    return api.delete('drafts/'+id,undefined)
+    return api.delete('drafts/'+id)
   },
   searchTagWithWord(keyword){
     return api.get('tags',{'start-with':keyword})

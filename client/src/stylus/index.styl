@@ -26,80 +26,151 @@ body
   color $medium
   margin 0
 
-a
-  text-decoration none
-  color $medium
 
-:focus
-  outline 0
+  a
+    text-decoration none
+    color $medium
 
-img
-  border none
+  :focus
+    outline 0
 
-h1, h2, h3, h4, strong
-  font-weight 600
-  color $dark
+  img
+    border none
 
-code, pre
-  font-family $code-font
-  font-size $code-font-size
-  background-color $codebg
-  -webkit-font-smoothing initial
-  -moz-osx-font-smoothing initial
+  h1, h2, h3, h4, strong
+    font-weight 600
+    color $dark
 
-code
-  color #e96900
-  padding 3px 5px
-  margin 0 2px
-  border-radius 2px
-  white-space nowrap
+  code, pre
+    font-family $code-font
+    font-size $code-font-size
+    background-color $codebg
+    -webkit-font-smoothing initial
+    -moz-osx-font-smoothing initial
 
-em
-  color $light
+  code
+    color #e96900
+    padding 3px 5px
+    margin 0 2px
+    border-radius 2px
+    white-space nowrap
 
-p
-  word-spacing 0.05em
+  em
+    color $light
 
+  p
+    word-spacing 0.05em
 
-.highlight
-  overflow-x auto
-  position relative
-  background-color $codebg
-  padding .8em .8em .4em
-  line-height 1.1em
-  border-radius $radius
-  table, tr, td
-    width 100%
-    border-collapse collapse
-    padding 0
-    margin 0
-  .gutter
-    width 1.5em
-  .code
-    pre
+  img
+    max-width 100%
+  span.light
+    color $light
+  span.info
+    font-size .85em
+    display inline-block
+    vertical-align middle
+    width 280px
+    margin-left 20px
+  h1
+    margin 0 0 .5em
+  h2
+    margin .8em 0
+    padding-bottom 0
+    a
+      color $dark
+      &:hover
+        border-bottom 2px solid $green
+  h3
+    margin 3em 0 1.2em
+    position relative
+    &:before
+      content "#"
+      color $green
+      position absolute
+      left -0.7em
+      top -2px
+      font-size 1.2em
+      font-weight bold
+  h4
+    color $light
+  figure, p, ul, ol
+    margin 1.2em 0
+  p, ul, ol
+    line-height 1.6em
+  ul, ol
+    padding-left 1.5em
+  a
+    color $green
+    font-weight 600
+  blockquote
+    margin 2em 0
+    padding-left 20px
+    border-left 4px solid $green
+    p
+      font-weight 600
+      margin-left 0
+  iframe
+    margin 1em 0
+  p.tip
+    padding 12px 24px 12px 30px
+    margin 2em 0
+    border-left 4px solid $red
+    background-color $codebg
+    position relative
+    border-bottom-right-radius $radius
+    border-top-right-radius $radius
+    &:before
+      position absolute
+      top 14px
+      left -12px
+      background-color $red
+      color #fff
+      content "!"
+      width 20px
+      height 20px
+      border-radius 100%
+      text-align center
+      line-height 20px
+      font-weight bold
+      font-family $logo-font
+      font-size 14px
+  figure, p
+    margin-left 0
+  pre
+    position relative
+    background-color $codebg
+    padding .8em .8em .4em
+    line-height 1.1em
+    border-radius $radius
+    code
+      overflow-x auto
+      display block
       padding 1.2em 1.4em
       line-height 1.5em
       margin 0
-  &.html, &.js, &.bash, &.css
-    .code:after
-      position absolute
-      top 0
-      right 0
-      color #ccc
-      text-align right
-      font-size .75em
-      padding 5px 10px 0
-      line-height 15px
-      height 15px
-      font-weight 600
-  &.html .code:after
-    content 'HTML'
-  &.js .code:after
-    content 'JS'
-  &.bash .code:after
-    content 'Shell'
-  &.css .code:after
-    content 'CSS'
+      color #525252
+      border-radius 0
+      white-space pre
+      &.lang-html, &.lang-js, &.lang-bash, &.lang-css
+        &:after
+          position absolute
+          top 0
+          right 0
+          color #ccc
+          text-align right
+          font-size .75em
+          padding 5px 10px 0
+          line-height 15px
+          height 15px
+          font-weight 600
+      &.lang-html:after
+        content 'HTML'
+      &.lang-js:after
+        content 'JS'
+      &.lang-bash:after
+        content 'Shell'
+      &.lang-css:after
+        content 'CSS'
 
 
 

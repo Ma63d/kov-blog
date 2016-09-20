@@ -9,8 +9,8 @@
         </h4>
       </header>
 
-      <p>
-        {{post['excerpt']}}
+      <p v-html="post['excerpt'] | markdown">
+
       </p>
 
       <footer>
@@ -80,4 +80,3 @@
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -67,53 +67,74 @@ function* create(){
 }
 function* articleList(next){
   /**
+   * @query tag  搜索包含指定标签的文章
    * @param page 文章列表页码 从1开始
    * @param limit 每页文章数量
    * */
-  const limit = ~~this.query.limit || 10,
-    page = ~~this.query.page;
-  let skip;
-  if(page === 0){
-    skip = 0
-  }else{
-    skip = limit * (page - 1)
-  }
-  const {articleArr,totalNumber} = yield {
-    articleArr: Article.find({hidden:false})
-      .populate('tags')
-      .select('title visits tags createTime lastEditTime excerpt')
+  const tag = this.query.tag;
+  if(undefined !== tag){
+    utils.print(tag);
+    let articleArr = yield Article.find({
+      hidden:false,
+      tags:{"$all":[tag]}
+    }).select('title createTime lastEditTime')
       .sort({ createTime: -1})
-      .limit(limit).skip(skip).exec().catch(err => {
+      .exec().catch(err => {
         utils.logger.error(err);
         this.throw(500,'内部错误')
-      }),
-    totalNumber: Article.count().exec().catch(err => {
-      utils.logger.error(err);
-      this.throw(500,'内部错误')
-    })
-  }
-  this.status = 200;
-  const resultArr = [];
-  if(articleArr.length){
-    articleArr.forEach((article,index,arr)=>{
-      article = article.toObject();
-      /*article.createTime = new Date(article.createTime).format('yyyy-MM-dd hh:mm');
-      if(null !== article.lastEditTime){
-        article.lastEditTime = new Date(article.lastEditTime).format('yyyy-MM-dd hh:mm');
-      }*/
-      resultArr.push(article);
-      utils.print(article);
-    })
-  }
+      });
+    utils.print(articleArr);
+    this.body = {
+      success:true,
+      data:articleArr
+    }
+  }else{
+    const limit = ~~this.query.limit || 10,
+      page = ~~this.query.page;
+    let skip;
+    if(page === 0){
+      skip = 0
+    }else{
+      skip = limit * (page - 1)
+    }
+    const {articleArr,totalNumber} = yield {
+      articleArr: Article.find({hidden:false})
+        .populate('tags')
+        .select('title visits tags createTime lastEditTime excerpt')
+        .sort({ createTime: -1})
+        .limit(limit).skip(skip).exec().catch(err => {
+          utils.logger.error(err);
+          this.throw(500,'内部错误')
+        }),
+      totalNumber: Article.count().exec().catch(err => {
+        utils.logger.error(err);
+        this.throw(500,'内部错误')
+      })
+    }
+    this.status = 200;
+    const resultArr = [];
+    if(articleArr.length){
+      articleArr.forEach((article,index,arr)=>{
+        article = article.toObject();
+        /*article.createTime = new Date(article.createTime).format('yyyy-MM-dd hh:mm');
+         if(null !== article.lastEditTime){
+         article.lastEditTime = new Date(article.lastEditTime).format('yyyy-MM-dd hh:mm');
+         }*/
+        resultArr.push(article);
+        utils.print(article);
+      })
+    }
 
-  utils.print(resultArr);
-  this.body = {
-    success:true,
-    data:{
-      articles:resultArr,
-      total:totalNumber
+    utils.print(resultArr);
+    this.body = {
+      success:true,
+      data:{
+        articles:resultArr,
+        total:totalNumber
+      }
     }
   }
+
 }
 function* articleDetail(next){
   const id = this.params.id;

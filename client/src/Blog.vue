@@ -24,11 +24,11 @@
 </script>
 
 <style lang="stylus">
+@import "./stylus/_settings.styl"
 .fade-transition
   transition: opacity .2s ease
 .fade-enter, .fade-leave
   opacity: 0;
-@import "./stylus/_settings.styl"
 .content
   max-width  850px
   box-sizing border-box
@@ -105,7 +105,8 @@
 
 .content.blog
   h1
-    margin 0 0 .5em
+    margin .8em 0
+    font-size 2em
   h2
     margin .8em 0
     padding-bottom 0
@@ -127,6 +128,6 @@
   color $light
   font-size 1em
   text-align center
-  padding 0 20px
+  padding 0 20px 10px
   margin-top 30px
 </style>

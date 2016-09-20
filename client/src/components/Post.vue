@@ -8,11 +8,10 @@
           {{createTime}}
         </h4>
       </header>
-      <p>
-        {{content}}
+      <p v-html="content | markdown">
       </p>
-      <div class="fix" v-for="tag in tags">
-        <span class="tag"><a href="" class="tag-link active">{{tag.name}}</a></span>
+      <div class="fix">
+        <span class="tag" v-for="tag in tags"><a href="" class="tag-link active">{{tag.name}}</a></span>
       </div>
     </article>
     <pagination :next="nextArticle !== null" :next-link="nextArticle?'/posts/'+nextArticle._id:''" :next-word="nextArticle&&nextArticle.title" :prev="prevArticle !== null" :prev-link="prevArticle?'/posts/'+prevArticle._id:''" :prev-word="prevArticle&&prevArticle.title" ></pagination>
@@ -20,8 +19,10 @@
 </template>
 <style lang="stylus">
   @import "../stylus/_settings.styl"
+
   .tag
     float left
+    margin-bottom 5px
     a.tag-link
       color $light
       border-bottom 2px solid $light
@@ -33,6 +34,11 @@
         border-bottom 2px solid $green
     &+&
       margin-left 20px
+  @media screen and (max-width: 720px)
+    .tag
+      margin: 0 5px 5px;
+      &+&
+        margin-left 5px
 </style>
 <script>
   import Pagination from './common/Pagination.vue'

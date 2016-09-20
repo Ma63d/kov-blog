@@ -5,29 +5,16 @@
         All Tags
       </h2>
       <p class="fix tag-container">
-        <span class="tag"><a href="" class="tag-link">javascript</a></span><span class="tag"><a href="" class="tag-link">总结</a></span>
+        <span class="tag" v-for="tag in tags"><a href="javascript:;" @click="focus(tag['id'])">{{tag['name']}}</a></span>
       </p>
     </section>
-    <section>
+    <section v-for="item in tagAndItsArticles" :id="item['id']">
       <h3>
-        javascript
+        {{item['name']}}
       </h3>
       <ul>
-        <li>
-          <h4><a href="">我的第一篇文章</a> <span>2016/07/06</span></h4>
-        </li>
-      </ul>
-    </section>
-    <section>
-      <h3>
-        javascript
-      </h3>
-      <ul>
-        <li>
-          <h4><a href="">我的第一篇文章</a> <span>2016/07/06</span></h4>
-        </li>
-        <li>
-          <h4><a href="">我的第一篇文章</a> <span>2016/07/06</span></h4>
+        <li v-for="article in item['articles']">
+          <h4><a v-link="'/posts/'+article['id']">{{article['title']}}</a> <span>{{article['createTime']}}</span></h4>
         </li>
       </ul>
     </section>
@@ -38,10 +25,40 @@
     font-size 1.2em
 </style>
 <script>
-    export default{
-        data(){
-            return {
-            }
-        }
+  import service from '../services/tag/index'
+  export default{
+    data(){
+      return {
+        tagAndItsArticles:[],
+        tags:[]
+      }
+    },
+    route:{
+      data(){
+        this.tags = [];
+        this.tagAndItsArticles = [];
+        service.getAllTags().then(res => {
+          if(res.success){
+            res.data.map(tag => {
+              service.getPostListWithTag(tag.id).then(resp=>{
+                if(resp.success){
+                  if(resp.data.length){
+                    tag.articles = resp.data
+                    this.tags.push({name:tag.name,id:tag.id});
+                    this.tagAndItsArticles.push(tag);
+                  }
+                }
+              })
+            })
+          }
+        })
+      }
+    },
+    methods:{
+      focus(id){
+        let dom = document.getElementById(id);
+        window.scrollTo(0,dom.offsetTop);
+      }
     }
+  }
 </script>

@@ -29,7 +29,9 @@ export default{
   get (url, param = {}, headers = {}, host = HOST.api) {
     let reqHeaders = new Headers(headers)
     reqHeaders.append('Accept', 'application/json');
-    (store.state.token.token === null) || reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    if(null !== store.state.token.token){
+      reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    }
     var query = []
     Object.keys(param).forEach((item) => {
       query.push(`${item}=${encodeURIComponent(param[item])}`)
@@ -52,7 +54,9 @@ export default{
     let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json')
     reqHeaders.append('Accept', 'application/json')
-    (store.state.token.token === null) || reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    if(null !== store.state.token.token){
+      reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    }
     url = host + url
 
     var init = {
@@ -71,7 +75,9 @@ export default{
     let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json');
     reqHeaders.append('Accept', 'application/json');
-    (store.state.token.token === null) || reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    if(null !== store.state.token.token){
+      reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    }
     url = host + url
     var init = {
       method: 'POST',
@@ -89,7 +95,9 @@ export default{
     let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json')
     reqHeaders.append('Accept', 'application/json')
-    (store.state.token.token === null) || reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    if(null !== store.state.token.token){
+      reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    }
     url = host + url
 
     var init = {
@@ -108,7 +116,9 @@ export default{
     let reqHeaders = new Headers(headers)
     reqHeaders.append('Content-Type', 'application/json')
     reqHeaders.append('Accept', 'application/json')
-    (store.state.token.token === null) || reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    if(null !== store.state.token.token){
+      reqHeaders.append('Authorization','Bearer '+store.state.token.token)
+    }
     url = host + url
 
     var init = {
