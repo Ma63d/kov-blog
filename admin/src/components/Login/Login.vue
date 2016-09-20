@@ -29,29 +29,29 @@
 
 <script>
   import service from "../../services/login/index.js"
+  import {createToken} from '../../vuex/actions/token'
   import md5 from 'md5'
   export default {
     data:()=>({
-    username:"",
-    password:"",
-    loginErr:false,
-    loginErrMsg:''
-  }),
-  methods:{
-    login(){
-      service.createToken(this.username,md5(this.password).toUpperCase()).then((res)=>{
-        if(true === res.success){
-          sessionStorage.setItem('token',res.data.token);
-          this.$route.router.replace('posts');
-        }else{
+      username:"",
+      password:"",
+      loginErr:false,
+      loginErrMsg:''
+    }),
+    methods:{
+      login(){
+        this.createToken(this.username,md5(this.password).toUpperCase()).catch(err=>{
+          console.log(err);
+          this.loginErrMsg = err.error_message.error;
           this.loginErr = true;
-        }
-      }).catch(err=>{
-        this.loginErrMsg = err.error_message.error;
-        this.loginErr = true;
-      })
+        })
+      }
+    },
+    vuex:{
+      actions:{
+        createToken
+      }
     }
-  }
   }
 
 </script>

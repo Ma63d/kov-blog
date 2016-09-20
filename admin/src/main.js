@@ -22,7 +22,7 @@ Vue.use(VueRouter)
 var router = new VueRouter();
 routerMap(router)
 router.beforeEach(function({from,to,next,redirect}){
-  //console.log(store.state.token.token)
+  console.log(store.state.token.token)
   if(true !== to.authPage){
     if(null === store.state.token.token) {
       redirect('login');
