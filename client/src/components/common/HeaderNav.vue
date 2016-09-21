@@ -8,7 +8,7 @@
       <ul class="nav-link-container">
         <li class="nav-link-item"><a class="nav-link" v-link="{ path: '/posts', activeClass: 'active' }" >文章</a></li>
         <li class="nav-link-item"><a class="nav-link" v-link="{ path: '/tags', activeClass: 'active' }">标签</a></li>
-        <li class="nav-link-item"><a class="nav-link" href="/">关于我</a></li>
+        <li class="nav-link-item"><a class="nav-link" v-link="{ path: '/me', activeClass: 'active' }">关于我</a></li>
       </ul>
     </nav>
   </header>

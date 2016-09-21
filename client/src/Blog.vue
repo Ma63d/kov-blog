@@ -63,6 +63,8 @@
       font-weight bold
   figure, p, ul, ol
     margin 1.2em 0
+  p
+    word-spacing 0.05em
   p, ul, ol
     line-height 1.6em
   ul, ol
@@ -102,7 +104,41 @@
       font-weight bold
       font-family $logo-font
       font-size 14px
-
+  pre
+    position relative
+    background-color $codebg
+    padding .8em .8em .4em
+    line-height 1.1em
+    border-radius $radius
+    code
+      overflow-x auto
+      display block
+      padding 1.2em 1.4em
+      line-height 1.5em
+      margin 0
+      color #525252
+      border-radius 0
+      white-space pre
+      &.lang-html, &.lang-js, &.lang-bash, &.lang-css
+        &:after
+          position absolute
+          top 0
+          right 0
+          color #ccc
+          text-align right
+          font-size .75em
+          padding 5px 10px 0
+          line-height 15px
+          height 15px
+          font-weight 600
+      &.lang-html:after
+        content 'HTML'
+      &.lang-js:after
+        content 'JS'
+      &.lang-bash:after
+        content 'Shell'
+      &.lang-css:after
+        content 'CSS'
 .content.blog
   h1
     margin .8em 0
@@ -120,9 +156,16 @@
     margin 1.2em 0
   figure, p
     margin-left 0
+  .post-list
+    padding 1em 0 2em
+    border-bottom 1px solid $border
   .post
     padding 1em 0 2em
     border-bottom 1px solid $border
+    h2
+      margin 2em 0 0.8em;
+      padding-bottom 0.7em
+      border-bottom 1px solid #ddd
 
 .copyright
   color $light

@@ -73,7 +73,6 @@
             if(null !== res.data){
               delete res.data._id;
               /**
-               * fixme!!
                * this.$nextTick 并不能保证dom修改已经完成..
                * https://github.com/vuejs/vue-router/issues/289
                * 尤大大:"nextTick is intended to be used right after you modified some reactive data."
@@ -84,17 +83,21 @@
                * 但是如果我一开始进的页面不是这个页面,比如是文章列表页,当我来到这个页面(文章详情页)时,是data get->attached这样的顺序,attached又跑后面去了
                * 尼玛...我真真是日了狗了
                * 一坑未平,一坑又起
-               * 所以这段代码写得真tm丑
+               * 所以这段代码写得真tm丑 fixme!
                * */
               this.$nextTick(()=>{
+                let el = document.getElementById('duoshuo-comment');
+                if(el&&el.childNodes.length){
+                  el.innerHTML = ``
+                }
                 setTimeout(()=>{
+                  el = document.getElementById('duoshuo-comment');
+                  if(el&&el.childNodes.length){
+                    el.innerHTML = ``
+                  }
                   window.duoshuoQuery.sso = {login : '#!/posts/'+this.id,logout:process.env.index+'#!/posts/'+this.id};
-                  let el = document.getElementById('duoshuo-comment'),
-                    dom = document.createElement('div');
+                  let dom = document.createElement('div');
                   if(el){
-                    if(el.childNodes.length){
-                      el.innerHTML = ``
-                    }
                     dom.setAttribute('data-thread-key',this.id);
                     dom.setAttribute('data-title',this.title);
                     dom.setAttribute('data-url',process.env.index+'#!/posts/'+this.id);

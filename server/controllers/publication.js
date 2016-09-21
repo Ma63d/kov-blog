@@ -18,7 +18,7 @@ function* create(){
   if(0 === draft.title.length){
     this.throw(400,'文章标题不能为空')
   }else if(0 === draft.excerpt.length){
-    this.throw(400,'文章摘要不能为空')
+    this.throw(400,`文章摘要不能为空,请在文章中插入'<!-- more -->'以分隔摘要和正文`);
   }else if(0 === draft.content.length){
     this.throw(400,'文章内容不能为空')
   }

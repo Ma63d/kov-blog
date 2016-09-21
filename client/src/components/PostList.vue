@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--这个div用来避免这个组件成为片段实例-->
-    <article class="post" v-for="post in posts">
+    <article class="post-list" v-for="post in posts">
       <header>
         <h2><a v-link="'/posts/'+post['_id']">{{post['title']}}</a></h2>
         <h4>

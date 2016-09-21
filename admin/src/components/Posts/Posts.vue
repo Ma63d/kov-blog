@@ -3,11 +3,11 @@
     <nav-aside>
     </nav-aside>
     <section class="post-list-column">
-      <h3 class="post-list-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add" @click="createPost"></i></h3>
+      <h3 class="page-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add" @click="createPost"></i></h3>
       <post-list></post-list>
     </section>
     <div class="post-edit">
-      <editor v-if="null !== currentPostId"></editor>
+      <article-editor v-if="null !== currentPostId"></article-editor>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@
     float right
     margin-right 10px
     margin-top 2px
-  .post-list-title
+  .page-title
     color $light
     padding-left 25px
     font-weight 400
@@ -38,7 +38,7 @@
 </style>
 <script>
   import NavAside from '../Common/NavAside.vue'
-  import Editor from '../Common/Editor.vue'
+  import ArticleEditor from '../Common/ArticleEditor.vue'
   import PostList from '../Common/PostList.vue'
   import service from '../../services/posts/index'
   import {getAllPost,createPost} from '../../vuex/actions/post'
@@ -55,7 +55,7 @@
     },
     components:{
       NavAside,
-      Editor,
+      ArticleEditor,
       PostList
     },
     vuex: {

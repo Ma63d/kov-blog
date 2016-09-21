@@ -5,6 +5,7 @@
       <ul class="aside-nav-list">
         <li class="aside-nav-item"><a class="aside-nav-button" v-link="{ path: '/posts', activeClass: 'active' }"><i class="icon-wenzhang iconfont"></i></a>  </li>
         <li class="aside-nav-item"><a class="aside-nav-button" v-link="{ path: '/tags', activeClass: 'active' }"><i class="icon-biaoqian iconfont"></i></a> </li>
+        <li class="aside-nav-item"><a class="aside-nav-button" v-link="{ path: '/me', activeClass: 'active' }"><i class="icon-wo iconfont"></i></a> </li>
       </ul>
     </nav>
     <nav class="aside-menu">

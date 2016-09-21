@@ -5,9 +5,6 @@ import Blog from './Blog'
 import {markdown} from './filters/index'
 import './stylus/index.styl'
 
-window.HOST = {
-  api: 'http://localhost:3000/'
-}
 
 Vue.use(Router)
 Vue.filter('markdown', markdown);

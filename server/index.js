@@ -61,7 +61,7 @@ co(function*() {
   }))
   app.use(favicon(path.join(config.dir.static,'fav.ico')));
   app.use(bodyParser());
-  controllers.init(router);
+  yield controllers.init(router);
   app.use(router.routes());
   app.listen(config.app.port, ()=>{
     utils.print('app is listening on port '+config.app.port);

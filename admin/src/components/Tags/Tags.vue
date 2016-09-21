@@ -3,7 +3,7 @@
     <nav-aside>
     </nav-aside>
     <section class="post-list-column">
-      <h3 class="post-list-title" style="margin-bottom:0" v-if="null === tagActive"><i class="icon-biaoqian iconfont"></i> 根据标签搜索文章</h3>
+      <h3 class="page-title" style="margin-bottom:0" v-if="null === tagActive"><i class="icon-biaoqian iconfont"></i> 根据标签搜索文章</h3>
       <ul class="clearfix reset-list tag-list" v-if="null !== tagActive">
         <li class="tag active"><span v-show="!tagActive['editing']">{{tagActive['name']}}</span> <i class="icon-chacha iconfont" v-show="!tagActive['editing']" @click="blurTag()"></i> <i class="icon-edit iconfont" @click="modifyTag(tagActive)" v-show="!tagActive['editing']"></i> <i class="icon-shanchu iconfont" style="vertical-align: 1px;" @click="deleteTag(tagActive)" v-show="!tagActive['editing']"></i> <input type="text" class="tag-input" v-if="tagActive['editing']" v-model="tagActive['newName']" placeholder="使用回车键提交" @keyup.13="saveTag(tagActive)"></li>
       </ul>
@@ -13,7 +13,7 @@
       <post-list></post-list>
     </section>
     <div class="post-edit">
-      <editor v-if="null !== currentPostId"></editor>
+      <article-editor v-if="null !== currentPostId"></article-editor>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@
 </style>
 <script>
   import NavAside from '../Common/NavAside.vue'
-  import Editor from '../Common/Editor.vue'
+  import ArticleEditor from '../Common/ArticleEditor.vue'
   import PostList from '../Common/PostList.vue'
   import service from '../../services/tags/index'
   import {getAllPost} from '../../vuex/actions/post'
@@ -35,7 +35,7 @@
   export default{
     components:{
       NavAside,
-      Editor,
+      ArticleEditor,
       PostList
     },
     data(){

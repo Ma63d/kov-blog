@@ -16,6 +16,11 @@ export default (router)=>{
       component: function (resolve) {
         require(['components/Tags/Tags.vue'], resolve)
       },
+    },
+    '/me':{
+      component: function (resolve) {
+        require(['components/Me/Me.vue'], resolve)
+      },
     }
   })
   router.redirect({
