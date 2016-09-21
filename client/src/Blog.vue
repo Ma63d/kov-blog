@@ -9,7 +9,7 @@
       </router-view>
     </main>
     <footer class="copyright">
-      Copyrights滚粗. 自豪的采用Chuck纯手工搭建的博客.
+      Copyrights滚粗. 自豪的采用Chuck纯手工搭建的<a href="https://github.com/Ma63d/kov-blog">博客</a>.
     </footer>
   </div>
 </template>
@@ -128,6 +128,6 @@
   color $light
   font-size 1em
   text-align center
-  padding 0 20px 10px
+  padding 0 20px 30px
   margin-top 30px
 </style>

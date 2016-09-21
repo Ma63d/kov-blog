@@ -138,15 +138,20 @@ function* articleList(next){
 }
 function* articleDetail(next){
   const id = this.params.id;
-  const article = (yield Article.findOne({_id:id,hidden:false})
+  if(!id.match(/^[0-9a-fA-F]{24}$/)){
+    this.throw(400,'invalid id');
+  }
+  let article = (yield Article.findOne({_id:id,hidden:false})
     .populate('tags')
     .select('title visits tags createTime lastEditTime excerpt content')
     .exec().catch(err => {
       utils.logger.error(err);
       this.throw(500,'内部错误')
-    })).toObject();
+    }));
+
   this.status = 200;
   if(article){
+    article = article.toObject();
     /*article.createTime = new Date(article.createTime).format('yyyy-MM-dd hh:mm');
     if(null !== article.lastEditTime){
       article.lastEditTime = new Date(article.lastEditTime).format('yyyy-MM-dd hh:mm');
