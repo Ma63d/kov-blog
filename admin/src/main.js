@@ -6,45 +6,24 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import MessageBox from 'vue-msgbox'
 import adminComponent from "./Admin.vue"
-import routerMap from "./routes.js"
+import {router} from "./router.js"
+
 import md2Text from './filters/md2Text'
-import store from './vuex/store'
+
 require('font-awesome/css/font-awesome.min.css')
 
-window.HOST = {
-  api: 'http://localhost:3000/'
-}
+/**
+ * router的beforeEach操作之所以放在main里面,而不是把所有与router相关的都放在router.js里面
+ * 是因为涉及到循环引用的问题,router引了store,store引了router,
+ * 循环引用的话会出现的情况参见:http://es6.ruanyifeng.com/#docs/module#循环加载
+ * 导致store在login组件拿到的是个空对象,所以就让router.js提前执行完毕,把router.beforeEach放这了.
+ * */
+
 window.alert = MessageBox
 
 Vue.filter('md2Text', md2Text);
 
-Vue.use(VueRouter)
-var router = new VueRouter();
-routerMap(router)
-router.beforeEach(function({from,to,next,redirect}){
-  console.log(store.state.token.token)
-  if(true !== to.authPage){
-    if(null === store.state.token.token) {
-      redirect('login');
-    }else{
-      next();
-    }
-  }else{
-    //login页
-    if(null === store.state.token.token) {
-      next();
-    }else{
-      if(undefined !== from.path){
-        redirect(from.path);
-      }else{
-        redirect('posts');
-      }
-    }
-  }
-})
 window.alert = MessageBox
 
 router.start(adminComponent, '#app')
-export {
-  router
-}
+

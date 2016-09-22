@@ -8,7 +8,7 @@ const draft = require('./draft.js');
 const publication = require('./publication');
 const me = require('./me')
 module.exports.init = function* (router){
-  token.init(router);
+  yield token.init(router);
   tag.init(router);
   article.init(router);
   draft.init(router);

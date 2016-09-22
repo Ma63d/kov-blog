@@ -21,6 +21,7 @@
     },
     ready(){
       smde = new SimpleMDE({
+        initialValue:this.content,
         autoDownloadFontAwesome:false,
         element: document.getElementById('editor'),
         previewRender: function(plainText) {
@@ -44,9 +45,13 @@
     watch:{
       content(val){
         if('' !== val){
-          if(val !== smde.value()){
-            smde.value(val);
-          }
+          this.$nextTick(()=>{
+            if(smde){
+              if(val !== smde.value()){
+                smde.value(val);
+              }
+            }
+          })
         }
       }
     },

@@ -5,12 +5,37 @@
 const jwt = require("jsonwebtoken"),
   configs = require("../configs/index"),
   utils = require('../utils/index'),
-  mw = require('../middlewares/index.js');
+  mw = require('../middlewares/index.js'),
+  md5 = require('md5');
 const cert = configs.jwt.cert;
 const User = require('../models/user.js');
-module.exports.init = router => {
+module.exports.init = function* (router) {
+  yield seed;
   router.post('/tokens',create);
   router.get('/tokens/check',mw.verify_token,check);
+}
+//生成初始admin用户账号
+//初始账号:'admin'
+//初始密码:'password'
+function* seed(){
+  let user = yield User.find().exec().catch(err => {
+    utils.logger.error(err);
+    throw(new Error('数据seed失败,请debug后重新启动'));
+  });
+  //utils.print(user);
+  if(0 === user.length){
+    user = new User({
+      name: 'admin',
+      username:'admin',
+      password:md5('password').toUpperCase(),
+      avatar:'',
+      createTime: new Date()
+    })
+    yield user.save().catch(err => {
+      utils.logger.error(err);
+      throw(new Error('数据seed失败,请debug后重新启动'));
+    });
+  }
 }
 
 function* create(next){

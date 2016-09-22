@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="post-list">
     <!--这个div用来避免这个组件成为片段实例-->
-    <article class="post-list" v-for="post in posts">
+    <article v-for="post in posts">
       <header>
         <h2><a v-link="'/posts/'+post['_id']">{{post['title']}}</a></h2>
         <h4>
@@ -20,7 +20,7 @@
     </article>
     <div class="guide-links fix">
       <span v-if="curPage > 1">← <a href="javascript:;" @click="prevPage()">上一页</a></span>
-      <span class="r" v-if="curPage !== totalPage"><a href="javascript:;" @click="nextPage()">下一页</a> →</span>
+      <span class="r" v-if="totalPage && (curPage < totalPage)"><a href="javascript:;" @click="nextPage()">下一页</a> →</span>
     </div>
   </div>
 
@@ -29,7 +29,7 @@
   import Pagination from './common/Pagination.vue'
   import service from '../services/postlist/index'
   import {getParameterByName} from '../lib/utils'
-  const limit = 1;
+  const limit = 10;
   export default {
     components:{
       Pagination
@@ -46,7 +46,7 @@
         service.getPostList({page:this.curPage,limit}).then(res=>{
           if(res.success === true){
             this.posts = res.data.articles;
-            this.totalPage = res.data.total/limit;
+            this.totalPage = Math.ceil(res.data.total/limit);
           }
         }).catch(err=>{
           alert('网络错误,请刷新重试');
@@ -59,7 +59,7 @@
           this.curPage--
           if(res.success === true){
             this.posts = res.data.articles;
-            this.totalPage = res.data.total/limit;
+            this.totalPage = Math.ceil(res.data.total/limit);
           }
         }).catch(err=>{
           alert('网络错误,请刷新重试');
@@ -70,7 +70,7 @@
           this.curPage++
           if(res.success === true){
             this.posts = res.data.articles;
-            this.totalPage = res.data.total/limit;
+            this.totalPage = Math.ceil(res.data.total/limit);
           }
         }).catch(err=>{
           alert('网络错误,请刷新重试');

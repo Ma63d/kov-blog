@@ -30,6 +30,7 @@
 <script>
   import service from "../../services/login/index.js"
   import {createToken} from '../../vuex/actions/token'
+  console.log(typeof createToken);
   import md5 from 'md5'
   export default {
     data:()=>({

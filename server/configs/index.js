@@ -7,24 +7,17 @@ const path = require('path'),
   root = path.resolve(serverRoot,'../'),
   staticDir = path.join(root, 'static'),
   dev = require('./dev.js'),
+  fs = require('fs'),
   _ = require('lodash');
-let config = {};
-//本地调试环境
-if(process.env.NODE_ENV === 'development'){
-  config = _.merge(config,dev);
-}
-module.exports = {
+//默认生产环境
+let config = {
   app: {
     name:'kov-blog',
     port: 3000,
-    adminPath: '/admin/' // 后台路径
+    adminPath: '/api' // 后台路径
   },
   debug:false,
   env:'production',
-  redisConfig: {
-    host: 'localhost',
-    port: 6379
-  },
   mongoConfig: { // 数据库配置
     url: 'mongodb://localhost:27017/kov-blog',
     opts:{
@@ -33,7 +26,7 @@ module.exports = {
     }
   },
   'jwt': {
-    'cert': 'koa-vue-mongo'
+    'cert': 'kov-blog'
   },
   dir: { // 目录配置
     root,
@@ -44,3 +37,15 @@ module.exports = {
     upload: path.join(serverRoot,'resource', 'upload')
   },
 };
+//本地调试环境
+if(process.env.NODE_ENV === 'development'){
+  config = _.merge(config,dev);
+}
+//私有配置
+if(process.env.NODE_ENV === 'production'){
+  if(fs.existsSync(__dirname+'/private.js')){
+    config = _.merge(config,require('./private.js'));
+  }
+}
+
+module.exports = config;

@@ -16,7 +16,7 @@ function* seed(){
     utils.logger.error(err);
     throw(new Error('数据seed失败,请debug后重新启动'));
   });
-  utils.print(me);
+  //utils.print(me);
   if(0 === me.length){
     //没啥用的初始化数据,那么就膜一下吧
     me = new Me({content:'too young ,sometimes naive'})

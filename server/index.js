@@ -9,10 +9,11 @@ const path = require('path'),
   assert = require('assert'),
   app = require('koa')(),
   bodyParser = require('koa-bodyparser'),
-  favicon = require('koa-favicon'),
   cors = require('koa-cors'),
   staticFiles = require('koa-static'),
-  router = require('koa-router')(),
+  router = require('koa-router')({
+    prefix:config.app.adminPath
+  }),
   onerror = require('koa-onerror'),
   mongoose = require('mongoose'),
   jwt = require("jsonwebtoken"),
@@ -54,12 +55,11 @@ co(function*() {
     utils.print(err);
   })
 
-  app.use(staticFiles(config.dir.resource, {
+  /*app.use(staticFiles(config.dir.resource, {
     maxage: 60 * 60 * 24 * 365,
     //静态文件有效期
     gzip: true
-  }))
-  app.use(favicon(path.join(config.dir.static,'fav.ico')));
+  }))*/
   app.use(bodyParser());
   yield controllers.init(router);
   app.use(router.routes());

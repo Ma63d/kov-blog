@@ -63,6 +63,7 @@
     "imports-loader": "^0.6.5",
     "json-loader": "^0.5.4",
     "ora": "^0.2.0",
+    "pm2": "^2.0.15",
     "shelljs": "^0.6.0",
     "supervisor": "^0.11.0",
     "url-loader": "^0.5.7",
