@@ -7,5 +7,6 @@ selenium-debug.log
 test/unit/coverage
 test/e2e/reports
 .idea/
-private
+server/configs/private.js
+client/config/private.js
 prod.json
