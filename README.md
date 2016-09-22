@@ -12,7 +12,7 @@
 **使用之前请先确保已经安装mongo!**
 
 ## server
-----
+
 
 基于restful，nodejs的话采用koa框架(koa 1)，数据库用了mongo。登录这块的话用了[jwt](https://jwt.io/introduction/).
 
@@ -36,7 +36,7 @@ npm run build-server
 ```
 
 ## client
-----
+
 博客呈现页面，基于vue(1.0)，前后端通信用的[fetch](https://www.npmjs.com/package/whatwg-fetch)，评论系统用的是[多说](http://duoshuo.com/)，界面模仿了[vue博客](http://cn.vuejs.org/blog/)，大量使用了其[样式效果](https://github.com/vuejs/cn.vuejs.org)，还有很多要完善的地方。
 
 ### 技术栈
@@ -62,7 +62,7 @@ npm run build-client
 
 
 ## admin
-----
+
 **初始用户名:admin,初始密码:password**
 
 博客管理系统，也是前后端完全分离的。功能上类似于印象笔记，实时保存你的文章，当你觉得写好了之后可以`发布`文章，每次`发布`都会把文章同步更新到博客上，这样在client端就能看到。采用markdown语法，编辑器采用的是[SimpleMDE](https://github.com/NextStepWebs/simplemde-markdown-editor)，支持大量快捷键。
