@@ -9,4 +9,5 @@ test/e2e/reports
 .idea/
 server/configs/private.js
 client/config/private.js
+admin/config/private.js
 prod.json
