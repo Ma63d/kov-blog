@@ -3,8 +3,6 @@
  */
 import List from 'components/PostList.vue'
 import Post from 'components/Post.vue'
-import Tag from 'components/Tag.vue'
-import Me from 'components/Me.vue'
 export default (router)=>{
   router.map({
     '/posts':{
@@ -14,10 +12,14 @@ export default (router)=>{
       component: Post
     },
     '/tags':{
-      component: Tag
+      component: function (resolve) {
+        require(['components/Tag.vue'], resolve)
+      },
     },
     '/me':{
-      component: Me
+      component: function (resolve) {
+        require(['components/Me.vue'], resolve)
+      },
     },
   })
   router.redirect({
