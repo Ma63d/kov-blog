@@ -9,7 +9,7 @@
       </router-view>
     </main>
     <footer class="copyright">
-      Copyrights滚粗. 自豪的采用Chuck纯手工搭建的<a href="https://github.com/Ma63d/kov-blog">博客</a>.
+      Copyrights滚粗. 自豪的采用Chuck纯手工搭建的<a href="https://github.com/Ma63d/kov-blog" target="_blank">博客</a>.
     </footer>
   </div>
 </template>
