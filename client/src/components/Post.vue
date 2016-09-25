@@ -73,8 +73,11 @@
           if(res.success === true ){
             if(null !== res.data){
               delete res.data._id;
-              this.$set('duoshuoOption.id', res.data.id);
-              this.$set('duoshuoOption.title', res.data.title);
+              let duoshuoOption = {
+                id:res.data.id,
+                title:res.data.title
+              }
+              this.duoshuoOption = duoshuoOption
               return res.data
             }else{
               this.title = '404 not found';

@@ -10,7 +10,8 @@ export default Vue.directive('duoshuo', {
   update(newValue, oldValue) {
     // 值更新时的工作
     // 也会以初始值为参数调用一次
-
+    console.log('change');
+    console.log(newValue)
     if(undefined !== newValue.id){
       this.el.innerHTML = ``;
       window.duoshuoQuery.sso = {login : '#!/posts/'+newValue.id,logout:process.env.index+'#!/posts/'+newValue.id};
