@@ -35,7 +35,7 @@ function _duoshuoInit(dom,el){
     DUOSHUO.EmbedThread(dom);
     el.appendChild(dom);
   }catch (err){
-    setTimeout(_duoshuoInitial.bind(null,dom,el),200);
+    setTimeout(_duoshuoInit.bind(null,dom,el),200);
   }
   console.log('duoshuo insert');
 }
