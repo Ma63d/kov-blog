@@ -31,6 +31,7 @@ export default Vue.directive('duoshuo', {
 })
 function _duoshuoInit(dom,el){
   console.log('before duoshuo insert');
+  console.log(document.readyState);
   try{
     DUOSHUO.EmbedThread(dom);
     el.appendChild(dom);
