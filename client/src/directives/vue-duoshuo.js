@@ -30,13 +30,15 @@ export default Vue.directive('duoshuo', {
   }
 })
 function _duoshuoInit(dom,el){
-  console.log('before duoshuo insert');
-  console.log(document.readyState);
+  if('complete' !== document.readyState){
+    //此时已经折腾过一次setTimeout,所以再往DOMContentLoaded事件上绑函数已经不起效果了,所以采取了如下的方式.
+    setTimeout(_duoshuoInit.bind(null,dom,el),0)
+    return;
+  }
   try{
     DUOSHUO.EmbedThread(dom);
     el.appendChild(dom);
   }catch (err){
     setTimeout(_duoshuoInit.bind(null,dom,el),200);
   }
-  console.log('duoshuo insert');
 }
