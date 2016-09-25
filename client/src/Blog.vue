@@ -21,6 +21,8 @@
       HeaderNav
     },
     ready(){
+      //请修改config文件中的duoshuoShortName为你自己的多说二级域名
+      //http://dev.duoshuo.com/docs/50b344447f32d30066000147
       window.duoshuoQuery = {short_name:process.env.duoshuoShortName};
       console.log('ready');
       (function() {

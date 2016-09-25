@@ -5,7 +5,6 @@ import Blog from './Blog'
 import {markdown} from './filters/index'
 import './stylus/index.styl'
 
-
 Vue.use(Router)
 Vue.filter('markdown', markdown);
 
@@ -14,6 +13,5 @@ routes(router)
 router.start(Blog, 'blog')
 
 
-//请修改config文件中的duoshuoShortName为你自己的多说二级域名
-//http://dev.duoshuo.com/docs/50b344447f32d30066000147
+
 
