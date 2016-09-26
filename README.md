@@ -3,8 +3,8 @@
 > a blog platform built with vue, koa and mongo. 使用vue,koa和mongo搭建的博客页面和markdown语法的博客编写平台,自动保存草稿。
 
 博客预览地址:[http://chuckliu.me](http://chuckliu.me)
-![博客](http://oddbl4fim.bkt.clouddn.com/QQ20160925-0@2x.png)
-![后台](http://oddbl4fim.bkt.clouddn.com/QQ20160923-0@2x.png)
+![博客](http://oddbl4fim.bkt.clouddn.com/QQ20160926-1@2x.png)
+![后台](http://oddbl4fim.bkt.clouddn.com/QQ20160926-0@2x.png)
 
 `kov-blog` 使用了`vue`、`vuex`、`koa`和`mongo`等框架和技术。前后端分离,restful架构。项目主要包含三个文件夹和项目：
 
