@@ -38,7 +38,8 @@
           border-bottom 2px solid $green
       &+&
         margin-left 20px
-    @media screen and (max-width: 720px)
+  @media screen and (max-width: 720px)
+    .tag-list
       .tag
         margin: 0 5px 5px;
         &+&
