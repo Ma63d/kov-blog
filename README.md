@@ -4,7 +4,7 @@
 
 博客预览地址:[http://chuckliu.me](http://chuckliu.me)
 ![博客](http://oddbl4fim.bkt.clouddn.com/QQ20160926-1@2x.png)
-![后台](http://oddbl4fim.bkt.clouddn.com/QQ20160926-0@2x.png)
+![后台](http://oddbl4fim.bkt.clouddn.com/QQ20160926-4.png)
 
 `kov-blog` 使用了`vue`、`vuex`、`koa`和`mongo`等框架和技术。前后端分离,restful架构。项目主要包含三个文件夹和项目：
 
