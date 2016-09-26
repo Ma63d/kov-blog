@@ -4,7 +4,7 @@
       <h2>
         All Tags
       </h2>
-      <p class="fix tag-container">
+      <p class="fix tag-container tag-list">
         <span class="tag" v-for="tag in tags"><a href="javascript:;" @click="focus(tag['id'])">{{tag['name']}}</a></span>
       </p>
     </section>

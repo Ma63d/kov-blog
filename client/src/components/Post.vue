@@ -10,7 +10,7 @@
       </header>
       <p v-html="content | markdown">
       </p>
-      <div class="fix" style="margin: 20px 0;">
+      <div class="fix tag-list" style="margin: 20px 0;">
         <span class="tag" v-for="tag in tags"><a href="" class="tag-link active">{{tag.name}}</a></span>
       </div>
       <!-- 多说评论框 start -->
@@ -23,26 +23,26 @@
 </template>
 <style lang="stylus">
   @import "../stylus/_settings.styl"
-
-  .tag
-    float left
-    margin-bottom 5px
-    a.tag-link
-      color $light
-      border-bottom 2px solid $light
-      &:hover
-        color $green
-        border-bottom 2px solid $green
-      &.active
-        color $green
-        border-bottom 2px solid $green
-    &+&
-      margin-left 20px
-  @media screen and (max-width: 720px)
+  .tag-list
     .tag
-      margin: 0 5px 5px;
+      float left
+      margin-bottom 5px
+      a.tag-link
+        color $light
+        border-bottom 2px solid $light
+        &:hover
+          color $green
+          border-bottom 2px solid $green
+        &.active
+          color $green
+          border-bottom 2px solid $green
       &+&
-        margin-left 5px
+        margin-left 20px
+    @media screen and (max-width: 720px)
+      .tag
+        margin: 0 5px 5px;
+        &+&
+          margin-left 5px
 </style>
 <script>
   import Pagination from './common/Pagination.vue'
