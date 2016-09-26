@@ -11,7 +11,7 @@
       <p v-html="content | markdown">
       </p>
       <div class="fix tag-list" style="margin: 20px 0;">
-        <span class="tag" v-for="tag in tags"><a v-link="/tags" class="tag-link active">{{tag.name}}</a></span>
+        <span class="tag" v-for="tag in tags"><a v-link="'/tags'" class="tag-link active">{{tag.name}}</a></span>
       </div>
       <!-- 多说评论框 start -->
       <article id="duoshuo-comment" v-duoshuo="duoshuoOption">
