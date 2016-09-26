@@ -2,6 +2,10 @@
 
 > a blog platform built with vue, koa and mongo. 使用vue,koa和mongo搭建的博客页面和markdown语法的博客编写平台,自动保存草稿。
 
+博客预览地址:[http://chuckliu.me](http://chuckliu.me)
+![博客](http://oddbl4fim.bkt.clouddn.com/QQ20160925-0@2x.png)
+![后台](http://oddbl4fim.bkt.clouddn.com/QQ20160923-0@2x.png)
+
 `kov-blog` 使用了`vue`、`vuex`、`koa`和`mongo`等框架和技术。前后端分离,restful架构。项目主要包含三个文件夹和项目：
 
 - server 后台 包含了所有的后台服务，为博客和博客管理提供后台接口
@@ -10,6 +14,9 @@
 
 
 **使用之前请先确保已经安装mongo!**
+
+**如果要使用评论系统,请先注册多说,修改/client/src/Blog.vue中的多说二级域名为您自己的多说二级域名**
+
 
 ## server
 
@@ -21,7 +28,7 @@
 
 ### npm command
 
-``` 
+```
 # install dependencies
 npm install
 
@@ -47,7 +54,7 @@ npm run build-server
 
 ### npm command
 
-``` 
+```
 # install dependencies
 npm install
 
@@ -85,14 +92,14 @@ npm run build-client
 *F11* | "toggleFullScreen"
 
 ### 技术栈
-1.  [Vue](http://vuejs.org.cn) && [vuex](https://github.com/vuejs/vuex) && [vue-router](https://github.com/vuejs/vue-router) 
+1.  [Vue](http://vuejs.org.cn) && [vuex](https://github.com/vuejs/vuex) && [vue-router](https://github.com/vuejs/vue-router)
 3.  [fetch](https://www.npmjs.com/package/whatwg-fetch)
 4.  [stylus](http://stylus-lang.com/)
 5.  [SimpleMDE](https://github.com/NextStepWebs/simplemde-markdown-editor) && [marked](https://github.com/chjj/marked) && [highlight](https://github.com/isagalaev/highlight.js)
 
 ### npm command
 
-``` 
+```
 # install dependencies
 npm install
 
