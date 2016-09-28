@@ -36,13 +36,13 @@
         &.active
           color $green
           border-bottom 2px solid $green
-      &+&
+      &+.tag
         margin-left 20px
   @media screen and (max-width: 720px)
     .tag-list
       .tag
         margin: 0 5px 5px;
-        &+&
+        &+.tag
           margin-left 5px
 </style>
 <script>
