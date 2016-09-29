@@ -25,6 +25,7 @@
 
 生产环境下可在可在server/configs目录下增加private.js文件,增加私有配置.
 
+使用windows的同学在npm run dev-server之前请看下面的npm command的说明哈.
 
 ### npm command
 
@@ -34,9 +35,12 @@ npm install
 
 # 开发
 # 带热重载，跑在本地3000端口
+# npm run dev-server在mac/linux下run起来没问题,但是NODE_ENV=development DEBUG=kov-blog这样的语法在windows上的cmd上面是不行的
+# 所以使用windows的cmd的同学请不要使用npm run dev-server 而是输入下面这行命令吧
+# set NODE_ENV=production && set DEBUG=kov-blog && supervisor --harmony server/index.js
 npm run dev-server
 
-# build for production with minification
+# 部署
 npm run build-server
 
 
