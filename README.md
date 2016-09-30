@@ -25,7 +25,9 @@
 
 生产环境下可在可在server/configs目录下增加private.js文件,增加私有配置.
 
-使用windows的同学在npm run dev-server之前请看下面的npm command的说明哈.
+**因为使用了许多es6/7 新语法,所以请使用6.x版本node**
+
+**使用windows的同学在npm run dev-server之前请看下面的npm command的说明哈.**
 
 ### npm command
 

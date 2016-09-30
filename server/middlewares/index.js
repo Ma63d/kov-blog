@@ -1,6 +1,7 @@
 /**
  * Created by chuck7 on 16/8/7.
  */
+"use strict"
 const fs = require('fs'),
   middlewares = {},
   files = fs.readdirSync(__dirname);

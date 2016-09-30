@@ -1,6 +1,7 @@
 /**
  * Created by chuck7 on 16/8/7.
  */
+"use strict"
 const token = require('./token.js');
 const tag = require('./tag.js');
 const article = require('./article.js');

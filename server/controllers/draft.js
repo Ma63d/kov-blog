@@ -1,6 +1,7 @@
 /**
  * Created by chuck7 on 16/9/14.
  */
+"use strict"
 const utils = require('../utils/index'),
   mw = require('../middlewares/index.js');
 const Draft = require('../models/draft.js');
