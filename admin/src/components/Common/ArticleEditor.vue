@@ -262,7 +262,7 @@
   import {editPost,savePost,editPostTitle,savePostTitle,deletePost,publishPost,submitPostTitle,submitPostExcerpt,postTagsModify} from '../../vuex/actions/post'
   import {postSaved,postTitle,postTitleSaved,currentPostId,articleIdOfPost} from '../../vuex/getters/post'
   import service from '../../services/posts/index'
-  import SimpleMDE from 'simplemde/dist/simplemde.min.js'
+  import SimpleMDE from 'simplemde'
   import {_debounce,trim,marked} from '../../lib/utils'
   const updateTitleWithDebounce = _debounce(function(title){
       this.submitPostTitle(title).then(()=>{

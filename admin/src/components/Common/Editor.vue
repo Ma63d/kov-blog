@@ -5,7 +5,7 @@
 </template>
 <script>
   import {marked} from '../../lib/utils'
-  import SimpleMDE from 'simplemde/dist/simplemde.min.js'
+  import SimpleMDE from 'simplemde'
   let smde;
   export default{
     data(){

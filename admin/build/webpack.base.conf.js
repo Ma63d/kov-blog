@@ -68,6 +68,7 @@ module.exports = {
   vue: {
     loaders: utils.cssLoaders()
   },
+  node: {fs: "empty"},
   plugins: [
     //[fetch polyfill](https://github.com/github/fetch)
     new webpack.ProvidePlugin({
