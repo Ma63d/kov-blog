@@ -8,6 +8,7 @@
       <ul class="nav-link-container">
         <li class="nav-link-item"><a class="nav-link" v-link="{ path: '/posts', activeClass: 'active' }" >文章</a></li>
         <li class="nav-link-item"><a class="nav-link" v-link="{ path: '/tags', activeClass: 'active' }">标签</a></li>
+        <li class="nav-link-item" v-if="gitRepoUrl !== null"><a class="nav-link" target="_blank" :href="gitRepoUrl">leetcode</a></li>
         <li class="nav-link-item"><a class="nav-link" v-link="{ path: '/me', activeClass: 'active' }">关于我</a></li>
       </ul>
     </nav>
@@ -62,6 +63,10 @@
 </style>
 <script>
   export default{
-
+    data () {
+      return {
+        gitRepoUrl: process.env.leetcode
+      }
+    }
   }
 </script>

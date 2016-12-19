@@ -12,7 +12,7 @@ export default Vue.directive('duoshuo', {
     // 也会以初始值为参数调用一次
     if(undefined !== newValue.id){
       this.el.innerHTML = ``;
-      window.duoshuoQuery.sso = {login : '#!/posts/'+newValue.id,logout:process.env.index+'#!/posts/'+newValue.id};
+      window.duoshuoQuery.sso = {login : '#!/posts/'+newValue.id,logout:window.location.href};
       let dom = document.createElement('div');
       dom.setAttribute('data-thread-key',newValue.id);
       dom.setAttribute('data-title',newValue.title);
