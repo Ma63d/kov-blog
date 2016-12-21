@@ -237,7 +237,7 @@
         color #525252
         border-radius 0
         white-space pre
-        &.lang-html, &.lang-javascript, &.lang-bash, &.lang-css
+        &.lang-html, &.lang-javascript, &.lang-bash, &.lang-css, &.lang-java
           &:after
             position absolute
             top 0
@@ -257,6 +257,8 @@
           content 'Shell'
         &.lang-css:after
           content 'CSS'
+        &.lang-java:after
+         content 'Java'
 </style>
 <script>
   import {editPost,savePost,editPostTitle,savePostTitle,deletePost,publishPost,submitPostTitle,submitPostExcerpt,postTagsModify} from '../../vuex/actions/post'

@@ -132,7 +132,7 @@
       color #525252
       border-radius 0
       white-space pre
-      &.lang-html, &.lang-js, &.lang-bash, &.lang-css
+      &.lang-html, &.lang-js, &.lang-bash, &.lang-css, &.lang-java
         &:after
           position absolute
           top 0
@@ -152,6 +152,8 @@
         content 'Shell'
       &.lang-css:after
         content 'CSS'
+      &.lang-java:after
+       content 'Java'
 .content.blog
   h1
     margin .8em 0
