@@ -45,8 +45,11 @@
 .content
   max-width  850px
   box-sizing border-box
-  margin 0 auto
+  margin ($header-height + $header-padding-vertical * 2)  auto 0
   padding: 0.2em 1.4em 0;
+  @media screen and (max-width: 480px)
+    &
+      margin ($header-height + $header-padding-vertical-small * 2)  auto 0
   img
     max-width 100%
   span.light
