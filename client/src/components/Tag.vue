@@ -37,7 +37,7 @@
       data(){
         this.tags = [];
         this.tagAndItsArticles = [];
-        service.getAllTags().then(res => {
+        return service.getAllTags().then(res => {
           if(res.success){
             res.data.map(tag => {
               service.getPostListWithTag(tag.id).then(resp=>{

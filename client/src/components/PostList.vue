@@ -43,7 +43,7 @@
     },
     route:{
       data(){
-        service.getPostList({page:this.curPage,limit}).then(res=>{
+        return service.getPostList({page:this.curPage,limit}).then(res=>{
           if(res.success === true){
             this.posts = res.data.articles;
             this.totalPage = Math.ceil(res.data.total/limit);

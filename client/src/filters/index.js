@@ -25,8 +25,14 @@ highlight.registerLanguage('stylus', require('highlight.js/lib/languages/stylus'
 highlight.configure({
   classPrefix: ''     // don't append class prefix
 })
+let renderer = new marked.Renderer()
+renderer.heading = function (text, level) {
+  let id = generateId();
+  return `<h${level} id="${id}">${text}</h${level}>`;
+},
+
 marked.setOptions({
-  renderer: new marked.Renderer(),
+  renderer: renderer,
   gfm: true,
   pedantic: false,
   sanitize: false,
@@ -41,6 +47,17 @@ marked.setOptions({
     return highlight.highlight(lang,code).value;
   }
 });
+
+function generateId(len) {
+  const chars = `ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz`;
+  len = len | 8;
+  let id = ``;
+  for(let i = 0;i < len; i++){
+    id += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return id;
+}
+
 export function markdown(str){
   let result  = marked(str);
   return result;

@@ -4,8 +4,7 @@
     <main class="content blog">
       <router-view
         keep-alive
-        transition="fade"
-        transition-mode="out-in">
+        >
       </router-view>
     </main>
     <footer class="copyright">
@@ -20,18 +19,12 @@
     components:{
       HeaderNav
     },
-    ready(){
-      //请修改config文件中的duoshuoShortName为你自己的多说二级域名
-      //http://dev.duoshuo.com/docs/50b344447f32d30066000147
-      window.duoshuoQuery = {short_name:process.env.duoshuoShortName};
-      (function() {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0]
-        || document.getElementsByTagName('body')[0]).appendChild(ds);
-      })();
+    transitions: {
+      fade: {
+        enter () {
+          this.$broadcast('enter')
+        }
+      }
     }
   }
 </script>
@@ -47,6 +40,7 @@
   box-sizing border-box
   margin ($header-height + $header-padding-vertical * 2)  auto 0
   padding: 0.2em 1.4em 0;
+  position relative
   @media screen and (max-width: 480px)
     &
       margin ($header-height + $header-padding-vertical-small * 2)  auto 0
