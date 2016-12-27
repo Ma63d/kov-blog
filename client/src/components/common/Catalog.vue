@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="circle-button catalog-show" @click="catalogShow = !catalogShow">
-      menu
+      目录
     </div>
     <div class="circle-button to-top" @click="toTop">
       top
