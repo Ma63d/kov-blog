@@ -1,18 +1,52 @@
 <template>
-  <div class="aside-list">
+  <div>
+    <div class="circle-button catalog-show" @click="catalogShow = !catalogShow">
+      menu
+    </div>
+    <div class="circle-button to-top" @click="toTop">
+      top
+    </div>
+  </div>
+  <div class="aside-list" v-show="catalogShow" transition="fade">
     <catalog-list :node-arr="nodeArr">
     </catalog-list>
   </div>
 </template>
 <style lang="stylus">
   @import "../../stylus/_settings.styl"
+  .circle-button
+    position fixed
+    text-align center
+    right 1em
+    display block
+    width 2.5em
+    height 2.5em
+    line-height 2.5em
+    border-radius 50%
+    border 1px solid #f1f1f1
+    background-color #fff
+    color #909090
+    cursor pointer
+    box-shadow 0 0 5px #f1f1f1
+    -webkit-transition text-shadow .3s,color .3s
+    transition text-shadow .3s,color .3s
+    &.to-top
+      bottom 1em
+    &.catalog-show
+      bottom 5em
+      @media screen and (max-width: 1250px)
+        &
+          display none
+    &:hover
+      box-shadow 0 0 5px #ddd
   .aside-list
-    position absolute
-    top 20px
-    right -200px
+    position fixed
+    bottom 10em
+    right 1em
     width 200px
-    border-left 2px solid #ddd
-    padding-left 10px
+    border-right 2px solid #ddd
+    padding-right 10px
+    background #fff
     @media screen and (max-width: 1250px)
       &
         display none
@@ -68,7 +102,8 @@
     },
     data () {
       return {
-        nodeArr: []
+        nodeArr: [],
+        catalogShow: false
       }
     },
     ready () {
@@ -82,6 +117,9 @@
           addHeaderToArr(result, doms, 0, 2)
           this.nodeArr = result
         })
+      },
+      toTop () {
+        window.scrollTo(0,0)
       }
     },
     components: {

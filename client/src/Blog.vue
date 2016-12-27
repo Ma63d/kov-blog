@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header-nav></header-nav>
-    <main class="content blog">
+    <main class="content">
       <router-view
         transition="fade"
         transition-mode="out-in"
@@ -41,8 +41,7 @@
   max-width  850px
   box-sizing border-box
   margin ($header-height + $header-padding-vertical * 2)  auto 0
-  padding: 0.2em 1.4em 0;
-  position relative
+  padding: 0 1.4em;
   @media screen and (max-width: 480px)
     &
       margin ($header-height + $header-padding-vertical-small * 2)  auto 0
@@ -57,11 +56,16 @@
     width 280px
     margin-left 20px
   h1
-    margin 0 0 1em
+    margin .8em 0
+    font-size 2em
   h2
-    margin 2em 0 .8em
-    padding-bottom .7em
-    border-bottom 1px solid $border
+    margin .8em 0
+    padding-bottom 0
+    border-bottom none
+    a
+      color $dark
+      &:hover
+        border-bottom 2px solid $green
   h3
     margin 3em 0 1.2em
     position relative
@@ -73,6 +77,17 @@
       top -2px
       font-size 1.2em
       font-weight bold
+  h4
+    color $light
+    margin 1.2em 0
+  .post-list, .post
+    padding 1em 0 2em
+    border-bottom 1px solid $border
+  .post
+    h2
+      margin 2em 0 0.8em;
+      padding-bottom 0.7em
+      border-bottom 1px solid #ddd
   figure, p, ul, ol
     margin 1.2em 0
   p
@@ -153,33 +168,6 @@
         content 'CSS'
       &.lang-java:after
        content 'Java'
-.content.blog
-  h1
-    margin .8em 0
-    font-size 2em
-  h2
-    margin .8em 0
-    padding-bottom 0
-    border-bottom none
-    a
-      color $dark
-      &:hover
-        border-bottom 2px solid $green
-  h4
-    color $light
-    margin 1.2em 0
-  figure, p
-    margin-left 0
-  .post-list
-    padding 1em 0 2em
-    border-bottom 1px solid $border
-  .post
-    padding 1em 0 2em
-    border-bottom 1px solid $border
-    h2
-      margin 2em 0 0.8em;
-      padding-bottom 0.7em
-      border-bottom 1px solid #ddd
 
 .copyright
   color $light
