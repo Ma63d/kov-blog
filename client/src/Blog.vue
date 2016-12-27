@@ -3,6 +3,8 @@
     <header-nav></header-nav>
     <main class="content blog">
       <router-view
+        transition="fade"
+        transition-mode="out-in"
         keep-alive
         >
       </router-view>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--这个div用来避免这个组件成为片段实例-->
-    <!--<catalog dom-id="markdown-content" v-if="contentLoaded && domExist"></catalog>-->
+    <catalog dom-id="markdown-content" v-if="contentLoaded && domExist"></catalog>
     <article class="post">
       <header id="header">
         <h1>{{title}}</h1>
@@ -15,7 +15,7 @@
         <span class="tag" v-for="tag in tags"><a v-link="'/tags'" class="tag-link active">{{tag.name}}</a></span>
       </div>
       <!-- 多说评论框 start -->
-      <article id="duoshuo-comment" v-duoshuo="duoshuoOption" v-if="scriptLoaded && domExist">
+      <article id="duoshuo-comment" v-duoshuo="duoshuoOption" v-if="scriptLoaded && domExist && contentLoaded">
       </article>
       <!-- 多说评论框 end -->
     </article>
@@ -59,10 +59,10 @@
       //http://dev.duoshuo.com/docs/50b344447f32d30066000147
       window.duoshuoQuery = {short_name:process.env.duoshuoShortName};
       let ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
       ds.onload = () => {
         this.scriptLoaded = true
       };
@@ -72,11 +72,9 @@
         'id':'',
         'title': '',
         'createTime': '',
-        'excerpt': '',
         'content': '',
         'lastEditTime': null,
         'tags': [],
-        'visits': 0,
         'nextArticle':null,
         'prevArticle':null,
         'duoshuoOption':{},
@@ -88,23 +86,42 @@
     route:{
       data({to,from}){
         this.contentLoaded = false
-        this.domExist = from.path === undefined;
+        if(from.path === undefined) {
+          // 如果是打开浏览器直接进入的这个路由
+          this.domExist = true;
+        } else {
+          // 如果不是直接进入的
+          // 需要判断一下是否是从/path/:id进入的,因为可能只是路由的id变化了而已
+          // 并没有经历组件的切换过程, 并不需要等待transition的结束,直接就可以赋值domExist为true
+          if( (/^\/posts\//).test(from.path) && (from.params.postId != undefined)) {
+            this.domExist = true;
+          } else {
+            this.domExist = false;
+          }
+        }
+        this.domExist = from.path === undefined || ((/^\/posts\//).test(from.path) && (to.params.postId));
         this.duoshuoOption = {}
         return service.getPost(to.params.postId).then(res=>{
           if(res.success === true ){
             if(null !== res.data){
-              delete res.data._id;
+              this.id = res.data._id
+              this.title = res.data.title
+              this.createTime = res.data.createTime
+              this.content = res.data.content
+              this.nextArticle = res.data.nextArticle
+              this.prevArticle = res.data.prevArticle
+              this.lastEditTime = res.data.lastEditTime
+              this.tags = res.data.tags
               let duoshuoOption = {
                 id:res.data.id,
                 title:res.data.title
               }
               this.duoshuoOption = duoshuoOption
               this.contentLoaded = true
-              return res.data
+              return
             }else{
               this.title = '404 not found';
               this.createTime = '';
-              this.excerpt = '';
               this.content = '';
               this.lastEditTime = null;
               this.tags = [];
@@ -120,9 +137,7 @@
     },
     events: {
       'enter': function() {
-        this.$nextTick(() => {
-          this.domExist = true
-        })
+        this.domExist = true
       }
     }
   }

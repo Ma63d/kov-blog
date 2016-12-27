@@ -18,6 +18,7 @@ export default Vue.directive('duoshuo', {
       dom.setAttribute('data-title',newValue.title);
       dom.setAttribute('data-url',process.env.index+'#!/posts/'+newValue.id);
       this.vm.$nextTick(()=>{
+        console.log(document.getElementById('duoshuo-comment'))
         _duoshuoInit(dom,this.el)
       })
     }
