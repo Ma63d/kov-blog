@@ -22,6 +22,7 @@
     border-right 1px solid $border
     height 100%
     width 300px
+    overflow-y auto
   .post-add
     cursor pointer
     float right
