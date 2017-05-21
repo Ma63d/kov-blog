@@ -14,10 +14,6 @@
       <div class="fix tag-list" style="margin: 20px 0;">
         <span class="tag" v-for="tag in tags"><a v-link="'/tags'" class="tag-link active">{{tag.name}}</a></span>
       </div>
-      <!-- 多说评论框 start -->
-      <article id="duoshuo-comment" v-duoshuo="duoshuoOption" v-if="domExist && contentLoaded">
-      </article>
-      <!-- 多说评论框 end -->
     </article>
     <pagination :next="nextArticle !== null" :next-link="nextArticle?'/posts/'+nextArticle._id:''" :next-word="nextArticle&&nextArticle.title" :prev="prevArticle !== null" :prev-link="prevArticle?'/posts/'+prevArticle._id:''" :prev-word="prevArticle&&prevArticle.title" ></pagination>
   </div>
@@ -47,7 +43,6 @@
   import Pagination from './common/Pagination.vue'
   import Catalog from './common/Catalog.vue'
   import service from '../services/post/index'
-  import cursor from '../directives/vue-duoshuo'
   // import {markdown} from '../filters/index.js'
   export default {
     components:{
@@ -64,29 +59,10 @@
         'tags': [],
         'nextArticle':null,
         'prevArticle':null,
-        'duoshuoOption':{},
-        'domExist': false,
-        'contentLoaded': false
       }
     },
     route:{
       data({to,from}){
-        this.contentLoaded = false
-        if(from.path === undefined) {
-          // 如果是打开浏览器直接进入的这个路由
-          this.domExist = true;
-        } else {
-          // 如果不是直接进入的
-          // 需要判断一下是否是从/path/:id进入的,因为可能只是路由的id变化了而已
-          // 并没有经历组件的切换过程, 并不需要等待transition的结束,直接就可以赋值domExist为true
-          if( (/^\/posts\//).test(from.path) && (from.params.postId != undefined)) {
-            this.domExist = true;
-          } else {
-            this.domExist = false;
-          }
-        }
-        this.domExist = from.path === undefined || ((/^\/posts\//).test(from.path) && (to.params.postId));
-        this.duoshuoOption = {}
         return service.getPost(to.params.postId).then(res=>{
           if(res.success === true ){
             if(null !== res.data){
@@ -98,12 +74,6 @@
               this.prevArticle = res.data.prevArticle
               this.lastEditTime = res.data.lastEditTime
               this.tags = res.data.tags
-              let duoshuoOption = {
-                id:res.data.id,
-                title:res.data.title
-              }
-              this.duoshuoOption = duoshuoOption
-              this.contentLoaded = true
               return
             }else{
               this.title = '404 not found';
@@ -120,11 +90,6 @@
           alert('网络错误,请刷新重试');
         })
       },
-    },
-    events: {
-      'enter': function() {
-        this.domExist = true
-      }
     }
   }
 </script>

@@ -11,6 +11,4 @@ module.exports = merge(prodEnv, {
   // 只需要几行命令就可以立马搭建出一个完整的leetcode解题源码单页应用,完全无需后台,基于vue2.0
   // 布到github pages或者你自己的服务器上就可以完整呈现你的leetcode解题源码.
   leetcode:'"http://chuckliu.me/leetcode/#/cover"',
-  //请修改为你自己的多说二级域名,
-  duoshuoShortName:'"xiachufang"'
 })
