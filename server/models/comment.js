@@ -1,9 +1,9 @@
 /**
  * Created by chuck7 on 16/8/11.
  */
-"use strict"
+
 const mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema
 const commentSchema =  new Schema( {
     article: {
       id: Schema.Types.ObjectId,
@@ -31,4 +31,4 @@ const commentSchema =  new Schema( {
       default: 0
     }
 })
-module.exports = mongoose.model('comment', commentSchema);
+module.exports = mongoose.model('comment', commentSchema)

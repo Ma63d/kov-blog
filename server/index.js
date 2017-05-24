@@ -1,15 +1,13 @@
 /**
  * Created by chuck7 on 16/7/15.
  */
-"use strict";
-const config = require('./configs/index');
+
+const config = require('./configs/index')
 
 const path = require('path'),
-  co = require('co'),
   assert = require('assert'),
   app = require('koa')(),
   bodyParser = require('koa-bodyparser'),
-  cors = require('koa-cors'),
   staticFiles = require('koa-static'),
   router = require('koa-router')({
     prefix:config.app.adminPath
@@ -18,18 +16,18 @@ const path = require('path'),
   mongoose = require('mongoose'),
   jwt = require("jsonwebtoken"),
   controllers = require('./controllers/index.js'),
-  utils =require('./utils/index.js');
-//如果你的node版本高于4.0 ,可以使用node自带promise
-mongoose.Promise = global.Promise;
+  utils =require('./utils/index.js')
+
+mongoose.Promise = global.Promise
 jwt.co_verify = function(jwtString, secretOrPublicKey, options){
   return function(cb){
-    jwt.verify(jwtString, secretOrPublicKey, options,cb);
+    jwt.verify(jwtString, secretOrPublicKey, options,cb)
   }
 }
 
 
 co(function*() {
-  mongoose.connect(config.mongoConfig.url,config.mongoConfig.opts);
+  mongoose.connect(config.mongoConfig.url,config.mongoConfig.opts)
   /**
    * 将config注入中间件的ctx
    * */
@@ -46,13 +44,13 @@ co(function*() {
   /**
    * error信息优化
    * */
-  onerror(app);
+  onerror(app)
   app.on('error',function(err,ctx){
     if((ctx.status === 404 && err.status === undefined) || err.status === 500){
-      utils.logger.error('server error', err);
-      utils.logger.error(ctx);
+      utils.logger.error('server error', err)
+      utils.logger.error(ctx)
     }
-    utils.print(err);
+    utils.print(err)
   })
 
   /*app.use(staticFiles(config.dir.resource, {
@@ -60,12 +58,12 @@ co(function*() {
     //静态文件有效期
     gzip: true
   }))*/
-  app.use(bodyParser());
-  yield controllers.init(router);
-  app.use(router.routes());
+  app.use(bodyParser())
+  yield controllers.init(router)
+  app.use(router.routes())
   app.listen(config.app.port, ()=>{
-    utils.print('app is listening on port '+config.app.port);
+    utils.print('app is listening on port '+config.app.port)
   })
 }).catch(function(err) {
-  utils.print(err.stack);
-});
+  utils.print(err.stack)
+})

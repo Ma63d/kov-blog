@@ -1,9 +1,10 @@
-var config = require('../config')
-var webpack = require('webpack')
-var merge = require('webpack-merge')
 var utils = require('./utils')
+var webpack = require('webpack')
+var config = require('../config')
+var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
@@ -11,28 +12,25 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
 })
 
 module.exports = merge(baseWebpackConfig, {
-  output: {
-    publicPath: config.dev.assetsPublicPath,
-  },
   module: {
-    loaders: utils.styleLoaders()
+    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap })
   },
-  // eval-source-map is faster for development
-  devtool: '#eval-source-map',
+  // cheap-module-eval-source-map is faster for development
+  devtool: '#cheap-module-eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': config.dev.env
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       favicon:'./admin/src/assets/img/fav.ico', //favicon路径
       filename: 'index.html',
       template: './admin/index.html',
       inject: true
-    })
+    }),
+    new FriendlyErrorsPlugin()
   ]
 })

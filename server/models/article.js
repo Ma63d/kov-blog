@@ -1,9 +1,9 @@
 /**
  * Created by chuck7 on 16/8/11.
  */
-"use strict"
+
 const mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema
 const articleSchema =  new Schema( {
   title: String,
   visits: {
@@ -28,14 +28,14 @@ const articleSchema =  new Schema( {
     type: Schema.Types.ObjectId,
     ref: 'comment'
   }]
-},{ versionKey: false,skipVersioning: { tags: true }});
-articleSchema.set('toJSON', { getters: true, virtuals: true});
-articleSchema.set('toObject', { getters: true, virtuals: true});
+},{ versionKey: false,skipVersioning: { tags: true }})
+articleSchema.set('toJSON', { getters: true, virtuals: true})
+articleSchema.set('toObject', { getters: true, virtuals: true})
 articleSchema.path('createTime').get(function (v) {
-  return new Date(v).format('yyyy-MM-dd hh:mm:ss');
-});
+  return new Date(v).format('yyyy-MM-dd hh:mm:ss')
+})
 articleSchema.path('lastEditTime').get(function (v) {
-  return new Date(v).format('yyyy-MM-dd hh:mm:ss');
-});
-const article =  mongoose.model('article', articleSchema);
-module.exports = article;
+  return new Date(v).format('yyyy-MM-dd hh:mm:ss')
+})
+const article =  mongoose.model('article', articleSchema)
+module.exports = article
