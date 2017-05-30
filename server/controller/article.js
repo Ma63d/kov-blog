@@ -2,9 +2,9 @@
  * Created by chuck7 on 16/8/17.
  */
 
-const utils = require('../utils/index'),
-  mw = require('../middlewares/index.js')
-const Article = require('../models/article.js')
+const utils = require('../util/index'),
+  mw = require('../middleware/index.js')
+const Article = require('../model/article.js')
 module.exports.init = router => {
   router.post('/articles', mw.verify_token, create)
   router.get('/articles', articleList)

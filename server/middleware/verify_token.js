@@ -2,8 +2,8 @@
  * Created by chuck7 on 16/8/16.
  */
 
-const utils = require('../utils/index.js'),
-  config = require('../configs/index.js'),
+const utils = require('../util/index.js'),
+  config = require('../config/index.js'),
   jwt = require("jsonwebtoken")
 module.exports = function *(next) {
   const authorization = this.get('Authorization')

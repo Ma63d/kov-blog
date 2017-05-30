@@ -2,11 +2,11 @@
  * Created by chuck7 on 16/8/16.
  */
 
-const utils = require('../utils/index'),
-  mw = require('../middlewares/index.js')
-const Tag = require('../models/tag.js')
-const Article = require('../models/article.js')
-const Draft = require('../models/draft.js')
+const utils = require('../util/index'),
+  mw = require('../middleware/index.js')
+const Tag = require('../model/tag.js')
+const Article = require('../model/article.js')
+const Draft = require('../model/draft.js')
 module.exports.init = router => {
   router.post('/tags', mw.verify_token, create)
   router.get('/tags', tokenList)

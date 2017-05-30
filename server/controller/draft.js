@@ -2,9 +2,9 @@
  * Created by chuck7 on 16/9/14.
  */
 
-const utils = require('../utils/index'),
-  mw = require('../middlewares/index.js')
-const Draft = require('../models/draft.js')
+const utils = require('../util/index'),
+  mw = require('../middlewar/index.js')
+const Draft = require('../model/draft.js')
 module.exports.init = router => {
   router.post('/drafts', mw.verify_token, create)
   router.patch('/drafts/:id', mw.verify_token, modify)

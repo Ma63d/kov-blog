@@ -3,17 +3,20 @@
  */
 
 const jwt = require("jsonwebtoken"),
-  configs = require("../configs/index"),
-  utils = require('../utils/index'),
-  mw = require('../middlewares/index.js'),
+  configs = require("../config/index"),
+  utils = require('../util/index'),
+  mw = require('../middleware/index.js'),
   md5 = require('md5')
 const cert = configs.jwt.cert
-const User = require('../models/user.js')
+const User = require('../model/user.js')
+
+
 module.exports.init = function* (router) {
   yield seed
   router.post('/tokens',create)
   router.get('/tokens/check',mw.verify_token,check)
 }
+
 //生成初始admin用户账号
 //初始账号:'admin'
 //初始密码:'password'

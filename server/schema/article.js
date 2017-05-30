@@ -1,10 +1,13 @@
 /**
- * Created by chuck7 on 16/8/11.
+ * @file article schema
+ * @author chuck7 (chuck7liu@gmail.com)
+ * @data 17/5/25
  */
 
-const mongoose = require('mongoose'),
-  Schema = mongoose.Schema
-const articleSchema =  new Schema( {
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const articleSchema = new Schema({
   title: String,
   visits: {
     type: Number,
@@ -28,14 +31,29 @@ const articleSchema =  new Schema( {
     type: Schema.Types.ObjectId,
     ref: 'comment'
   }]
-},{ versionKey: false,skipVersioning: { tags: true }})
-articleSchema.set('toJSON', { getters: true, virtuals: true})
-articleSchema.set('toObject', { getters: true, virtuals: true})
+}, {
+  versionKey: false,
+  skipVersioning: {
+    tags: true
+  }
+})
+
+articleSchema.set('toJSON', {
+    getters: true,
+    virtuals: true
+  }
+)
+articleSchema.set('toObject', {
+  getters: true,
+  virtuals: true
+})
+
 articleSchema.path('createTime').get(function (v) {
   return new Date(v).format('yyyy-MM-dd hh:mm:ss')
 })
 articleSchema.path('lastEditTime').get(function (v) {
   return new Date(v).format('yyyy-MM-dd hh:mm:ss')
 })
-const article =  mongoose.model('article', articleSchema)
+
+const article = mongoose.model('article', articleSchema)
 module.exports = article

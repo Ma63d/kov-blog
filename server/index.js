@@ -2,7 +2,7 @@
  * Created by chuck7 on 16/7/15.
  */
 
-const config = require('./configs/index')
+const config = require('./config/index')
 
 const path = require('path'),
   assert = require('assert'),
@@ -15,13 +15,13 @@ const path = require('path'),
   onerror = require('koa-onerror'),
   mongoose = require('mongoose'),
   jwt = require("jsonwebtoken"),
-  controllers = require('./controllers/index.js'),
-  utils =require('./utils/index.js')
+  controllers = require('./controller/index.js'),
+  utils = require('./util/index.js')
 
 mongoose.Promise = global.Promise
 jwt.co_verify = function(jwtString, secretOrPublicKey, options){
   return function(cb){
-    jwt.verify(jwtString, secretOrPublicKey, options,cb)
+    jwt.verify(jwtString, secretOrPublicKey, options, cb)
   }
 }
 

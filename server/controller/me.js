@@ -2,9 +2,9 @@
  * Created by chuck7 on 16/9/21.
  */
 
-const utils = require('../utils/index'),
-  mw = require('../middlewares/index.js')
-const Me = require('../models/me.js')
+const utils = require('../util/index'),
+  mw = require('../middleware/index.js')
+const Me = require('../model/me.js')
 module.exports.init = function* (router) {
   yield seed
   router.get('/me',getInfoAboutMe)

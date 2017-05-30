@@ -4,7 +4,7 @@
 
 const Logger = require('mini-logger'),
   validator = require('validator'),
-  config = require('../configs/index.js'),
+  config = require('../config/index.js'),
   print = require('debug')('kov-blog'),
   utils = {}
 module.exports = utils
