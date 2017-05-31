@@ -6,40 +6,40 @@ const logger = require('../util').logger
 const User = require('../schema/user')
 
 module.exports = class {
-  async create (option) {
-    const user = new User(option)
-    let result = null
-    try {
-      result = user.save()
-    } catch (e) {
-      logger.error(e)
-      throw e
+    async create (option) {
+        const user = new User(option)
+        let result = null
+        try {
+            result = user.save()
+        } catch (e) {
+            logger.error(e)
+            throw e
+        }
+        return result
     }
-    return result
-  }
-  async findOne () {
-    let result = null
-    try {
-      result = await User.findOne()
+    async findOne () {
+        let result = null
+        try {
+            result = await User.findOne()
         .exec()
-    } catch (e) {
-      logger.error(e)
-      throw e
+        } catch (e) {
+            logger.error(e)
+            throw e
+        }
+        return result
     }
-    return result
-  }
-  async update (id, modifyParam) {
-    let result = null
-    try {
-      result = await User.findByIdAndUpdate(id, {
-        $set: modifyParam
-      }, {
-        new: true
-      }).exec()
-    } catch (e) {
-      logger.error(e)
-      throw e
+    async update (id, modifyParam) {
+        let result = null
+        try {
+            result = await User.findByIdAndUpdate(id, {
+                $set: modifyParam
+            }, {
+                new: true
+            }).exec()
+        } catch (e) {
+            logger.error(e)
+            throw e
+        }
+        return result
     }
-    return result
-  }
 }

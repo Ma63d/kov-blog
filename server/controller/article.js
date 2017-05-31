@@ -2,8 +2,15 @@
  * Created by chuck7 on 16/8/17.
  */
 
-const utils = require('../util/index'),
-  mw = require('../middleware/index.js')
+const utils = require('../util/index')
+const mw = require('../middleware/index.js')
+
+const BaseAction = require('./base').BaseAction
+const __before = require('./base').beforeFunc
+const __after = require('./base').afterFunc
+
+const Joi = require('joi')
+
 const Article = require('../model/article.js')
 module.exports.init = router => {
   router.post('/articles', mw.verify_token, create)
@@ -13,12 +20,33 @@ module.exports.init = router => {
   router.get('/hidden-articles', mw.verify_token, hiddenArticleList)
   router.get('/hidden-articles/:id', mw.verify_token, hiddenArticleDetail)
 }
-function* create(){
+
+class ActionCreate extends BaseAction {
+    static schema = Joi.object().keys({
+        title: Joi.string().required(),
+        tags: Joi.array().unique(),
+        hidden: Joi.boolean(),
+        birthyear: Joi.number().integer().min(1900).max(2013),
+        email: Joi.string().email()
+    }).with('username', 'birthyear').without('password', 'access_token');
+
+    async [__before] (ctx, next) {
+        const body = ctx.request.body
+        const {error, value} = Joi.validate(body, ActionCreate.schema)
+        if (error) {
+        }
+
+    }
+    async main () {
+
+    }
+}
+
+function* create () {
   /**
    * post body
    * {
     "title":"标题",
-    "author":"作者",
     "tags":[],
     "hidden": false,//是否对外可见
     "excerpt":"摘要 或 首段",
