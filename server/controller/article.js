@@ -9,90 +9,184 @@ const BaseAction = require('./base').BaseAction
 const __before = require('./base').beforeFunc
 const __after = require('./base').afterFunc
 
+const errorList = require('../error')
+
 const Joi = require('joi')
 
-const Article = require('../model/article.js')
 module.exports.init = router => {
-  router.post('/articles', mw.verify_token, create)
-  router.get('/articles', articleList)
-  router.get('/articles/:id', articleDetail)
-  router.patch('/articles/:id', mw.verify_token, modify)
-  router.get('/hidden-articles', mw.verify_token, hiddenArticleList)
-  router.get('/hidden-articles/:id', mw.verify_token, hiddenArticleDetail)
+    router.post('/articles', mw.verify_token, create)
+    router.get('/articles', articleList)
+    router.get('/articles/:id', articleDetail)
+    router.patch('/articles/:id', mw.verify_token, modify)
+    router.get('/hidden-articles', mw.verify_token, hiddenArticleList)
+    router.get('/hidden-articles/:id', mw.verify_token, hiddenArticleDetail)
 }
 
+const Article = require('../model/article.js')
 class ActionCreate extends BaseAction {
     static schema = Joi.object().keys({
         title: Joi.string().required(),
-        tags: Joi.array().unique(),
-        hidden: Joi.boolean(),
-        birthyear: Joi.number().integer().min(1900).max(2013),
-        email: Joi.string().email()
-    }).with('username', 'birthyear').without('password', 'access_token');
+        tags: Joi.array().items(Joi.number()).unique(),
+        hidden: Joi.boolean().required(),
+        excerpt: Joi.string().required(),
+        content: Joi.string().required()
+    })
 
     async [__before] (ctx, next) {
         const body = ctx.request.body
-        const {error, value} = Joi.validate(body, ActionCreate.schema)
+        const {error} = Joi.validate(body, this.constructor.schema, {allowUnknown: true})
         if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+        return next()
+    }
+    async main (ctx, next) {
+        const {
+            title,
+            visits = 0,
+            createTime = new Date(),
+            lastEditTime = null,
+            hidden = false,
+            excerpt,
+            content,
+            comments = []
+        } = ctx.request.body
+
+        let result = null
+
+        try {
+            result = await Article.create({
+                title,
+                visits,
+                createTime,
+                lastEditTime,
+                hidden,
+                excerpt,
+                content,
+                comments
+            })
+        } catch (e) {
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
         }
 
-    }
-    async main () {
+        ctx.status = 200
+        ctx.body = {
+            success: true,
+            data: {
+                id: result._id
+            }
+        }
 
+        return next()
     }
 }
 
-function* create () {
-  /**
-   * post body
-   * {
-    "title":"标题",
-    "tags":[],
-    "hidden": false,//是否对外可见
-    "excerpt":"摘要 或 首段",
-    "content":"文章内容"
+class ActionGetList extends BaseAction {
+
+    static schema = Joi.object().keys({
+        tag: Joi.string().optional(),
+        limit: Joi.number().optional(),
+        page: Joi.number().optional()
+    }).without('tag', 'page')
+
+    async [__before] (ctx, next) {
+        const body = ctx.request.body
+        const query = ctx.query
+
+        const {error} = Joi.validate({
+            tag: query.tag,
+            limit: ~~query.limit,
+            page: query.page
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
     }
-  */
-  const title = this.request.body.title,
-    visits = 0,
-    tags = this.request.body.tags,
-    createTime = new Date(),
-    lastEditTime = null,
-    hidden = this.request.body.hidden,
-    excerpt = this.request.body.excerpt,
-    content = this.request.body.content,
-    comments = []
-  if(title === ''){
-    this.throw(400,'标题不能为空')
-  }else if(!(hidden === true || hidden === false)){
-    this.throw(400,`'hidden'字段错误`)
-  }else if(content=== undefined || content.length ===0){
-    this.throw(400,`文章内容不能为空`)
-  }
-  const article = new Article({
-    title,
-    visits,
-    tags,
-    createTime,
-    lastEditTime,
-    hidden,
-    excerpt,
-    content,
-    comments
-  })
-  const result = yield article.save().catch(err => {
-    utils.logger.error(err)
-    this.throw(500,'内部错误')
-  })
-  utils.print(result)
-  this.status = 200
-  this.body = {
-    success:true,
-    data:{
-      id:result._id
+
+    async main (ctx, next) {
+        const tag = this.query.tag
+        if(undefined !== tag){
+            utils.print(tag)
+            let articleArr = yield Article.find({
+                hidden:false,
+                tags:{"$all":[tag]}
+            }).select('title createTime lastEditTime')
+                .sort({ createTime: -1})
+                .exec().catch(err => {
+                    utils.logger.error(err)
+                    this.throw(500,'内部错误')
+                })
+            utils.print(articleArr)
+            this.body = {
+                success:true,
+                data:articleArr
+            }
+        }else{
+            const limit = ~~this.query.limit || 10,
+                page = ~~this.query.page
+            let skip
+            if(page === 0){
+                skip = 0
+            }else{
+                skip = limit * (page - 1)
+            }
+            const {articleArr,totalNumber} = yield {
+                articleArr: Article.find({hidden:false})
+                    .populate('tags')
+                    .select('title visits tags createTime lastEditTime excerpt')
+                    .sort({ createTime: -1})
+                    .limit(limit).skip(skip).exec().catch(err => {
+                        utils.logger.error(err)
+                        this.throw(500,'内部错误')
+                    }),
+                totalNumber: Article.count().exec().catch(err => {
+                    utils.logger.error(err)
+                    this.throw(500,'内部错误')
+                })
+            }
+            this.status = 200
+            const resultArr = []
+            if(articleArr.length){
+                articleArr.forEach((article,index,arr)=>{
+                    article = article.toObject()
+                    /*article.createTime = new Date(article.createTime).format('yyyy-MM-dd hh:mm')
+                     if(null !== article.lastEditTime){
+                     article.lastEditTime = new Date(article.lastEditTime).format('yyyy-MM-dd hh:mm')
+                     }*/
+                    resultArr.push(article)
+                    utils.print(article)
+                })
+            }
+
+            utils.print(resultArr)
+            this.body = {
+                success:true,
+                data:{
+                    articles:resultArr,
+                    total:totalNumber
+                }
+            }
+        }
+        return next()
     }
-  }
 }
+
+
 function* articleList(next){
   /**
    * @query tag  搜索包含指定标签的文章

@@ -4,7 +4,19 @@
  * @data 17/5/31
  */
 require('babel-core/register')({
-    presets: ['es2015', 'stage-2']
+    'presets': [
+        ['env', {
+            'targets': {
+                'node': 'current'
+            }
+        }]
+    ],
+    'plugins': [
+        ['transform-runtime', {
+            'helpers': false,
+            'polyfill': false,
+            'regenerator': true
+        }]
+    ]
 })
-
 require('./index.js')

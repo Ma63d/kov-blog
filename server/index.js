@@ -43,7 +43,15 @@ co(function* () {
   /**
    * error信息优化
    * */
-    onerror(app)
+    onerror(app, {
+        json (err) {
+            Object.keys(err).reduce((body, key) => {
+                body[key] = err[key]
+                return body
+            }, this.body = {})
+            this.body.error = err.name
+        }
+    })
     app.on('error', function (err, ctx) {
         if ((ctx.status === 404 && err.status === undefined) || err.status === 500) {
             utils.logger.error('server error', err)
