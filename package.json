@@ -20,6 +20,7 @@
     "font-awesome": "^4.6.3",
     "highlight.js": "^9.6.0",
     "joi": "^10.5.2",
+    "joi-objectid": "^2.0.0",
     "jsonwebtoken": "^7.1.9",
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",

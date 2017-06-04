@@ -5,7 +5,17 @@ const logger = require('../util').logger
 
 const Article = require('../schema/article')
 
-module.exports = class {
+class ArticleModel extends Article {
+    /**
+     * @param {Object} option                 参数选项
+     * @param {String} option.title,
+     * @param {Number} option.visits,
+     * @param {Date}   option.createTime,
+     * @param {Date}   option.lastEditTime,
+     * @param {String} option.excerpt,        摘要
+     * @param {String} option.content,
+     * @param {Array}  option.comments
+     * */
     async create (option) {
         const article = new Article(option)
         let result = null
@@ -17,45 +27,43 @@ module.exports = class {
         }
         return result
     }
-    async find (searchParam, sort = null, limit = null, skip = null) {
-        searchParam = {
-            hidden: false,
-            ...searchParam
-        }
+    async find (sort = null, limit = null, skip = null) {
         let result = null
         try {
-            result = await Article.find(searchParam)
-        .populate('tags')
-        .select('title visits tags createTime lastEditTime excerpt')
-        .sort(sort)
-        .limit(limit)
-        .skip(skip)
-        .exec()
+            result = await Article.find()
+            .populate('tags')
+            .select('title visits tags createTime lastEditTime excerpt')
+            .sort(sort)
+            .limit(limit)
+            .skip(skip)
+            .exec()
         } catch (e) {
             logger.error(e)
             throw e
         }
-        return result
+        return result || result.map(item => item.toObject())
     }
-    async findOne (searchParam, sort = null, limit = null, skip = null) {
-        searchParam = {
-            hidden: false,
-            ...searchParam
+    async findOne (id, sort = null, limit = null, skip = null) {
+        let searchParam = {
+            _id: id
         }
         let result = null
         try {
             result = await Article.findOne(searchParam)
-        .populate('tags')
-        .select('title visits tags createTime lastEditTime excerpt')
-        .sort(sort)
-        .limit(limit)
-        .skip(skip)
-        .exec()
+            .populate('tags')
+            .select('title visits tags createTime lastEditTime excerpt')
+            .sort({
+                createTime: -1,
+                ...sort
+            })
+            .limit(limit)
+            .skip(skip)
+            .exec()
         } catch (e) {
             logger.error(e)
             throw e
         }
-        return result
+        return result.toObject()
     }
     async update (id, modifyParam) {
         let result = null
@@ -71,4 +79,58 @@ module.exports = class {
         }
         return result
     }
+    async findWithTag (tag) {
+        let result = null
+        try {
+            result = await Article.find({
+                tags: {
+                    '$all': [tag]
+                }
+            })
+            .select('title createTime lastEditTime')
+            .sort({
+                createTime: -1
+            })
+            .exec()
+        } catch (e) {
+            logger.error(e)
+            throw e
+        }
+        return result || result.map(item => item.toObject())
+    }
+    async findPrev (id) {
+        let result = null
+        try {
+            result = Article.findOne({_id: {$gt: id}}, 'title _id')
+                .sort({
+                    _id: -1
+                })
+                .exec()
+        } catch (e) {
+            logger.error(e)
+            throw e
+        }
+        return result || result.toObject()
+    }
+    async findNext (id) {
+        let result = null
+        try {
+            result = Article.findOne({_id: {$gt: id}}, 'title _id').exec()
+        } catch (e) {
+            logger.error(e)
+            throw e
+        }
+        return result || result.toObject()
+    }
+    async incVisits (article) {
+        if (article) {
+            try {
+                await article.update({$inc: {visits: 1}}).exec()
+            } catch (e) {
+                logger.error(e)
+                throw e
+            }
+        }
+    }
 }
+module.exports = new ArticleModel()

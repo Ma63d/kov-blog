@@ -7,6 +7,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const utils = require('../util')
+
 const articleSchema = new Schema({
     title: String,
     visits: {
@@ -24,7 +26,6 @@ const articleSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    hidden: Boolean,
     excerpt: String,
     content: String,
     comments: [{
@@ -49,10 +50,10 @@ articleSchema.set('toObject', {
 })
 
 articleSchema.path('createTime').get(function (v) {
-    return new Date(v).format('yyyy-MM-dd hh:mm:ss')
+    return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
 })
 articleSchema.path('lastEditTime').get(function (v) {
-    return new Date(v).format('yyyy-MM-dd hh:mm:ss')
+    return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
 })
 
 const article = mongoose.model('article', articleSchema)

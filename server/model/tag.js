@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Tag = require('../schema/tag')
 
-module.exports = class {
+class TagModel extends Tag {
     async create (option) {
         const tag = new Tag(option)
         let result = null
@@ -17,36 +17,30 @@ module.exports = class {
         }
         return result
     }
-    async find (searchParam, sort = null, limit = null, skip = null) {
-        searchParam = {
-            hidden: false,
-            ...searchParam
-        }
+    async find (sort = null, limit = null, skip = null) {
         let result = null
         try {
-            result = await Tag.find(searchParam)
-        .sort(sort)
-        .limit(limit)
-        .skip(skip)
-        .exec()
+            result = await Tag.find()
+            .sort(sort)
+            .limit(limit)
+            .skip(skip)
+            .exec()
         } catch (e) {
             logger.error(e)
             throw e
         }
         return result
     }
-    async findOne (searchParam, sort = null, limit = null, skip = null) {
-        searchParam = {
-            hidden: false,
-            ...searchParam
-        }
+    async findOne (id, sort = null, limit = null, skip = null) {
         let result = null
         try {
-            result = await Tag.findOne(searchParam)
-        .sort(sort)
-        .limit(limit)
-        .skip(skip)
-        .exec()
+            result = await Tag.findOne({
+                _id: id
+            })
+            .sort(sort)
+            .limit(limit)
+            .skip(skip)
+            .exec()
         } catch (e) {
             logger.error(e)
             throw e
@@ -68,3 +62,5 @@ module.exports = class {
         return result
     }
 }
+
+module.exports = new TagModel()

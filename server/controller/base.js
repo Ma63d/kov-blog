@@ -16,16 +16,17 @@ module.exports.BaseAction = class BaseAction {
             return async function (ctx, next) {
                 if (before) {
                     main = main.bind(this, ctx,
-            after
-              ? after.bind(this, ctx, next)
-              : next
-          )
+                        after
+                          ? after.bind(this, ctx, next)
+                          : next
+                    )
                     return before.call(this, ctx, main)
                 }
                 return main.call(this, ctx,
-          after
-            ? after.bind(this, ctx, next)
-            : next)
+                    after
+                        ? after.bind(this, ctx, next)
+                        : next
+                )
             }
         }
         return main

@@ -2,6 +2,10 @@
  * Created by chuck7 on 16/7/15.
  */
 
+// register mongodb objectid validation for joi
+const Joi = require('joi')
+Joi.objectId = require('joi-objectid')(Joi)
+
 const config = require('./config/index')
 
 const path = require('path'),

@@ -16,5 +16,13 @@ module.exports = {
     storageError: {
         name: 'StorageError',
         message: 'Something wrong happens when storing data.'
+    },
+    idNotExistError: {
+        name: 'IdNotExistError',
+        message: `The resource id you operating doesn't exist.`
+    },
+    deleteAlreadyPublishedDraftError: {
+        name: 'deleteAlreadyPublishedDraftError',
+        message: `It's forbidden to deleting draft that already published.`
     }
 }

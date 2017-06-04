@@ -38,5 +38,14 @@ module.exports = {
         log: path.resolve(__dirname, '..', 'logs'),
         server: path.dirname(__dirname),
         upload: path.resolve(path.dirname(__dirname), 'runtime', 'upload')
+    },
+
+    routerName: {
+        articles: 'articles',
+        drafts: 'drafts',
+        tags: 'tags',
+        publications: 'publications',
+        tokens: 'tokens',
+        me: 'me'
     }
 }

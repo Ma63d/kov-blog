@@ -7,6 +7,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const utils = require('../util')
+
 const draftSchema = new Schema({
     title: String,
     tags: [{
@@ -42,15 +44,15 @@ draftSchema.set('toObject', {
 })
 
 draftSchema
-  .path('createTime')
-  .get(function (v) {
-      return new Date(v).format('yyyy-MM-dd hh:mm:ss')
-  })
+    .path('createTime')
+    .get(function (v) {
+        return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+    })
 draftSchema
-  .path('lastEditTime')
-  .get(function (v) {
-      return new Date(v).format('yyyy-MM-dd hh:mm:ss')
-  })
+    .path('lastEditTime')
+    .get(function (v) {
+        return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+    })
 
 const draft = mongoose.model('draft', draftSchema)
 module.exports = draft

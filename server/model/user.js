@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const User = require('../schema/user')
 
-module.exports = class {
+class UserModel extends User {
     async create (option) {
         const user = new User(option)
         let result = null
@@ -43,3 +43,5 @@ module.exports = class {
         return result
     }
 }
+
+module.exports = new UserModel()
