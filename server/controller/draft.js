@@ -18,12 +18,12 @@ const {
 
 const Draft = require('../model/draft.js')
 
-module.exports.init = router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionCreate()))
-    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, BaseAction.factory(new ActionModify()))
-    router.get(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionList()))
-    router.get(`/${ROUTER_NAME}/:id`, mw.verify_token, BaseAction.factory(new ActionDetail()))
-    router.delete(`/${ROUTER_NAME}/:id`, mw.verify_token, BaseAction.factory(new ActionDelete()))
+module.exports.init = async router => {
+    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionModify().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}`, mw.verify_token, new ActionList().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionDetail().getAOPMiddleWare())
+    router.delete(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionDelete().getAOPMiddleWare())
 }
 
 class ActionCreate extends BaseAction {
@@ -99,12 +99,13 @@ class ActionList extends BaseAction {
             success: true,
             data: result
         }
+        return next()
     }
 }
 
 class ActionDetail extends BaseAction {
     static schema = Joi.object().keys({
-        id: Joi.objectId()
+        id: Joi.objectId().required()
     })
 
     async [__before] (ctx, next) {
@@ -147,7 +148,7 @@ class ActionDetail extends BaseAction {
 
 class ActionModify extends BaseAction {
     static schema = Joi.object().keys({
-        id: Joi.objectId()
+        id: Joi.objectId().required()
     })
 
     async [__before] (ctx, next) {
@@ -204,7 +205,7 @@ class ActionModify extends BaseAction {
             success: true,
             data: result
         }
-
+        return next()
     }
 }
 
@@ -266,5 +267,6 @@ class ActionDelete extends BaseAction {
         ctx.body = {
             success: true
         }
+        return next()
     }
 }

@@ -1,5 +1,6 @@
 /**
  * Created by chuck7 on 16/9/15.
+ * this router is used for making a draft into a public article
  */
 
 const utils = require('../util/index')
@@ -19,13 +20,13 @@ const {
     publications: ROUTER_NAME
 } = require('../config').routerName
 
-module.exports.init = router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionCreate()))
+module.exports.init = async router => {
+    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
 }
 
 class ActionCreate extends BaseAction {
     static schema = Joi.object().keys({
-        draftId: Joi.string()
+        draftId: Joi.objectId().required()
     })
 
     async [__before] (ctx, next) {
@@ -58,7 +59,7 @@ class ActionCreate extends BaseAction {
                 message: errorList.storageError.message
             })
         }
-        if (null === draft) {
+        if (draft === null) {
             utils.logger.error('error happens with the ctx:', ctx)
             ctx.throw(400, errorList.idNotExistError.name, {
                 message: errorList.idNotExistError.message
@@ -69,7 +70,7 @@ class ActionCreate extends BaseAction {
             excerpt: Joi.string().min(1).required(),
             content: Joi.string().min(1).required()
         })
-        const {error} = Joi.validate(draft, this.constructor.schema, {
+        const {error} = Joi.validate(draft, schema, {
             allowUnknown: true
         })
 
@@ -81,7 +82,6 @@ class ActionCreate extends BaseAction {
                 reason
             })
         }
-
 
         draft.draftPublished = true
         draft.lastEditTime = new Date()

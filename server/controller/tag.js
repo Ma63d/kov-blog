@@ -2,111 +2,250 @@
  * Created by chuck7 on 16/8/16.
  */
 
-const utils = require('../util/index'),
-    mw = require('../middleware/index.js')
+const utils = require('../util/index')
+const mw = require('../middleware/index.js')
+
 const Tag = require('../model/tag.js')
 const Article = require('../model/article.js')
 const Draft = require('../model/draft.js')
-module.exports.init = router => {
-    router.post('/tags', mw.verify_token, create)
-    router.get('/tags', tokenList)
-    router.patch('/tags/:id', mw.verify_token, modify)
-    router.delete('/tags/:id', mw.verify_token, deleteTag)
+
+const BaseAction = require('./base').BaseAction
+const __before = require('./base').beforeFunc
+
+const errorList = require('../error')
+
+const Joi = require('joi')
+
+const {
+    tags: ROUTER_NAME
+} = require('../config').routerName
+
+module.exports.init = async router => {
+    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}`, new ActionList().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionModify().getAOPMiddleWare())
+    router.delete(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionDelete().getAOPMiddleWare())
 }
-function* tokenList (next) {
-    const queryStartWith = this.query['start-with']
-    const queryOption = {}
-    if (undefined !== queryStartWith) {
-        queryOption.name = {$regex: '^' + queryStartWith}
-    }
-    const tagList = yield Tag.find(queryOption).exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
+
+class ActionList extends BaseAction {
+    static schema = Joi.object().keys({
+        startWith: Joi.string().optional()
     })
-    this.status = 200
-    this.body = {
-        success: true,
-        data: tagList
+
+    async [__before] (ctx, next) {
+        const queryStartWith = ctx.query['start-with']
+
+        const {error} = Joi.validate({
+            startWith: queryStartWith
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
+    }
+
+    async main (ctx, next) {
+        const queryStartWith = this.query['start-with']
+
+        let tagList = null
+
+        try {
+            tagList = await Tag.find(queryStartWith)
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+
+        ctx.status = 200
+        ctx.body = {
+            success: true,
+            data: tagList
+        }
+        return next()
     }
 }
-function* create (next) {
-    const tagName = this.request.body.name
-    if (undefined === tagName || tagName.length === 0) {
-        this.throw(400, '标签名缺失')
-    }
-    const tag = yield Tag.findOne({name: tagName}).exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
+
+class ActionCreate extends BaseAction {
+    static schema = Joi.object().keys({
+        name: Joi.string().min(1).required()
     })
-    utils.print(tag)
-    if (tag !== null) {
-        this.status = 200
-    // 标签已存在
-        this.body = {
-            success: false,
+
+    async [__before] (ctx, next) {
+        const name = ctx.request.body.name
+
+        const {error} = Joi.validate({
+            name
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
+    }
+
+    async main (ctx, next) {
+        const tagName = ctx.request.body.name
+
+        let tag = null
+
+        try {
+            tag = await Tag.findOne(null, tagName)
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+
+        if (tag !== null) {
+            ctx.status = 200
+            // 标签已存在
+            ctx.body = {
+                success: false,
+                data: {
+                    id: tag.id
+                }
+            }
+            return next()
+        }
+
+        try {
+            tag = await Tag.create({
+                name: tagName
+            })
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+
+        ctx.status = 200
+        ctx.body = {
+            success: true,
             data: {
                 id: tag.id
             }
         }
-        return
-    }
-    const newTag = new Tag({
-        name: tagName
-    })
-    const result = yield newTag.save().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
-    })
-    utils.print(result)
-    this.status = 200
-    this.body = {
-        success: true,
-        data: {
-            id: result.id
-        }
+        return next()
     }
 }
-function* modify () {
-    const tagName = this.request.body.name
-    const tagId = this.params.id
-    const tag = yield Tag.findOne({name: tagName}).exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
+
+class ActionModify extends BaseAction {
+    static schema = Joi.object().keys({
+        name: Joi.string().min(1).required(),
+        id: Joi.objectId().required()
     })
-    utils.print(tag)
-    if (tag !== null) {
-        this.status = 200
-        this.body = {
-            success: false,
-            data: {
-                id: tag.id
+
+    async [__before] (ctx, next) {
+        const name = ctx.request.body.name
+        const id = ctx.params.id
+        const {error} = Joi.validate({
+            name,
+            id
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
+    }
+
+    async main (ctx, next) {
+        const tagName = ctx.request.body.name
+        const tagId = ctx.params.id
+        let tag = null
+        try {
+            tag = await Tag.findOne(null, tagName)
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+        utils.print(tag)
+
+        if (tag !== null) {
+            ctx.status = 200
+            ctx.body = {
+                success: false,
+                data: {
+                    id: tag.id
+                }
+            }
+        } else {
+            await Tag.update(tagId, tagName)
+            ctx.status = 200
+            ctx.body = {
+                success: true
             }
         }
-    } else {
-        yield Tag.update({_id: tagId}, {$set: {name: tagName}}).exec().catch(err => {
-            utils.logger.error(err)
-            this.throw(500, '内部错误')
-        })
-        this.status = 200
-        this.body = {
+        return next()
+    }
+}
+
+class ActionDelete extends BaseAction {
+    static schema = Joi.object().keys({
+        id: Joi.objectId().required()
+    })
+
+    async [__before] (ctx, next) {
+        const id = ctx.params.id
+        const {error} = Joi.validate({
+            id
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
+    }
+
+    async main (ctx, next) {
+        const id = this.params.id
+        try {
+            await Promise.all([
+                Draft.deleleTag(id),
+                Article.deleleTag(id),
+                Tag.delete(id)
+            ])
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+        ctx.status = 200
+        ctx.body = {
             success: true
         }
-    }
-}
-function* deleteTag () {
-    const id = this.params.id
-    yield [Draft.update({}, {$pull: {tags: id}}).exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
-    }), Article.update({}, {$pull: {tags: id}}).exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
-    }), Tag.remove({_id: id}).exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
-    })]
-    this.status = 200
-    this.body = {
-        success: true
+        return next()
     }
 }

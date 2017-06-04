@@ -22,11 +22,19 @@ module.exports = {
         message: `The resource id you operating doesn't exist.`
     },
     deleteAlreadyPublishedDraftError: {
-        name: 'deleteAlreadyPublishedDraftError',
+        name: 'DeleteAlreadyPublishedDraftError',
         message: `It's forbidden to deleting draft that already published.`
     },
     seedingError: {
-        name: 'seedingError',
+        name: 'SeedingError',
         message: 'Something wrong happens when seeding initial data.'
+    },
+    usernameError: {
+        name: 'UsernameError',
+        message: 'Username is wrong.'
+    },
+    passwordError: {
+        name: 'PasswordError',
+        message: 'Password is wrong.'
     }
 }

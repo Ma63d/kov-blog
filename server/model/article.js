@@ -132,5 +132,18 @@ class ArticleModel extends Article {
             }
         }
     }
+    async deleleTag (tagId) {
+        try {
+            await Article.update({},
+                {
+                    $pull: {
+                        tags: tagId
+                    }
+                })
+                .exec()
+        } catch (e) {
+            logger.error(e)
+        }
+    }
 }
 module.exports = new ArticleModel()

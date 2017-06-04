@@ -2,77 +2,133 @@
  * Created by chuck7 on 16/8/15.
  */
 
-const jwt = require('jsonwebtoken'),
-    configs = require('../config/index'),
-    utils = require('../util/index'),
-    mw = require('../middleware/index.js'),
-    md5 = require('md5')
+const jwt = require('jsonwebtoken')
+
+const configs = require('../config/index')
+const utils = require('../util/index')
+
+const mw = require('../middleware/index.js')
+const md5 = require('md5')
+
 const cert = configs.jwt.cert
 const User = require('../model/user.js')
 
-module.exports.init = function* (router) {
-    yield seed
-    router.post('/tokens', create)
-    router.get('/tokens/check', mw.verify_token, check)
+const BaseAction = require('./base').BaseAction
+const __before = require('./base').beforeFunc
+
+const errorList = require('../error')
+
+const Joi = require('joi')
+
+const {
+    tokens: ROUTER_NAME
+} = require('../config').routerName
+
+module.exports.init = async router => {
+    await seed()
+    router.post(`/${ROUTER_NAME}`, create)
+    router.get(`/${ROUTER_NAME}/check`, mw.verify_token, check)
 }
 
 // 生成初始admin用户账号
 // 初始账号:'admin'
 // 初始密码:'password'
-function* seed () {
-    let user = yield User.find().exec().catch(err => {
-        utils.logger.error(err)
-        throw (new Error('数据seed失败,请debug后重新启动'))
-    })
-  // utils.print(user)
-    if (user.length === 0) {
-        user = new User({
-            name: 'admin',
-            username: 'admin',
-            password: md5('password').toUpperCase(),
-            avatar: '',
-            createTime: new Date()
-        })
-        yield user.save().catch(err => {
-            utils.logger.error(err)
-            throw (new Error('数据seed失败,请debug后重新启动'))
-        })
+async function seed () {
+    let user = null
+
+    try {
+        user = await User.findOne()
+
+        if (user === null) {
+            user = new User({
+                name: 'admin',
+                username: 'admin',
+                password: md5('password').toUpperCase(),
+                avatar: '',
+                createTime: new Date()
+            })
+        }
+    } catch (e) {
+        utils.logger.error('error happens when seeding error')
+        utils.print('data seeding failed, please check the error and restart the server')
+        let error = new Error(errorList.seedingError.message)
+        error.name = errorList.seedingError.name
+        throw error
     }
 }
 
-function* create (next) {
-    const username = this.request.body.username,
-        password = this.request.body.password
-    let user = yield User.findOne({
-        username
-    }).exec()
-    if (user !== null) {
-        if (user.password === password) {
-            const token = jwt.sign({
-                uid: user._id,
-                name: user.name,
-                exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60// 1 hours
-            }, cert)
-            utils.print(token)
-            this.status = 200
-            this.body = {
-                success: true,
-                data: {
+class ActionCreate extends BaseAction {
+    static schema = Joi.object().keys({
+        username: Joi.string().min(1).required(),
+        password: Joi.string().min(1).required()
+    })
+
+    async [__before] (ctx, next) {
+        const username = this.request.body.username
+        const password = this.request.body.password
+
+        const {error} = Joi.validate({
+            username,
+            password
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
+    }
+
+    async main (ctx, next) {
+        const username = this.request.body.username
+        const password = this.request.body.password
+        let user = null
+        try {
+            user = await User.findOne(username)
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+        if (user !== null) {
+            if (user.password === password) {
+                const token = jwt.sign({
                     uid: user._id,
                     name: user.name,
-                    token
+                    exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60// 24 hours
+                }, cert)
+                utils.print(token)
+                ctx.status = 200
+                ctx.body = {
+                    success: true,
+                    data: {
+                        uid: user._id,
+                        name: user.name,
+                        token
+                    }
                 }
+            } else {
+                ctx.throw(401, errorList.passwordError.name, {
+                    message: errorList.passwordError.message
+                })
             }
         } else {
-            this.throw(401, '密码错误')
+            ctx.throw(401, errorList.usernameError.name, {
+                message: errorList.usernameError.message
+            })
         }
-    } else {
-        this.throw(401, '用户名错误')
     }
 }
-function* check (next) {
-    this.status = 200
-    this.body = {
+
+async function check (ctx, next) {
+    ctx.status = 200
+    ctx.body = {
         success: true,
         message: '验证通过'
     }

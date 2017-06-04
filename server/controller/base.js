@@ -8,10 +8,10 @@ let __before = module.exports.beforeFunc = ['__before']
 let __after = module.exports.afterFunc = ['__after']
 
 module.exports.BaseAction = class BaseAction {
-    static factory (actionInstance) {
-        let before = actionInstance[__before]
-        let main = actionInstance['main']
-        let after = actionInstance[__after]
+    getAOPMiddleWare () {
+        let before = this[__before]
+        let main = this['main']
+        let after = this[__after]
         if (before || after) {
             return async function (ctx, next) {
                 if (before) {

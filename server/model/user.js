@@ -6,6 +6,15 @@ const logger = require('../util').logger
 const User = require('../schema/user')
 
 class UserModel extends User {
+    /**
+     * @param {Object}  option                 参数选项
+     * @param {String}  option.title,
+     * @param {String}  option.name
+     * @param {String}  option.username
+     * @param {String}  option.password        capital md5
+     * @param {String}  option.avatar
+     * @param {Date}    option.createTime
+     * */
     async create (option) {
         const user = new User(option)
         let result = null
@@ -15,19 +24,25 @@ class UserModel extends User {
             logger.error(e)
             throw e
         }
-        return result
+        return result && result.toObject()
     }
-    async findOne () {
+
+    async findOne (username = null) {
+        let searchParam = {}
+        if (username) {
+            searchParam.username = username
+        }
         let result = null
         try {
-            result = await User.findOne()
-        .exec()
+            result = await User.findOne(searchParam)
+                .exec()
         } catch (e) {
             logger.error(e)
             throw e
         }
-        return result
+        return result && result.toObject()
     }
+
     async update (id, modifyParam) {
         let result = null
         try {
@@ -40,7 +55,7 @@ class UserModel extends User {
             logger.error(e)
             throw e
         }
-        return result
+        return result && result.toObject()
     }
 }
 

@@ -18,10 +18,10 @@ const {
     me: ROUTER_NAME
 } = require('../config').routerName
 
-module.exports.init = async function (router) {
+module.exports.init = async router => {
     await seed()
-    router.get(`/${ROUTER_NAME}`, BaseAction.factory(new ActionDetail()))
-    router.patch(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionModify()))
+    router.get(`/${ROUTER_NAME}`, new ActionDetail().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}`, mw.verify_token, new ActionModify().getAOPMiddleWare())
 }
 
 // 生成"关于我"页面的原始数据

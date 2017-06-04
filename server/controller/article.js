@@ -19,11 +19,11 @@ const {
 
 const Article = require('../model/article.js')
 
-module.exports.init = router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionCreate()))
-    router.get(`/${ROUTER_NAME}`, BaseAction.factory(new ActionList()))
-    router.get(`/${ROUTER_NAME}/:id`, BaseAction.factory(new ActionDetail()))
-    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, BaseAction.factory(new ActionModify()))
+module.exports.init = async router => {
+    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}`, new ActionList().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}/:id`, new ActionDetail().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionModify().getAOPMiddleWare())
 }
 
 /**
@@ -40,7 +40,7 @@ module.exports.init = router => {
 class ActionCreate extends BaseAction {
     static schema = Joi.object().keys({
         title: Joi.string().required(),
-        tags: Joi.array().items(Joi.number()).unique(),
+        tags: Joi.array().items(Joi.number()).unique().allow(null),
         excerpt: Joi.string().required(),
         content: Joi.string().required()
     })

@@ -105,6 +105,19 @@ class DraftModel extends Draft {
         }
         return result
     }
+    async deleleTag (tagId) {
+        try {
+            await Draft.update({},
+                {
+                    $pull: {
+                        tags: tagId
+                    }
+                })
+                .exec()
+        } catch (e) {
+            logger.error(e)
+        }
+    }
 }
 
 module.exports = new DraftModel()
