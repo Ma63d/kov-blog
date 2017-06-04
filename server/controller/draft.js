@@ -7,7 +7,6 @@ const mw = require('../middleware/index.js')
 
 const BaseAction = require('./base').BaseAction
 const __before = require('./base').beforeFunc
-const __after = require('./base').afterFunc
 
 const errorList = require('../error')
 
@@ -20,11 +19,11 @@ const {
 const Draft = require('../model/draft.js')
 
 module.exports.init = router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, create)
-    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, modify)
-    router.get(`/${ROUTER_NAME}`, mw.verify_token, draftList)
-    router.get(`/${ROUTER_NAME}/:id`, mw.verify_token, draftDetail)
-    router.delete(`/${ROUTER_NAME}/:id`, mw.verify_token, deleteDraft)
+    router.post(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionCreate()))
+    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, BaseAction.factory(new ActionModify()))
+    router.get(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionList()))
+    router.get(`/${ROUTER_NAME}/:id`, mw.verify_token, BaseAction.factory(new ActionDetail()))
+    router.delete(`/${ROUTER_NAME}/:id`, mw.verify_token, BaseAction.factory(new ActionDelete()))
 }
 
 class ActionCreate extends BaseAction {
@@ -83,7 +82,7 @@ class ActionCreate extends BaseAction {
     }
 }
 
-class ActionCreate extends BaseAction {
+class ActionList extends BaseAction {
     async main (ctx, next) {
         const tag = ctx.query.tag
         let result = []
@@ -262,7 +261,7 @@ class ActionDelete extends BaseAction {
                 message: errorList.storageError.message
             })
         }
-        
+
         ctx.status = 200
         ctx.body = {
             success: true

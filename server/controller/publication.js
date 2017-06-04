@@ -2,89 +2,151 @@
  * Created by chuck7 on 16/9/15.
  */
 
-const utils = require('../util/index'),
-    mw = require('../middleware/index.js')
+const utils = require('../util/index')
+const mw = require('../middleware/index.js')
+
 const Draft = require('../model/draft.js')
 const Article = require('../model/article.js')
+
+const BaseAction = require('./base').BaseAction
+const __before = require('./base').beforeFunc
+
+const errorList = require('../error')
+
+const Joi = require('joi')
+
+const {
+    publications: ROUTER_NAME
+} = require('../config').routerName
+
 module.exports.init = router => {
-    router.post('/publications', mw.verify_token, create)
+    router.post(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionCreate()))
 }
-function* create () {
-    const draftId = this.request.body.draftId
-    const draft = yield Draft.findOne({_id: draftId})
-    .exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
+
+class ActionCreate extends BaseAction {
+    static schema = Joi.object().keys({
+        draftId: Joi.string()
     })
-    if (draft.title.length === 0) {
-        this.throw(400, '文章标题不能为空')
-    } else if (draft.excerpt.length === 0) {
-        this.throw(400, `文章摘要不能为空,请在文章中插入'<!-- more -->'以分隔摘要和正文`)
-    } else if (draft.content.length === 0) {
-        this.throw(400, '文章内容不能为空')
+
+    async [__before] (ctx, next) {
+        const draftId = ctx.request.body.draftId
+
+        const {error} = Joi.validate({
+            draftId
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
     }
-    if (draft.article !== null) {
+
+    async main (ctx, next) {
+        const draftId = ctx.request.body.draftId
+        let draft = null
+        try {
+            draft = await Draft.findOne(draftId)
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+        if (null === draft) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(400, errorList.idNotExistError.name, {
+                message: errorList.idNotExistError.message
+            })
+        }
+        const schema = Joi.object().keys({
+            title: Joi.string().min(1).required(),
+            excerpt: Joi.string().min(1).required(),
+            content: Joi.string().min(1).required()
+        })
+        const {error} = Joi.validate(draft, this.constructor.schema, {
+            allowUnknown: true
+        })
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+
         draft.draftPublished = true
         draft.lastEditTime = new Date()
-        const articleOption = draft.toObject()
+
+        const articleOption = {
+            ...draft
+        }
         delete articleOption._id
         delete articleOption.id
         delete articleOption.draftPublished
         delete articleOption.article
         delete articleOption.createTime
-        let {article} = yield {
-            draft: draft.save().catch(err => {
-                utils.logger.error(err)
-                this.throw(500, '内部错误')
-            }),
-            article: Article.findByIdAndUpdate(draft.article, {$set: articleOption}, {new: true}).populate('tags').exec()
-        .catch(err => {
-            if (err.name === 'CastError') {
-                this.throw(400, 'article id 不存在')
-            } else {
-                utils.logger.error(err)
-                this.throw(500, '内部错误')
+
+        const id = draft.id
+        delete draft._id
+        delete draft.id
+
+        let article = null
+
+        if (draft.article !== null) {
+            try {
+                [, article] = await Promise.all([
+                    Draft.update(id, draft),
+                    Article.update(draft.article, articleOption)
+                ])
+            } catch (e) {
+                utils.logger.error('error happens with the ctx:', ctx)
+                ctx.throw(500, errorList.storageError.name, {
+                    message: errorList.storageError.message
+                })
             }
-        })
+        } else {
+            articleOption.createTime = new Date()
+            delete articleOption.lastEditTime
+            articleOption.visits = 0
+            articleOption.comments = []
+
+            try {
+                article = await Article.create(articleOption)
+            } catch (e) {
+                utils.logger.error('error happens with the ctx:', ctx)
+                ctx.throw(500, errorList.storageError.name, {
+                    message: errorList.storageError.message
+                })
+            }
+
+            draft.article = article._id
+
+            try {
+                draft = await Draft.update(id, draft)
+            } catch (e) {
+                utils.logger.error('error happens with the ctx:', ctx)
+                ctx.throw(500, errorList.storageError.name, {
+                    message: errorList.storageError.message
+                })
+            }
         }
-        article = article.toObject()
-        this.status = 200
-        this.body = {
+
+        ctx.status = 200
+        ctx.body = {
             success: true,
             data: {
                 article
             }
         }
-    } else {
-        draft.draftPublished = true
-        draft.lastEditTime = new Date()
-        const articleOption = draft.toObject()
-        delete articleOption._id
-        delete articleOption.id
-        delete articleOption.draftPublished
-        delete articleOption.article
-        articleOption.createTime = articleOption.lastEditTime
-        delete articleOption.lastEditTime
-        articleOption.visits = 0
-        articleOption.comments = []
-        articleOption.hidden = false
-        let article = new Article(articleOption)
-        article = yield article.save().catch(err => {
-            utils.logger.error(err)
-            this.throw(500, '内部错误')
-        })
-        article = article.toObject()
-        draft.article = article._id
-        yield draft.save().catch(err => {
-            utils.logger.error(err)
-            this.throw(500, '内部错误')
-        })
-        this.status = 200
-        this.body = {
-            success: true,
-            data: {
-                article
-            }
-        }
+        return next()
     }
 }

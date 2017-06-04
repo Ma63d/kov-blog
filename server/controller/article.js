@@ -191,7 +191,7 @@ class ActionList extends BaseAction {
 
 class ActionDetail extends BaseAction {
     static schema = Joi.object().keys({
-        id: Joi.objectId()
+        id: Joi.objectId().required()
     })
 
     async [__before] (ctx, next) {

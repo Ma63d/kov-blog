@@ -56,7 +56,7 @@ class DraftModel extends Draft {
             logger.error(e)
             throw e
         }
-        return draftArr || draftArr.map(item => item.toObject())
+        return draftArr && draftArr.map(item => item.toObject())
     }
 
     async findOne (id, sort = null, limit = null, skip = null) {
@@ -75,7 +75,7 @@ class DraftModel extends Draft {
             logger.error(e)
             throw e
         }
-        return result || result.toObject()
+        return result && result.toObject()
     }
     async update (id, modifyParam) {
         let result = null

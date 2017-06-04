@@ -41,7 +41,7 @@ class ArticleModel extends Article {
             logger.error(e)
             throw e
         }
-        return result || result.map(item => item.toObject())
+        return result && result.map(item => item.toObject())
     }
     async findOne (id, sort = null, limit = null, skip = null) {
         let searchParam = {
@@ -63,7 +63,7 @@ class ArticleModel extends Article {
             logger.error(e)
             throw e
         }
-        return result.toObject()
+        return result && result.toObject()
     }
     async update (id, modifyParam) {
         let result = null
@@ -77,7 +77,7 @@ class ArticleModel extends Article {
             logger.error(e)
             throw e
         }
-        return result
+        return result && result.toObject()
     }
     async findWithTag (tag) {
         let result = null
@@ -96,7 +96,7 @@ class ArticleModel extends Article {
             logger.error(e)
             throw e
         }
-        return result || result.map(item => item.toObject())
+        return result && result.map(item => item.toObject())
     }
     async findPrev (id) {
         let result = null
@@ -110,7 +110,7 @@ class ArticleModel extends Article {
             logger.error(e)
             throw e
         }
-        return result || result.toObject()
+        return result && result.toObject()
     }
     async findNext (id) {
         let result = null
@@ -120,7 +120,7 @@ class ArticleModel extends Article {
             logger.error(e)
             throw e
         }
-        return result || result.toObject()
+        return result && result.toObject()
     }
     async incVisits (article) {
         if (article) {

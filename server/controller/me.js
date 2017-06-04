@@ -2,55 +2,114 @@
  * Created by chuck7 on 16/9/21.
  */
 
-const utils = require('../util/index'),
-    mw = require('../middleware/index.js')
+const utils = require('../util/index')
+const mw = require('../middleware/index.js')
+
 const Me = require('../model/me.js')
-module.exports.init = function* (router) {
-    yield seed
-    router.get('/me', getInfoAboutMe)
-    router.patch('/me', mw.verify_token, modify)
+
+const BaseAction = require('./base').BaseAction
+const __before = require('./base').beforeFunc
+
+const errorList = require('../error')
+
+const Joi = require('joi')
+
+const {
+    me: ROUTER_NAME
+} = require('../config').routerName
+
+module.exports.init = async function (router) {
+    await seed()
+    router.get(`/${ROUTER_NAME}`, BaseAction.factory(new ActionDetail()))
+    router.patch(`/${ROUTER_NAME}`, mw.verify_token, BaseAction.factory(new ActionModify()))
 }
+
 // 生成"关于我"页面的原始数据
-function* seed () {
-    let me = yield Me.find().exec().catch(err => {
-        utils.logger.error(err)
-        throw (new Error('数据seed失败,请debug后重新启动'))
-    })
-  // utils.print(me)
-    if (me.length === 0) {
-    // 没啥用的初始化数据,那么就膜一下吧
-        me = new Me({content: 'too young ,sometimes naive'})
-        yield me.save().catch(err => {
-            utils.logger.error(err)
-            throw (new Error('数据seed失败,请debug后重新启动'))
-        })
+async function seed () {
+    let me = []
+    try {
+        me = await Me.findOne()
+    } catch (e) {
+        utils.logger.error('error happens when seeding error')
+        let error = new Error(errorList.seedingError.message)
+        error.name = errorList.seedingError.name
+        throw error
     }
-}
-function* getInfoAboutMe () {
-    let me = yield Me.find().exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
-    })
-    if (me.length) {
-        me = me[0].toObject()
-        delete me._id
-        this.status = 200
-        this.body = {
-            success: true,
-            data: me
+
+    // utils.print(me)
+    if (me === null) {
+        // 没啥用的初始化数据,那么就膜一下吧
+        try {
+            me = await Me.create({
+                content: 'too young ,sometimes naive'
+            })
+        } catch (e) {
+            utils.logger.error('error happens when seeding error')
+            let error = new Error(errorList.seedingError.message)
+            error.name = errorList.seedingError.name
+            throw error
         }
-    } else {
-        this.throw(500, '内部错误')
     }
 }
-function* modify () {
-    const content = this.request.body.content
-    let me = yield Me.findOneAndUpdate({}, {content}).exec().catch(err => {
-        utils.logger.error(err)
-        this.throw(500, '内部错误')
+
+class ActionDetail extends BaseAction {
+    async main (ctx, next) {
+        let result = null
+        try {
+            result = await Me.findOne()
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+        ctx.status = 200
+        ctx.body = {
+            success: true,
+            data: result
+        }
+        return next()
+    }
+}
+
+class ActionModify extends BaseAction {
+    static schema = Joi.object().keys({
+        content: Joi.string().required()
     })
-    this.status = 200
-    this.body = {
-        success: true
+
+    async [__before] (ctx, next) {
+        const content = ctx.request.body.content
+
+        const {error} = Joi.validate({
+            content
+        }, this.constructor.schema)
+
+        if (error) {
+            const reason = error.details.map(val => val.message).join(';')
+            return ctx.throw(400, errorList.validationError.name, {
+                message: errorList.validationError.message,
+                'parameter-name': error.details.map(detail => detail.path).join(','),
+                reason
+            })
+        }
+
+        return next()
+    }
+
+    async main (ctx, next) {
+        const content = ctx.request.body.content
+        try {
+            await Me.update(content)
+        } catch (e) {
+            utils.logger.error('error happens with the ctx:', ctx)
+            ctx.throw(500, errorList.storageError.name, {
+                message: errorList.storageError.message
+            })
+        }
+        ctx.status = 200
+        ctx.body = {
+            success: true
+        }
+        return next()
     }
 }

@@ -24,5 +24,9 @@ module.exports = {
     deleteAlreadyPublishedDraftError: {
         name: 'deleteAlreadyPublishedDraftError',
         message: `It's forbidden to deleting draft that already published.`
+    },
+    seedingError: {
+        name: 'seedingError',
+        message: 'Something wrong happens when seeding initial data.'
     }
 }

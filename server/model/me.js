@@ -6,6 +6,10 @@ const logger = require('../util').logger
 const Me = require('../schema/me')
 
 class MeModel extends Me {
+    /**
+     * @param {Object} option                 参数选项
+     * @param {String} option.content
+     * */
     async create (option) {
         const me = new Me(option)
         let result = null
@@ -26,7 +30,7 @@ class MeModel extends Me {
             logger.error(e)
             throw e
         }
-        return result
+        return result && result.toObject()
     }
     async update (content) {
         let result = null
