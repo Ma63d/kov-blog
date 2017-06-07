@@ -12,21 +12,18 @@ module.exports.BaseAction = class BaseAction {
         let before = this[__before]
         let main = this['main']
         let after = this[__after]
+        let that = this
+
         if (before || after) {
             return async function (ctx, next) {
+                let boundAfter = after
+                    ? after.bind(that, ctx, next)
+                    : next
                 if (before) {
-                    main = main.bind(this, ctx,
-                        after
-                          ? after.bind(this, ctx, next)
-                          : next
-                    )
-                    return before.call(this, ctx, main)
+                    let boundMain = main.bind(that, ctx, boundAfter)
+                    return before.call(that, ctx, boundMain)
                 }
-                return main.call(this, ctx,
-                    after
-                        ? after.bind(this, ctx, next)
-                        : next
-                )
+                return main.call(that, ctx, boundAfter)
             }
         }
         return main

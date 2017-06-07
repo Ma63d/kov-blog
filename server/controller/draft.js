@@ -19,11 +19,11 @@ const {
 const Draft = require('../model/draft.js')
 
 module.exports.init = async router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
-    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionModify().getAOPMiddleWare())
-    router.get(`/${ROUTER_NAME}`, mw.verify_token, new ActionList().getAOPMiddleWare())
-    router.get(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionDetail().getAOPMiddleWare())
-    router.delete(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionDelete().getAOPMiddleWare())
+    router.post(`/${ROUTER_NAME}`, mw.verifyToken, new ActionCreate().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionModify().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}`, mw.verifyToken, new ActionList().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionDetail().getAOPMiddleWare())
+    router.delete(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionDelete().getAOPMiddleWare())
 }
 
 class ActionCreate extends BaseAction {
@@ -45,7 +45,7 @@ class ActionCreate extends BaseAction {
         return next()
     }
     async main (ctx, next) {
-        const title = this.request.body.title
+        const title = ctx.request.body.title
         const createTime = new Date()
         const lastEditTime = new Date()
         const excerpt = ''
@@ -172,7 +172,7 @@ class ActionModify extends BaseAction {
 
     async main (ctx, next) {
         const id = ctx.params.id
-        const modifyOption = this.request.body
+        const modifyOption = ctx.request.body
         if (modifyOption.content) {
             const contentArr = modifyOption.content.split('<!-- more -->')
             if (contentArr.length > 1) {
@@ -234,7 +234,7 @@ class ActionDelete extends BaseAction {
     }
 
     async main (ctx, next) {
-        const id = this.params.id
+        const id = ctx.params.id
         let draft = null
         try {
             draft = await Draft.findOne(id)
@@ -250,7 +250,7 @@ class ActionDelete extends BaseAction {
             })
         }
         if (draft.article !== null) {
-            this.throw(403, errorList.deleteAlreadyPublishedDraftError.name, {
+            ctx.throw(403, errorList.deleteAlreadyPublishedDraftError.name, {
                 message: errorList.deleteAlreadyPublishedDraftError.message
             })
         }

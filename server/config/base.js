@@ -12,7 +12,7 @@ module.exports = {
         name: 'kov-blog',
         port: 3000,
         // 后台路径
-        adminPath: '/api'
+        apiPath: '/api'
     },
 
     // 是否开启 debug

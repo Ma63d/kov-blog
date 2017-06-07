@@ -12,11 +12,7 @@ require('babel-core/register')({
         }]
     ],
     'plugins': [
-        ['transform-runtime', {
-            'helpers': false,
-            'polyfill': false,
-            'regenerator': true
-        }]
+        ['transform-class-properties']
     ]
 })
 require('./index.js')

@@ -20,10 +20,10 @@ const {
 const Article = require('../model/article.js')
 
 module.exports.init = async router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
+    router.post(`/${ROUTER_NAME}`, mw.verifyToken, new ActionCreate().getAOPMiddleWare())
     router.get(`/${ROUTER_NAME}`, new ActionList().getAOPMiddleWare())
     router.get(`/${ROUTER_NAME}/:id`, new ActionDetail().getAOPMiddleWare())
-    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionModify().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionModify().getAOPMiddleWare())
 }
 
 /**

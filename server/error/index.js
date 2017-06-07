@@ -9,9 +9,13 @@ module.exports = {
         name: 'ValidationError',
         message: 'Value for one of the parameters in request is invalid.'
     },
-    tokenError: {
-        name: 'TokenError',
+    invalidTokenError: {
+        name: 'InvalidTokenError',
         message: 'Invalid token.'
+    },
+    tokenExpiredError: {
+        name: 'TokenExpiredError',
+        message: 'Your token has benn expired.'
     },
     storageError: {
         name: 'StorageError',

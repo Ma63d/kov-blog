@@ -21,7 +21,7 @@ const {
 module.exports.init = async router => {
     await seed()
     router.get(`/${ROUTER_NAME}`, new ActionDetail().getAOPMiddleWare())
-    router.patch(`/${ROUTER_NAME}`, mw.verify_token, new ActionModify().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}`, mw.verifyToken, new ActionModify().getAOPMiddleWare())
 }
 
 // 生成"关于我"页面的原始数据

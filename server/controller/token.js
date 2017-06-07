@@ -26,8 +26,8 @@ const {
 
 module.exports.init = async router => {
     await seed()
-    router.post(`/${ROUTER_NAME}`, create)
-    router.get(`/${ROUTER_NAME}/check`, mw.verify_token, check)
+    router.post(`/${ROUTER_NAME}`, new ActionCreate().getAOPMiddleWare())
+    router.get(`/${ROUTER_NAME}/check`, mw.verifyToken, check)
 }
 
 // 生成初始admin用户账号
@@ -64,8 +64,8 @@ class ActionCreate extends BaseAction {
     })
 
     async [__before] (ctx, next) {
-        const username = this.request.body.username
-        const password = this.request.body.password
+        const username = ctx.request.body.username
+        const password = ctx.request.body.password
 
         const {error} = Joi.validate({
             username,
@@ -80,13 +80,13 @@ class ActionCreate extends BaseAction {
                 reason
             })
         }
-
         return next()
     }
 
     async main (ctx, next) {
-        const username = this.request.body.username
-        const password = this.request.body.password
+        const username = ctx.request.body.username
+        const password = ctx.request.body.password
+        utils.print(username, password)
         let user = null
         try {
             user = await User.findOne(username)
@@ -123,6 +123,8 @@ class ActionCreate extends BaseAction {
                 message: errorList.usernameError.message
             })
         }
+
+        return next()
     }
 }
 

@@ -21,10 +21,10 @@ const {
 } = require('../config').routerName
 
 module.exports.init = async router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
+    router.post(`/${ROUTER_NAME}`, mw.verifyToken, new ActionCreate().getAOPMiddleWare())
     router.get(`/${ROUTER_NAME}`, new ActionList().getAOPMiddleWare())
-    router.patch(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionModify().getAOPMiddleWare())
-    router.delete(`/${ROUTER_NAME}/:id`, mw.verify_token, new ActionDelete().getAOPMiddleWare())
+    router.patch(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionModify().getAOPMiddleWare())
+    router.delete(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionDelete().getAOPMiddleWare())
 }
 
 class ActionList extends BaseAction {
@@ -52,7 +52,7 @@ class ActionList extends BaseAction {
     }
 
     async main (ctx, next) {
-        const queryStartWith = this.query['start-with']
+        const queryStartWith = ctx.query['start-with']
 
         let tagList = null
 
@@ -229,7 +229,7 @@ class ActionDelete extends BaseAction {
     }
 
     async main (ctx, next) {
-        const id = this.params.id
+        const id = ctx.params.id
         try {
             await Promise.all([
                 Draft.deleleTag(id),

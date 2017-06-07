@@ -21,7 +21,7 @@ const {
 } = require('../config').routerName
 
 module.exports.init = async router => {
-    router.post(`/${ROUTER_NAME}`, mw.verify_token, new ActionCreate().getAOPMiddleWare())
+    router.post(`/${ROUTER_NAME}`, mw.verifyToken, new ActionCreate().getAOPMiddleWare())
 }
 
 class ActionCreate extends BaseAction {

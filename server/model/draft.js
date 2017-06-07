@@ -3,7 +3,7 @@
  */
 const logger = require('../util').logger
 
-const Draft = require('../schema')
+const Draft = require('../schema/draft')
 
 class DraftModel extends Draft {
     /**
