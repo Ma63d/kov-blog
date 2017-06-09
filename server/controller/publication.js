@@ -54,13 +54,13 @@ class ActionCreate extends BaseAction {
         try {
             draft = await Draft.findOne(draftId)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
         }
         if (draft === null) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(400, errorList.idNotExistError.name, {
                 message: errorList.idNotExistError.message
             })
@@ -108,7 +108,7 @@ class ActionCreate extends BaseAction {
                     Article.update(draft.article, articleOption)
                 ])
             } catch (e) {
-                utils.logger.error('error happens with the ctx:', ctx)
+                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -122,7 +122,7 @@ class ActionCreate extends BaseAction {
             try {
                 article = await Article.create(articleOption)
             } catch (e) {
-                utils.logger.error('error happens with the ctx:', ctx)
+                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -133,7 +133,7 @@ class ActionCreate extends BaseAction {
             try {
                 draft = await Draft.update(id, draft)
             } catch (e) {
-                utils.logger.error('error happens with the ctx:', ctx)
+                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })

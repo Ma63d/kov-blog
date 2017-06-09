@@ -17,31 +17,17 @@ class CommentModel extends Comment {
         }
         return result
     }
-    async find (sort = null, limit = null, skip = null) {
+    async find (articleId, limit = null, skip = null) {
         let result = null
         try {
-            result = await Comment.find()
-        .populate('respondTo')
-        .select('message respondTo createTime author authorAvatar likes')
-        .sort(sort)
-        .limit(limit)
-        .skip(skip)
-        .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result
-    }
-    async findOne (id, sort = null, limit = null, skip = null) {
-        let result = null
-        try {
-            result = await Comment.findOne({
-                _id: id
+            result = await Comment.find({
+                article: articleId
             })
             .populate('respondTo')
             .select('message respondTo createTime author authorAvatar likes')
-            .sort(sort)
+            .sort({
+                createTime: 1
+            })
             .limit(limit)
             .skip(skip)
             .exec()
@@ -49,30 +35,29 @@ class CommentModel extends Comment {
             logger.error(e)
             throw e
         }
-        return result
+        return result && result.map(item => item.toObject())
     }
-    async update (id, modifyParam) {
+    async findOne (id) {
         let result = null
         try {
-            result = await Comment.findByIdAndUpdate(id, {
-                $set: modifyParam
-            }, {
-                new: true
-            }).exec()
+            result = await Comment.findOne({
+                _id: id
+            })
+            .populate('respondTo')
+            .select('message respondTo createTime author authorAvatar likes')
         } catch (e) {
             logger.error(e)
             throw e
         }
-        return result
+        return result && result.toObject()
     }
-    async delete (id) {
+    async count () {
         let result = null
         try {
-            result = await Comment.remove({
-                _id: id
-            }).exec()
+            result = await Comment.count().exec()
         } catch (e) {
             logger.error(e)
+            throw e
         }
         return result
     }

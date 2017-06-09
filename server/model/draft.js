@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Draft = require('../schema/draft')
 
-class DraftModel extends Draft {
+class DraftModel {
     /**
      * @param {Object}  option                 参数选项
      * @param {String}  option.title,

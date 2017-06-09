@@ -91,7 +91,7 @@ class ActionCreate extends BaseAction {
         try {
             user = await User.findOne(username)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })

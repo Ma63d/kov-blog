@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Me = require('../schema/me')
 
-class MeModel extends Me {
+class MeModel {
     /**
      * @param {Object} option                 参数选项
      * @param {String} option.content
@@ -24,8 +24,7 @@ class MeModel extends Me {
     async findOne () {
         let result = null
         try {
-            result = await Me.findOne({})
-        .exec()
+            result = await Me.findOne({}).exec()
         } catch (e) {
             logger.error(e)
             throw e

@@ -59,7 +59,7 @@ class ActionList extends BaseAction {
         try {
             tagList = await Tag.find(queryStartWith)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -106,7 +106,7 @@ class ActionCreate extends BaseAction {
         try {
             tag = await Tag.findOne(null, tagName)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -129,7 +129,7 @@ class ActionCreate extends BaseAction {
                 name: tagName
             })
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -179,7 +179,7 @@ class ActionModify extends BaseAction {
         try {
             tag = await Tag.findOne(null, tagName)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -237,7 +237,7 @@ class ActionDelete extends BaseAction {
                 Tag.delete(id)
             ])
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })

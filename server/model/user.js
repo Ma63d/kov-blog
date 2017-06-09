@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const User = require('../schema/user')
 
-class UserModel extends User {
+class UserModel {
     /**
      * @param {Object}  option                 参数选项
      * @param {String}  option.title,

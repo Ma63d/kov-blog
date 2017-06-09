@@ -2,23 +2,60 @@
  * Created by chuck7 on 16/8/14.
  */
 
-const Logger = require('mini-logger'),
-    config = require('../config/index.js'),
-    print = require('debug')('kov-blog'),
-    utils = {}
+const config = require('../config/index.js')
+const print = require('debug')('kov-blog')
+
+const utils = {}
 module.exports = utils
 /**
  * debug plugin
  * */
 utils.print = print
 
+let bunyan = require('bunyan')
+
+let log = bunyan.createLogger({
+    name: 'app',
+    serializers: {
+        router (router) {
+            return null
+        },
+        req (req) {
+            const logKeys = ['method', 'url', 'header']
+            return logKeys.reduce(function (acc, key) {
+                acc[key] = req[key]
+                return acc
+            }, {})
+        },
+        matched () {
+            return null
+        },
+        res (res) {
+            const logKeys = ['status', 'message', 'header']
+            return logKeys.reduce(function (acc, key) {
+                acc[key] = res[key]
+                return acc
+            }, {})
+        },
+        cookies () {
+            return null
+        },
+        accept () {
+            return null
+        }
+    },
+    streams: [{
+        type: 'rotating-file',
+        path: config.dir.log + '/error.log',
+        period: '1d',   // daily rotation
+        count: 30        // keep 3 back copies
+    }]
+})
+
 /**
  * log记录 用法: utils.logger.error(new Error(''))
  * */
-utils.logger = Logger({
-    dir: config.dir.log,
-    format: 'YYYY-MM-DD-[{category}][.log]'
-})
+utils.logger = log
 
 // 将时间输出为统一的格式
 utils.formatDate = function (date, fmt) {

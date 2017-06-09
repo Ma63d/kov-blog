@@ -66,7 +66,7 @@ class ActionCreate extends BaseAction {
                 draftPublished
             })
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -89,7 +89,7 @@ class ActionList extends BaseAction {
         try {
             result = await Draft.find(tag)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -133,7 +133,7 @@ class ActionDetail extends BaseAction {
         try {
             result = await Draft.findOne(id)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -187,7 +187,7 @@ class ActionModify extends BaseAction {
         try {
             result = await Draft.update(id, modifyOption)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             if (e.name === 'CastError') {
                 ctx.throw(400, errorList.idNotExistError.name, {
                     message: errorList.idNotExistError.message
@@ -239,7 +239,7 @@ class ActionDelete extends BaseAction {
         try {
             draft = await Draft.findOne(id)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -257,7 +257,7 @@ class ActionDelete extends BaseAction {
         try {
             await Draft.delete(id)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })

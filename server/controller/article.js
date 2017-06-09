@@ -82,7 +82,7 @@ class ActionCreate extends BaseAction {
                 comments
             })
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -140,7 +140,7 @@ class ActionList extends BaseAction {
                     data: articleArr
                 }
             } catch (e) {
-                utils.logger.error('error happens with the ctx:', ctx)
+                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -156,30 +156,22 @@ class ActionList extends BaseAction {
                 skip = limit * (page - 1)
             }
             try {
-                const [articleArr, totalNumber] = await Promise.all(
+                const [articleArr, totalNumber] = await Promise.all([
                     Article.find({}, limit, skip),
-                    Article.count().exec()
-                )
+                    Article.count()
+                ])
                 ctx.status = 200
-                const resultArr = []
-                if (articleArr.length) {
-                    articleArr.forEach(article => {
-                        article = article.toObject()
-                        resultArr.push(article)
-                        utils.print(article)
-                    })
-                }
 
-                utils.print(resultArr)
                 ctx.body = {
                     success: true,
                     data: {
-                        articles: resultArr,
+                        articles: articleArr,
                         total: totalNumber
                     }
                 }
             } catch (e) {
-                utils.logger.error('error happens with the ctx:', ctx)
+                utils.print(e)
+                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -220,7 +212,7 @@ class ActionDetail extends BaseAction {
         try {
             article = await Article.findOne(id)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -234,7 +226,7 @@ class ActionDetail extends BaseAction {
                     Article.findPrev()
                 ])
             } catch (e) {
-                utils.logger.error('error happens with the ctx:', ctx)
+                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -252,7 +244,7 @@ class ActionDetail extends BaseAction {
 
     async [__after] (ctx, next) {
         Article.incVisits(ctx.state.article).catch(e => {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -296,7 +288,7 @@ class ActionModify extends BaseAction {
         try {
             article = await Article.update(id, body)
         } catch (e) {
-            utils.logger.error('error happens with the ctx:', ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
             if (e.name === 'CastError') {
                 ctx.throw(400, errorList.idNotExistError.name, {
                     message: errorList.idNotExistError.message

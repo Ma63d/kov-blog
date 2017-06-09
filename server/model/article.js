@@ -1,11 +1,11 @@
 /**
  * Created by chuck7 on 16/8/11.
  */
-const logger = require('../util').logger
+const {logger, print} = require('../util')
 
 const Article = require('../schema/article')
 
-class ArticleModel extends Article {
+class ArticleModel {
     /**
      * @param {Object} option                 参数选项
      * @param {String} option.title,
@@ -144,6 +144,16 @@ class ArticleModel extends Article {
         } catch (e) {
             logger.error(e)
         }
+    }
+    async count () {
+        let result = null
+        try {
+            result = await Article.count().exec()
+        } catch (e) {
+            logger.error(e)
+            throw e
+        }
+        return result
     }
 }
 module.exports = new ArticleModel()

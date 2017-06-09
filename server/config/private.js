@@ -1,6 +1,6 @@
 module.exports = {
     mongoConfig: {
-        url: 'mongodb://localhost:27017/kov-blog-production',
+        url: 'mongodb://127.0.0.1:27017/kov-blog-production',
         opts: {
             user: '',
             pass: ''

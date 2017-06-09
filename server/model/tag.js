@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Tag = require('../schema/tag')
 
-class TagModel extends Tag {
+class TagModel {
     /**
      * @param {Object}  option                 参数选项
      * @param {String}  option.name

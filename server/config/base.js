@@ -20,7 +20,7 @@ module.exports = {
 
     // mongo 数据库配置
     mongoConfig: { // 数据库配置
-        url: 'mongodb://localhost:27017/kov-blog',
+        url: 'mongodb://127.0.0.1:27017/kov-blog',
         opts: {
             user: '',
             pass: ''
@@ -35,7 +35,7 @@ module.exports = {
     // 目录配置
     dir: {
         root: path.resolve(__dirname, '..', '..'),
-        log: path.resolve(__dirname, '..', 'logs'),
+        log: path.resolve(__dirname, '..', 'log'),
         server: path.dirname(__dirname),
         upload: path.resolve(path.dirname(__dirname), 'runtime', 'upload')
     },
@@ -46,6 +46,7 @@ module.exports = {
         tags: 'tags',
         publications: 'publications',
         tokens: 'tokens',
+        comments: 'comments',
         me: 'me'
     }
 }

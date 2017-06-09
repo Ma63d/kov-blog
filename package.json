@@ -10,10 +10,12 @@
     "dev-admin": "node admin/build/dev-server.js",
     "build-admin": "node admin/build/build.js",
     "test": "",
-    "dev-server": "cross-env NODE_ENV=development DEBUG=kov-blog supervisor --harmony server/register.js"
+    "dev-server": "cross-env NODE_ENV=development DEBUG=kov-blog supervisor --harmony server/register.js",
+    "log": ""
   },
   "dependencies": {
     "babel-runtime": "^6.0.0",
+    "bunyan": "^1.8.10",
     "cross-env": "^4.0.0",
     "debug": "^2.2.0",
     "font-awesome": "^4.6.3",

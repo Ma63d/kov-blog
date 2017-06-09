@@ -10,9 +10,6 @@ require('babel-core/register')({
                 'node': 'current'
             }
         }]
-    ],
-    'plugins': [
-        ['transform-class-properties']
     ]
 })
 require('./index.js')

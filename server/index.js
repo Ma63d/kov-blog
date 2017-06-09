@@ -8,8 +8,8 @@ Joi.objectId = require('joi-objectid')(Joi)
 
 const config = require('./config/index')
 
-const koa = require('koa')
-const app = new koa()
+const Koa = require('koa')
+const app = new Koa()
 const bodyParser = require('koa-bodyparser')
 const router = require('koa-router')({
     prefix: config.app.apiPath
@@ -18,7 +18,6 @@ const router = require('koa-router')({
 const onerror = require('koa-onerror')
 
 const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
 const controllers = require('./controller/index.js')
 const utils = require('./util/index.js')
 
@@ -46,7 +45,8 @@ mongoose.Promise = global.Promise
 
     app.on('error', function (err, ctx) {
         if ((ctx.status === 404 && err.status === undefined) || err.status === 500) {
-            utils.logger.error('server error', err)
+            utils.logger.error('server error')
+            utils.logger.error(err)
             utils.logger.error(ctx)
         }
         utils.print(err)

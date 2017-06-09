@@ -6,6 +6,9 @@
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+
+const utils = require('../util/index')
+
 const commentSchema = new Schema({
     article: {
         id: Schema.Types.ObjectId,
@@ -29,4 +32,18 @@ const commentSchema = new Schema({
         default: 0
     }
 })
+
+commentSchema.set('toJSON', {
+    getters: true,
+    virtuals: true
+})
+commentSchema.set('toObject', {
+    getters: true,
+    virtuals: true
+})
+
+commentSchema.path('createTime').get(function (v) {
+    return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+})
+
 module.exports = mongoose.model('comment', commentSchema)
