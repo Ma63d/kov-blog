@@ -3,21 +3,22 @@
   "version": "1.2.0",
   "description": "a blog with vue.js koa mongo",
   "author": "liucan",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev-client": "node client/build/dev-server.js",
     "build-client": "node client/build/build.js",
     "dev-admin": "node admin/build/dev-server.js",
     "build-admin": "node admin/build/build.js",
     "test": "",
-    "dev-server": "cross-env NODE_ENV=development DEBUG=kov-blog supervisor --harmony server/register.js",
-    "log": ""
+    "dev-server": "cross-env NODE_ENV=development DEBUG=kov-blog supervisor --harmony -w server server/register.js",
+    "log": "./node_modules/.bin/bunyan -L --color"
   },
   "dependencies": {
     "babel-runtime": "^6.0.0",
     "bunyan": "^1.8.10",
     "cross-env": "^4.0.0",
     "debug": "^2.2.0",
+    "es6-promise": "^4.1.0",
     "font-awesome": "^4.6.3",
     "highlight.js": "^9.6.0",
     "joi": "^10.5.2",
@@ -39,6 +40,7 @@
     "validator": "^5.5.0",
     "vue": "^2.2.6",
     "vue-loader": "^11.1.4",
+    "vue-msgbox": "^0.2.14",
     "vue-router": "^2.3.0",
     "vue-template-compiler": "^2.2.6",
     "vuex": "^2.3.0",
@@ -65,8 +67,7 @@
     "eslint-friendly-formatter": "^2.0.7",
     "eslint-import-resolver-webpack": "^0.8.1",
     "eslint-loader": "^1.7.1",
-    "eslint-plugin-class-property": "^1.0.6",
-    "eslint-plugin-html": "^2.0.0",
+    "eslint-plugin-html": "^2.0.3",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
@@ -98,5 +99,14 @@
     "webpack-dev-middleware": "^1.10.0",
     "webpack-hot-middleware": "^2.18.0",
     "webpack-merge": "^4.1.0"
-  }
+  },
+  "engines": {
+    "node": ">= 7.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

@@ -1,7 +1,7 @@
 /**
  * Created by chuck7 on 16/8/11.
  */
-const {logger, print} = require('../util')
+const {logger} = require('../util')
 
 const Article = require('../schema/article')
 

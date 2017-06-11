@@ -4,22 +4,25 @@
 import {
   TOKEN_CREATE,
   TOKEN_DELETE
-}from '../mutation_types'
+} from '../mutation_types'
+
+import {generateGetters} from '../../lib/utils'
 
 const state = {
-  token: sessionStorage.getItem('token')
+    token: sessionStorage.getItem('token')
 }
 const mutations = {
-  [TOKEN_CREATE](state,token){
-    state.token = token;
-    sessionStorage.setItem('token',token);
-  },
-  [TOKEN_DELETE](state){
-    sessionStorage.removeItem('token');
-    state.token = null;
-  }
+    [TOKEN_CREATE] (state, token) {
+        state.token = token
+        sessionStorage.setItem('token', token)
+    },
+    [TOKEN_DELETE] (state) {
+        sessionStorage.removeItem('token')
+        state.token = null
+    }
 }
 export default {
-  state,
-  mutations
+    state,
+    mutations,
+    getters: generateGetters(state, 'token')
 }
