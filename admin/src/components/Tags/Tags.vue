@@ -10,7 +10,7 @@
             <ul class="clearfix reset-list tag-list" v-show="(tags.length !== 1 || tagActive == null)">
                 <li class="tag" v-for="tag in tags"  v-show="tag !== tagActive"> <span @click="searchTag(tag)" v-show="!tag['editing']">{{tag['name']}}</span> </li>
             </ul>
-            <post-list></post-list>
+            <post-list :post-list="postAll" @focus-article="focus"></post-list>
         </section>
         <div class="post-edit">
             <article-editor v-if="null !== currentPostId"></article-editor>
@@ -28,10 +28,10 @@
 <script>
     import NavAside from '../Common/NavAside.vue'
     import ArticleEditor from '../Common/ArticleEditor.vue'
-    import PostList from '../Posts/PostList.vue'
+    import PostList from '../Common/PostList.vue'
     import service from '../../services/tags/index'
-    import {getAllPosts} from '../../vuex/actions/post'
-    import {currentPostId} from '../../vuex/getters/post'
+    import {mapGetters, mapActions} from 'vuex'
+
     export default {
         components: {
             NavAside,
@@ -44,29 +44,38 @@
                 tags: []
             }
         },
-        vuex: {
-            actions: {
-                getAllPosts
-            },
-            getters: {
-                currentPostId
-            }
+        computed: {
+            ...mapGetters([
+                'postAll',
+                'postCurrentIndex'
+            ])
         },
-        route: {
-            data () {
-                service.getAllTags().then(res => {
-                    if (res.success) {
-                        for (let i of res.data) {
-                            i.newName = ''
-                            i.editing = false
-                        }
-                        this.tags = res.data
-                        this.getAllPosts()
+        created () {
+            service.getAllTags().then(res => {
+                if (res.success) {
+                    for (let i of res.data) {
+                        i.newName = ''
+                        i.editing = false
                     }
-                })
-            }
+                    this.tags = res.data
+                    this.getAllPosts()
+                }
+            })
         },
         methods: {
+            ...mapActions([
+                'focusOnPost',
+                'getAllPosts'
+            ]),
+            focus (index) {
+                if (!this.postSaved || !this.postTitleSaved) {
+                    alert('当前文章正在保存中,请稍后重试')
+                    return
+                }
+                if (index !== this.postCurrentIndex) {
+                    this.focusOnPost(index)
+                }
+            },
             searchTag (tag) {
                 this.tagActive = tag
                 this.getAllPosts(tag.id)

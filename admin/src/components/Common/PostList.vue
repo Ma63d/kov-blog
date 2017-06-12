@@ -1,7 +1,7 @@
 <template>
     <ul class="post-list reset-list">
         <li class="post-list-item" v-for="post in postList" @click="focus($index)">
-            <article class="post-thumb" :class="[post['draftPublished']?'published':post['article']?'updated':'',{'active':post['id'] === currentPostId}]">
+            <article class="post-thumb" :class="[post['draftPublished']?'published':post['article']?'updated':'',{'active':post['id'] === currentId}]">
                 <h3 class="post-title"><a href="javascript:;">{{post['title']}}</a></h3>
                 <h6 class="post-time">{{post['lastEditTime']}}</h6>
                 <p class="post-content" v-text="post['excerpt'] | md2Text">
@@ -58,23 +58,23 @@
         text-overflow ellipsis
 </style>
 <script>
-    import {focusOnPost} from '../../vuex/actions/post'
-    import {currentPostId, currentPostIndex, postSaved, postList, postTitleSaved} from '../../vuex/getters/post'
     export default {
-        vuex: {
-            getters: {
-                currentPostId,
-                currentPostIndex,
-                postSaved,
-                postList,
-                postTitleSaved
+        props: {
+            postList: {
+                type: Array,
+                required: true,
+                'default': []
             },
-            actions: {
-                focusOnPost
+            currentId: {
+                type: String,
+                required: true,
+                'default': ''
             }
         },
+
         methods: {
             focus (index) {
+                this.emit('focus-article', index)
                 if (!this.postSaved || !this.postTitleSaved) {
                     alert('当前文章正在保存中,请稍后重试')
                     return

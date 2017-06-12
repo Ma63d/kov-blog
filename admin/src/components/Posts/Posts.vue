@@ -4,7 +4,7 @@
         </nav-aside>
         <section class="post-list-column">
             <h3 class="page-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add" @click="newPost"></i></h3>
-            <post-list></post-list>
+            <post-list :post-list="postAll" @focus-article="focus"></post-list>
         </section>
         <div class="post-edit">
             <article-editor v-if="null !== currentPostId"></article-editor>
@@ -40,36 +40,43 @@
 <script>
     import NavAside from '../Common/NavAside.vue'
     import ArticleEditor from './ArticleEditor.vue'
-    import PostList from './PostList.vue'
+    import PostList from '../Common/PostList.vue'
 
-    import {mapActions, mapGetters} from 'vuex';
-    export default{
-        data () {
-            return {
-            }
-        },
-        route: {
-            data () {
-                this.getAllPosts()
-            }
-        },
+    import {mapActions, mapGetters} from 'vuex'
+    export default {
         components: {
             NavAside,
             ArticleEditor,
             PostList
         },
         computed: {
-            ...mapGetters({
-                'postSaved': 'postPostSaved',
-                'postTitleSaved': 'postPostTitleSaved',
-                'currentPostId': 'postCurrentPostId'
-            })
+            ...mapGetters([
+                'postCurrentId',
+                'postArticleId',
+                'postCurrentIndex',
+                'postSaved',
+                'postTitleSaved',
+                'postAll'
+            ])
+        },
+        created () {
+            this.getAllPosts()
         },
         methods: {
             ...mapActions([
                 'getAllPosts',
-                'createPost'
+                'createPost',
+                'focusOnPost'
             ]),
+            focus (index) {
+                if (!this.postSaved || !this.postTitleSaved) {
+                    alert('当前文章正在保存中,请稍后重试')
+                    return
+                }
+                if (index !== this.postCurrentIndex) {
+                    this.focusOnPost(index)
+                }
+            },
             newPost () {
                 if (!this.postSaved || !this.postTitleSaved) {
                     alert('当前文章正在保存中,请稍后重试')

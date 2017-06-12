@@ -321,6 +321,7 @@
                 'postTitleSaved'
             ])
         },
+
         methods: {
             ...mapActions([
                 'getPost',
@@ -336,20 +337,6 @@
                 'updatePostEditTime',
                 'updatePostTags'
             ]),
-
-            submitContent: _debounce((content) => {
-                this.updatePostContent(content).then(res => {
-                    if (res.success) {
-                        this.updatePostExcerpt(res.data.excerpt)
-                        this.updatePostEditTime(res.data.lastEditTime)
-                        this.savePost()
-                    } else {
-                        throw new Error()
-                    }
-                }).catch(() => {
-                    alert('网络错误!文档保存失败!请自行保存文档!')
-                })
-            }, 1000, false),
 
             submitTag (val) {
                 this.tagInput = false
@@ -434,6 +421,20 @@
                 this.editorContent = val
                 this.submitContent(this.editorContent)
             },
+
+            submitContent: _debounce((content) => {
+                this.updatePostContent(content).then(res => {
+                    if (res.success) {
+                        this.updatePostExcerpt(res.data.excerpt)
+                        this.updatePostEditTime(res.data.lastEditTime)
+                        this.savePost()
+                    } else {
+                        throw new Error()
+                    }
+                }).catch(() => {
+                    alert('网络错误!文档保存失败!请自行保存文档!')
+                })
+            }, 1000, false),
 
             addTag () {
                 this.tagInput = true
