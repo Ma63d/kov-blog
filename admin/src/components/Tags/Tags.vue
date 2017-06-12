@@ -28,9 +28,9 @@
 <script>
     import NavAside from '../Common/NavAside.vue'
     import ArticleEditor from '../Common/ArticleEditor.vue'
-    import PostList from '../Common/PostList.vue'
+    import PostList from '../Posts/PostList.vue'
     import service from '../../services/tags/index'
-    import {getAllPost} from '../../vuex/actions/post'
+    import {getAllPosts} from '../../vuex/actions/post'
     import {currentPostId} from '../../vuex/getters/post'
     export default {
         components: {
@@ -46,7 +46,7 @@
         },
         vuex: {
             actions: {
-                getAllPost
+                getAllPosts
             },
             getters: {
                 currentPostId
@@ -61,7 +61,7 @@
                             i.editing = false
                         }
                         this.tags = res.data
-                        this.getAllPost()
+                        this.getAllPosts()
                     }
                 })
             }
@@ -69,7 +69,7 @@
         methods: {
             searchTag (tag) {
                 this.tagActive = tag
-                this.getAllPost(tag.id)
+                this.getAllPosts(tag.id)
             },
             modifyTag (tag) {
                 tag.newName = tag.name
@@ -97,7 +97,7 @@
                 service.deleteTag(tag.id).then(res => {
                     if (res.success) {
                         if (this.tagActive === tag) {
-                            this.getAllPost()
+                            this.getAllPosts()
                             this.tagActive = null
                         }
                         this.tags.$remove(tag)
@@ -106,7 +106,7 @@
             },
             blurTag () {
                 this.tagActive = null
-                this.getAllPost()
+                this.getAllPosts()
             }
         }
     }

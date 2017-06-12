@@ -16,10 +16,10 @@
             </div>
             <div class="half-container">
                 <button type="button" class="btn btn-save r" @click="publish">发布文章</button>
-                <button type="button" class="btn btn-border r" v-show="articleIdOfPost === null" @click="deletePost">删除草稿</button>
+                <button type="button" class="btn btn-border r" v-show="postArticleId === null" @click="deletePost">删除草稿</button>
             </div>
         </div>
-        <textarea id="editor" style="opacity: 0"></textarea>
+        <editor style="opacity: 0" :value="editorContent" @input="updateContent(val)"></editor>
     </section>
 </template>
 <style lang="stylus">
@@ -261,132 +261,96 @@
                     content 'Java'
 </style>
 <script>
-    import {editPost, savePost, editPostTitle, savePostTitle, deletePost, publishPost, submitPostTitle, submitPostExcerpt, postTagsModify} from '../../vuex/actions/post'
-    import {postSaved, postTitle, postTitleSaved, currentPostId, articleIdOfPost} from '../../vuex/getters/post'
+    import {mapGetters, mapActions} from 'vuex'
     import service from '../../services/posts/index'
-    import SimpleMDE from 'simplemde'
-    import {_debounce, trim, marked} from '../../lib/utils'
-    const updateTitleWithDebounce = _debounce(function (title) {
-        this.submitPostTitle(title).then(() => {
-            this.savePostTitle()
-        }).catch(err => {
-            console.log(err)
-            alert('网络错误,标题保存失败')
-        })
-    }, 500)
-    let smde
-    export default{
+    import Editor from '../common/Editor.vue'
+
+    import {_debounce, trim} from '../../lib/utils'
+    export default {
+        components: {
+            Editor
+        },
+
         data () {
             return {
-                // 用以标识 是切换文章导致的codemirror的change事件还是 手工输入引起的change事件
-                // 切换文章引起的change事件则没必要对内容和title进行保存
-                change: true,
                 draftPublished: '',
-                tags: [],
                 tagsToAdd: [],
                 tagNew: '',
-                tagInput: false
+                tagInput: false,
+                editorContent: ''
             }
         },
+
         ready () {
-            smde = new SimpleMDE({
-                autoDownloadFontAwesome: false,
-                element: document.getElementById('editor'),
-                previewRender: function (plainText) {
-                    return marked(plainText) // Returns HTML from a custom parser
-                },
-                spellChecker: false
-            })
-            let postDraft = _debounce(() => {
-                service.modifyDraftContent(this.currentPostId, smde.value()).then(res => {
-                    if (res.success) {
-                        this.submitPostExcerpt(res.data.excerpt, res.data.lastEditTime)
-                        this.savePost()
-                    } else {
-                        return Promise.reject()
-                    }
-                }).catch(err => {
-                    alert('网络错误!文档保存失败!请自行保存文档!')
-                })
-            }, 1000, false)
-            smde.codemirror.on('change', () => {
-                if (this.change === true) {
-                    this.change = false
-                    return
-                }
-                if (this.postSaved) {
-                    this.editPost()
-                }
-                postDraft()
-            })
-            this.change = true
             if (this.currentPostId !== null) {
-                service.getDraft(this.currentPostId).then(res => {
-                    if (res.success) {
-                        this.tagNew = ''
-                        this.tagInput = false
-                        this.tags = res.data.tags
-                        this.$nextTick(() => {
-                            smde.value(res.data.content)
-                        })
-                    }
+                this.getPost().then(() => {
+                    this.tagNew = ''
+                    this.tagInput = false
                 }).catch(err => {
                     console.log(err)
                     alert('网络错误,获取文章失败')
                 })
             }
         },
-        beforeDestroy () {
-            smde.toTextArea()
-            let editor = document.getElementById('editor')
-            editor.outerHTML = editor.outerHTML
-        },
-
-        vuex: {
-            getters: {
-                currentPostId,
-                postSaved,
-                postTitleSaved,
-                postTitle,
-                articleIdOfPost
-            },
-            actions: {
-                editPost,
-                savePost,
-                editPostTitle,
-                savePostTitle,
-                deletePost,
-                publishPost,
-                submitPostTitle,
-                submitPostExcerpt,
-                postTagsModify
-            }
-        },
 
         watch: {
             currentPostId (val) {
-                this.change = true
                 if (val !== null) {
-                    service.getDraft(val).then(res => {
-                        if (res.success) {
-                            this.tagNew = ''
-                            this.tagInput = false
-                            this.tags = res.data.tags
-                            this.$nextTick(() => {
-                                smde.value(res.data.content)
-                            })
-                        }
+                    this.getPost().then(() => {
+                        this.tagNew = ''
+                        this.tagInput = false
                     }).catch(err => {
                         console.log(err)
                         alert('网络错误,获取文章失败')
                     })
                 }
             },
+
             tagNew (val) {
                 this.searchTags(val)
             }
         },
+
+        computed: {
+            ...mapGetters([
+                'postTags',
+                'postCurrentId',
+                'postArticleId',
+                'postTitle',
+                'postSaved',
+                'postTitleSaved'
+            ])
+        },
         methods: {
+            ...mapActions([
+                'getPost',
+                'editPost',
+                'savePost',
+                'editPostTitle',
+                'savePostTitle',
+                'deletePost',
+                'publishPost',
+                'updatePostTitle',
+                'updatePostExcerpt',
+                'updatePostContent',
+                'updatePostEditTime',
+                'updatePostTags'
+            ]),
+
+            submitContent: _debounce((content) => {
+                this.updatePostContent(content).then(res => {
+                    if (res.success) {
+                        this.updatePostExcerpt(res.data.excerpt)
+                        this.updatePostEditTime(res.data.lastEditTime)
+                        this.savePost()
+                    } else {
+                        throw new Error()
+                    }
+                }).catch(() => {
+                    alert('网络错误!文档保存失败!请自行保存文档!')
+                })
+            }, 1000, false),
+
             submitTag (val) {
                 this.tagInput = false
                 let tag
@@ -401,41 +365,39 @@
                 }
                 service.createTags(tag).then(res => {
                     let id = res.data.id
-                    if (this.tags.some(item => item.id === id)) {
+                    if (this.postTags.some(item => item.id === id)) {
                         return
                     }
-                    let newTagArr = this.tags.map(item => {
+                    let newTagArr = this.postTags.map(item => {
                         return item.id
                     })
                     newTagArr.push(id)
-                    return service.modifyDraftTags(this.currentPostId, newTagArr).then(res => {
+                    return service.updateDraftTags(this.postCurrentId, newTagArr).then(res => {
                         if (res.success) {
-                            this.tags = res.data.tags
-                            this.postTagsModify(res.data.lastEditTime)
+                            this.updatePostTags(res.data.tags)
                         }
-                    }).catch(err => {
-                        alert('网络错误,增加标签失败')
                     })
-                }).catch(err => {
+                }).catch(() => {
                     alert('网络错误,增加标签失败')
                 })
             },
+
             deleteTag (id) {
                 let newTagArr = []
-                for (let i of this.tags) {
+                for (let i of this.postTags) {
                     if (i.id !== id) {
                         newTagArr.push(i.id)
                     }
                 }
-                return service.modifyDraftTags(this.currentPostId, newTagArr).then(res => {
+                return service.updateDraftTags(this.postCurrentId, newTagArr).then(res => {
                     if (res.success) {
-                        this.tags = res.data.tags
-                        this.postTagsModify(res.data.lastEditTime)
+                        this.updatePostTags(res.data.tags)
                     }
-                }).catch(err => {
+                }).catch(() => {
                     alert('网络错误,增加标签失败')
                 })
             },
+
             publish () {
                 if (!this.postSaved || !this.postTitleSaved) {
                     alert('当前文章正在保存中,请稍后重试')
@@ -445,23 +407,40 @@
                     alert('发布成功')
                 }).catch(err => {
                     console.log(err)
-                    alert(err.errorInfo && err.errorInfo.error + '' || '网络错误,保存失败')
+                    alert((err.errorInfo && err.errorInfo.error + '') || '网络错误,保存失败')
                 })
             },
+
             updateTitle (e) {
                 this.editPostTitle()
-                // 这里没有使用vuex官方实例当中的计算属性的setters再配合vue的debounce
-                // 而是使用自己的debounce函数是因为
-                // 使用计算属性的话,只要依赖项有变化,就会引起setters执行
-                // 这就导致切换文章时,title也被上传一次,
-                // 这与设想的只在用户更改后才上传的逻辑相违背
-                updateTitleWithDebounce.call(this, e.target.value)
+                this.updateTitleWithDebounce(e.target.value)
             },
+
+            updateTitleWithDebounce: _debounce((title) => {
+                this.updatePostTitle(title).then(res => {
+                    this.updatePostEditTime(res.data.lastEditTime)
+                    this.savePostTitle()
+                }).catch(err => {
+                    console.log(err)
+                    alert('网络错误,标题保存失败')
+                })
+            }, 500),
+
+            updateContent (val) {
+                if (this.editorContent === val) {
+                    console.log('duplicate')
+                    return
+                }
+                this.editorContent = val
+                this.submitContent(this.editorContent)
+            },
+
             addTag () {
                 this.tagInput = true
                 this.tagNew = ''
                 this.searchTags('')
             },
+
             searchTags (val) {
                 service.searchTagWithWord(val).then(res => {
                     if (res.success) {

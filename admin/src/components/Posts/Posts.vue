@@ -3,7 +3,7 @@
         <nav-aside>
         </nav-aside>
         <section class="post-list-column">
-            <h3 class="page-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add" @click="createPost"></i></h3>
+            <h3 class="page-title"><i class="icon-wenzhang iconfont"></i> 文章列表  <i class="iconfont icon-jiahao post-add" @click="newPost"></i></h3>
             <post-list></post-list>
         </section>
         <div class="post-edit">
@@ -39,14 +39,10 @@
 </style>
 <script>
     import NavAside from '../Common/NavAside.vue'
-    import ArticleEditor from '../Common/ArticleEditor.vue'
-    import PostList from '../Common/PostList.vue'
-    import service from '../../services/posts/index'
+    import ArticleEditor from './ArticleEditor.vue'
+    import PostList from './PostList.vue'
 
-    import {getAllPost, createPost} from '../../vuex/actions/post'
-    import {postSaved, postTitleSaved, currentPostId} from '../../vuex/getters/post'
-
-    import {mapActions} from 'vuex';
+    import {mapActions, mapGetters} from 'vuex';
     export default{
         data () {
             return {
@@ -54,7 +50,7 @@
         },
         route: {
             data () {
-                this.getAllPost()
+                this.getAllPosts()
             }
         },
         components: {
@@ -62,27 +58,16 @@
             ArticleEditor,
             PostList
         },
-        vuex: {
-            getters: {
-                postSaved,
-                postTitleSaved,
-                currentPostId
-            },
-            actions: {
-                getAllPost,
-                createPost
-            }
-        },
         computed: {
             ...mapGetters({
                 'postSaved': 'postPostSaved',
                 'postTitleSaved': 'postPostTitleSaved',
-                'currentPostId': 'postCurrentPostId',
-            }),
+                'currentPostId': 'postCurrentPostId'
+            })
         },
         methods: {
             ...mapActions([
-                'getAllPost',
+                'getAllPosts',
                 'createPost'
             ]),
             newPost () {

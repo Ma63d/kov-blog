@@ -13,13 +13,13 @@ export default {
     getDraft (id) {
         return api.get('drafts/' + id)
     },
-    modifyDraftContent (id, content) {
+    updateDraftContent (id, content) {
         return api.patch('drafts/' + id, {content})
     },
-    modifyDraftTitle (id, title) {
+    updateDraftTitle (id, title) {
         return api.patch('drafts/' + id, {title})
     },
-    modifyDraftTags (id, tags) {
+    updateDraftTags (id, tags) {
         return api.patch('drafts/' + id, {tags})
     },
     createTags (tagName) {
