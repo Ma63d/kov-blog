@@ -6,11 +6,12 @@
 const utils = require('../util/index')
 const mw = require('../middleware/index.js')
 
-const Draft = require('../model/draft.js')
-const Article = require('../model/article.js')
+const DraftService = require('../service/draft.js')
+const ArticleService = require('../service/article.js')
 
-const BaseAction = require('./base').BaseAction
-const __before = require('./base').beforeFunc
+const BaseAOP = require('../util/aop').BaseAOP
+const __before = require('../util/aop').beforeFunc
+const main = require('../util/aop').main
 
 const errorList = require('../error')
 
@@ -24,7 +25,7 @@ module.exports.init = async router => {
     router.post(`/${ROUTER_NAME}`, mw.verifyToken, new ActionCreate().getAOPMiddleWare())
 }
 
-class ActionCreate extends BaseAction {
+class ActionCreate extends BaseAOP {
     static schema = Joi.object().keys({
         draftId: Joi.objectId().required()
     })
@@ -48,19 +49,17 @@ class ActionCreate extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const draftId = ctx.request.body.draftId
         let draft = null
         try {
-            draft = await Draft.findOne(draftId)
+            draft = await DraftService.findOne(draftId)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
         }
         if (draft === null) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(400, errorList.idNotExistError.name, {
                 message: errorList.idNotExistError.message
             })
@@ -104,11 +103,11 @@ class ActionCreate extends BaseAction {
         if (draft.article !== null) {
             try {
                 [, article] = await Promise.all([
-                    Draft.update(id, draft),
-                    Article.update(draft.article, articleOption)
+                    DraftService.update(id, draft),
+                    ArticleService.update(draft.article, articleOption)
                 ])
             } catch (e) {
-                utils.logger.error(ctx, 'error happens with follow ctx.')
+
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -120,9 +119,9 @@ class ActionCreate extends BaseAction {
             articleOption.comments = []
 
             try {
-                article = await Article.create(articleOption)
+                article = await ArticleService.create(articleOption)
             } catch (e) {
-                utils.logger.error(ctx, 'error happens with follow ctx.')
+
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -131,9 +130,8 @@ class ActionCreate extends BaseAction {
             draft.article = article._id
 
             try {
-                draft = await Draft.update(id, draft)
+                draft = await DraftService.update(id, draft)
             } catch (e) {
-                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })

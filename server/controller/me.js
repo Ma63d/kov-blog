@@ -5,10 +5,11 @@
 const utils = require('../util/index')
 const mw = require('../middleware/index.js')
 
-const Me = require('../model/me.js')
+const MeService = require('../service/me.js')
 
-const BaseAction = require('./base').BaseAction
-const __before = require('./base').beforeFunc
+const BaseAOP = require('../util/aop').BaseAOP
+const __before = require('../util/aop').beforeFunc
+const main = require('../util/aop').main
 
 const errorList = require('../error')
 
@@ -28,7 +29,7 @@ module.exports.init = async router => {
 async function seed () {
     let me = []
     try {
-        me = await Me.findOne()
+        me = await MeService.findOne()
     } catch (e) {
         utils.logger.error('error happens when seeding error')
         let error = new Error(errorList.seedingError.message)
@@ -40,7 +41,7 @@ async function seed () {
     if (me === null) {
         // 没啥用的初始化数据,那么就膜一下吧
         try {
-            me = await Me.create({
+            me = await MeService.create({
                 content: 'too young ,sometimes naive'
             })
         } catch (e) {
@@ -52,13 +53,12 @@ async function seed () {
     }
 }
 
-class ActionDetail extends BaseAction {
-    async main (ctx, next) {
+class ActionDetail extends BaseAOP {
+    async [main] (ctx, next) {
         let result = null
         try {
-            result = await Me.findOne()
+            result = await MeService.findOne()
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -72,7 +72,7 @@ class ActionDetail extends BaseAction {
     }
 }
 
-class ActionModify extends BaseAction {
+class ActionModify extends BaseAOP {
     static schema = Joi.object().keys({
         content: Joi.string().required()
     })
@@ -96,12 +96,11 @@ class ActionModify extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const content = ctx.request.body.content
         try {
-            await Me.update(content)
+            await MeService.update(content)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })

@@ -5,8 +5,9 @@
 const utils = require('../util/index')
 const mw = require('../middleware/index.js')
 
-const BaseAction = require('./base').BaseAction
-const __before = require('./base').beforeFunc
+const BaseAOP = require('../util/aop').BaseAOP
+const __before = require('../util/aop').beforeFunc
+const main = require('../util/aop').main
 
 const errorList = require('../error')
 
@@ -16,7 +17,7 @@ const {
     drafts: ROUTER_NAME
 } = require('../config').routerName
 
-const Draft = require('../model/draft.js')
+const DraftService = require('../service/draft.js')
 
 module.exports.init = async router => {
     router.post(`/${ROUTER_NAME}`, mw.verifyToken, new ActionCreate().getAOPMiddleWare())
@@ -26,7 +27,7 @@ module.exports.init = async router => {
     router.delete(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionDelete().getAOPMiddleWare())
 }
 
-class ActionCreate extends BaseAction {
+class ActionCreate extends BaseAOP {
     static schema = Joi.object().keys({
         title: Joi.string().required()
     })
@@ -44,7 +45,7 @@ class ActionCreate extends BaseAction {
         }
         return next()
     }
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const title = ctx.request.body.title
         const createTime = new Date()
         const lastEditTime = new Date()
@@ -56,7 +57,7 @@ class ActionCreate extends BaseAction {
         let draft = null
 
         try {
-            draft = Draft.create({
+            draft = DraftService.create({
                 title,
                 createTime,
                 lastEditTime,
@@ -66,7 +67,6 @@ class ActionCreate extends BaseAction {
                 draftPublished
             })
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -82,14 +82,13 @@ class ActionCreate extends BaseAction {
     }
 }
 
-class ActionList extends BaseAction {
-    async main (ctx, next) {
+class ActionList extends BaseAOP {
+    async [main] (ctx, next) {
         const tag = ctx.query.tag
         let result = []
         try {
-            result = await Draft.find(tag)
+            result = await DraftService.find(tag)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -103,7 +102,7 @@ class ActionList extends BaseAction {
     }
 }
 
-class ActionDetail extends BaseAction {
+class ActionDetail extends BaseAOP {
     static schema = Joi.object().keys({
         id: Joi.objectId().required()
     })
@@ -127,13 +126,12 @@ class ActionDetail extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const id = ctx.params.id
         let result = []
         try {
-            result = await Draft.findOne(id)
+            result = await DraftService.findOne(id)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -146,7 +144,7 @@ class ActionDetail extends BaseAction {
     }
 }
 
-class ActionModify extends BaseAction {
+class ActionModify extends BaseAOP {
     static schema = Joi.object().keys({
         id: Joi.objectId().required()
     })
@@ -185,9 +183,8 @@ class ActionModify extends BaseAction {
         modifyOption.draftPublished = false
         let result = null
         try {
-            result = await Draft.update(id, modifyOption)
+            result = await DraftService.update(id, modifyOption)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             if (e.name === 'CastError') {
                 ctx.throw(400, errorList.idNotExistError.name, {
                     message: errorList.idNotExistError.message
@@ -209,7 +206,7 @@ class ActionModify extends BaseAction {
     }
 }
 
-class ActionDelete extends BaseAction {
+class ActionDelete extends BaseAOP {
     static schema = Joi.object().keys({
         id: Joi.objectId()
     })
@@ -233,13 +230,13 @@ class ActionDelete extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const id = ctx.params.id
         let draft = null
         try {
-            draft = await Draft.findOne(id)
+            draft = await DraftService.findOne(id)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
+
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -255,9 +252,9 @@ class ActionDelete extends BaseAction {
             })
         }
         try {
-            await Draft.delete(id)
+            await DraftService.delete(id)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
+
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })

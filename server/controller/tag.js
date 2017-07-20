@@ -5,12 +5,13 @@
 const utils = require('../util/index')
 const mw = require('../middleware/index.js')
 
-const Tag = require('../model/tag.js')
-const Article = require('../model/article.js')
-const Draft = require('../model/draft.js')
+const TagService = require('../service/tag.js')
+const ArticleService = require('../service/article.js')
+const DraftService = require('../service/draft.js')
 
-const BaseAction = require('./base').BaseAction
-const __before = require('./base').beforeFunc
+const BaseAOP = require('../util/aop').BaseAOP
+const __before = require('../util/aop').beforeFunc
+const main = require('../util/aop').main
 
 const errorList = require('../error')
 
@@ -27,7 +28,7 @@ module.exports.init = async router => {
     router.delete(`/${ROUTER_NAME}/:id`, mw.verifyToken, new ActionDelete().getAOPMiddleWare())
 }
 
-class ActionList extends BaseAction {
+class ActionList extends BaseAOP {
     static schema = Joi.object().keys({
         startWith: Joi.string().optional()
     })
@@ -51,15 +52,14 @@ class ActionList extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const queryStartWith = ctx.query['start-with']
 
         let tagList = null
 
         try {
-            tagList = await Tag.find(queryStartWith)
+            tagList = await TagService.find(queryStartWith)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -74,7 +74,7 @@ class ActionList extends BaseAction {
     }
 }
 
-class ActionCreate extends BaseAction {
+class ActionCreate extends BaseAOP {
     static schema = Joi.object().keys({
         name: Joi.string().min(1).required()
     })
@@ -98,15 +98,14 @@ class ActionCreate extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const tagName = ctx.request.body.name
 
         let tag = null
 
         try {
-            tag = await Tag.findOne(null, tagName)
+            tag = await TagService.findOne(null, tagName)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -125,11 +124,10 @@ class ActionCreate extends BaseAction {
         }
 
         try {
-            tag = await Tag.create({
+            tag = await TagService.create({
                 name: tagName
             })
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -146,7 +144,7 @@ class ActionCreate extends BaseAction {
     }
 }
 
-class ActionModify extends BaseAction {
+class ActionModify extends BaseAOP {
     static schema = Joi.object().keys({
         name: Joi.string().min(1).required(),
         id: Joi.objectId().required()
@@ -172,14 +170,13 @@ class ActionModify extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const tagName = ctx.request.body.name
         const tagId = ctx.params.id
         let tag = null
         try {
-            tag = await Tag.findOne(null, tagName)
+            tag = await TagService.findOne(null, tagName)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -195,7 +192,7 @@ class ActionModify extends BaseAction {
                 }
             }
         } else {
-            await Tag.update(tagId, tagName)
+            await TagService.update(tagId, tagName)
             ctx.status = 200
             ctx.body = {
                 success: true
@@ -205,7 +202,7 @@ class ActionModify extends BaseAction {
     }
 }
 
-class ActionDelete extends BaseAction {
+class ActionDelete extends BaseAOP {
     static schema = Joi.object().keys({
         id: Joi.objectId().required()
     })
@@ -232,12 +229,11 @@ class ActionDelete extends BaseAction {
         const id = ctx.params.id
         try {
             await Promise.all([
-                Draft.deleleTag(id),
-                Article.deleleTag(id),
-                Tag.delete(id)
+                DraftService.deleleTag(id),
+                ArticleService.deleleTag(id),
+                TagService.delete(id)
             ])
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })

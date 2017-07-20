@@ -5,9 +5,10 @@
 const utils = require('../util/index')
 const mw = require('../middleware/index.js')
 
-const BaseAction = require('./base').BaseAction
-const __before = require('./base').beforeFunc
-const __after = require('./base').afterFunc
+const BaseAOP = require('../util/aop').BaseAOP
+const __before = require('../util/aop').beforeFunc
+const __after = require('../util/aop').afterFunc
+const main = require('../util/aop').main
 
 const errorList = require('../error')
 
@@ -17,7 +18,7 @@ const {
     articles: ROUTER_NAME
 } = require('../config').routerName
 
-const Article = require('../model/article.js')
+const ArticleService = require('../service/article.js')
 
 module.exports.init = async router => {
     router.post(`/${ROUTER_NAME}`, mw.verifyToken, new ActionCreate().getAOPMiddleWare())
@@ -37,7 +38,7 @@ module.exports.init = async router => {
     }
  */
 
-class ActionCreate extends BaseAction {
+class ActionCreate extends BaseAOP {
     static schema = Joi.object().keys({
         title: Joi.string().required(),
         tags: Joi.array().items(Joi.number()).unique().allow(null),
@@ -58,7 +59,7 @@ class ActionCreate extends BaseAction {
         }
         return next()
     }
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const {
             title,
             visits = 0,
@@ -72,7 +73,7 @@ class ActionCreate extends BaseAction {
         let result = null
 
         try {
-            result = await Article.create({
+            result = await ArticleService.create({
                 title,
                 visits,
                 createTime,
@@ -82,7 +83,6 @@ class ActionCreate extends BaseAction {
                 comments
             })
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -100,7 +100,7 @@ class ActionCreate extends BaseAction {
     }
 }
 
-class ActionList extends BaseAction {
+class ActionList extends BaseAOP {
     static schema = Joi.object().keys({
         tag: Joi.string().optional(),
         limit: Joi.number().optional(),
@@ -128,19 +128,18 @@ class ActionList extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const tag = ctx.query.tag
         if (undefined !== tag) {
             // 搜索指定 tag 的文章
             try {
-                let articleArr = await Article.findWithTag(tag)
+                let articleArr = await ArticleService.findWithTag(tag)
                 utils.print(articleArr)
                 ctx.body = {
                     success: true,
                     data: articleArr
                 }
             } catch (e) {
-                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -157,8 +156,8 @@ class ActionList extends BaseAction {
             }
             try {
                 const [articleArr, totalNumber] = await Promise.all([
-                    Article.find({}, limit, skip),
-                    Article.count()
+                    ArticleService.find({}, limit, skip),
+                    ArticleService.count()
                 ])
                 ctx.status = 200
 
@@ -171,7 +170,6 @@ class ActionList extends BaseAction {
                 }
             } catch (e) {
                 utils.print(e)
-                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -181,7 +179,7 @@ class ActionList extends BaseAction {
     }
 }
 
-class ActionDetail extends BaseAction {
+class ActionDetail extends BaseAOP {
     static schema = Joi.object().keys({
         id: Joi.objectId().required()
     })
@@ -205,14 +203,13 @@ class ActionDetail extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const id = ctx.params.id
 
         let article
         try {
-            article = await Article.findOne(id)
+            article = await ArticleService.findOne(id)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -223,10 +220,9 @@ class ActionDetail extends BaseAction {
             article = article.toObject()
             try {
                 [article.nextArticle, article.prevArticle] = await Promise.all([
-                    Article.findPrev()
+                    ArticleService.findPrev()
                 ])
             } catch (e) {
-                utils.logger.error(ctx, 'error happens with follow ctx.')
                 ctx.throw(500, errorList.storageError.name, {
                     message: errorList.storageError.message
                 })
@@ -243,8 +239,7 @@ class ActionDetail extends BaseAction {
     }
 
     async [__after] (ctx, next) {
-        Article.incVisits(ctx.state.article).catch(e => {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
+        ArticleService.incVisits(ctx.state.article).catch(e => {
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -253,7 +248,7 @@ class ActionDetail extends BaseAction {
     }
 }
 
-class ActionModify extends BaseAction {
+class ActionModify extends BaseAOP {
     static schema = Joi.object().keys({
         id: Joi.objectId(),
         body: Joi.object()
@@ -280,15 +275,14 @@ class ActionModify extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const id = ctx.parasm.id
         const body = ctx.request.body
 
         let article = null
         try {
-            article = await Article.update(id, body)
+            article = await ArticleService.update(id, body)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             if (e.name === 'CastError') {
                 ctx.throw(400, errorList.idNotExistError.name, {
                     message: errorList.idNotExistError.message

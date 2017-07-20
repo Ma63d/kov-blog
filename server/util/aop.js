@@ -4,13 +4,14 @@
  * @data 17/5/31
  */
 
-let __before = module.exports.beforeFunc = ['__before']
-let __after = module.exports.afterFunc = ['__after']
+let __before = module.exports.beforeFunc = Symbol('__before')
+let __after = module.exports.afterFunc = Symbol('__after')
+let main = module.exports.main = Symbol('main')
 
-module.exports.BaseAction = class BaseAction {
+module.exports.BaseAOP = class BaseAOP {
     getAOPMiddleWare () {
         let before = this[__before]
-        let main = this['main']
+        let mainFunc = this[main]
         let after = this[__after]
         let that = this
 
@@ -20,12 +21,12 @@ module.exports.BaseAction = class BaseAction {
                     ? after.bind(that, ctx, next)
                     : next
                 if (before) {
-                    let boundMain = main.bind(that, ctx, boundAfter)
+                    let boundMain = mainFunc.bind(that, ctx, boundAfter)
                     return before.call(that, ctx, boundMain)
                 }
-                return main.call(that, ctx, boundAfter)
+                return mainFunc.call(that, ctx, boundAfter)
             }
         }
-        return main
+        return mainFunc
     }
 }

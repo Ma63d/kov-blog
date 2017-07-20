@@ -11,10 +11,11 @@ const mw = require('../middleware/index.js')
 const md5 = require('md5')
 
 const cert = configs.jwt.cert
-const User = require('../model/user.js')
+const UserService = require('../service/user.js')
 
-const BaseAction = require('./base').BaseAction
-const __before = require('./base').beforeFunc
+const BaseAOP = require('../util/aop').BaseAOP
+const __before = require('../util/aop').beforeFunc
+const main = require('../util/aop').main
 
 const errorList = require('../error')
 
@@ -37,10 +38,10 @@ async function seed () {
     let user = null
 
     try {
-        user = await User.findOne()
+        user = await UserService.findOne()
 
         if (user === null) {
-            user = new User({
+            user = new UserService({
                 name: 'admin',
                 username: 'admin',
                 password: md5('password').toUpperCase(),
@@ -57,7 +58,7 @@ async function seed () {
     }
 }
 
-class ActionCreate extends BaseAction {
+class ActionCreate extends BaseAOP {
     static schema = Joi.object().keys({
         username: Joi.string().min(1).required(),
         password: Joi.string().min(1).required()
@@ -83,15 +84,15 @@ class ActionCreate extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const username = ctx.request.body.username
         const password = ctx.request.body.password
         utils.print(username, password)
         let user = null
         try {
-            user = await User.findOne(username)
+            user = await UserService.findOne(username)
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
+
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })

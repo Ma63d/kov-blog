@@ -1,65 +1,49 @@
 /**
- * Created by chuck7 on 16/8/11.
+ * @file
+ * @author chuck7 (chuck7liu@gmail.com)
+ * @data 17/5/25
  */
-const logger = require('../util').logger
 
-const Comment = require('../schema/comment')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-class CommentModel extends Comment {
-    async create (option) {
-        const comment = new Comment(option)
-        let result = null
-        try {
-            result = comment.save()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result
+const utils = require('../util/index')
+
+const commentSchema = new Schema({
+    article: {
+        id: Schema.Types.ObjectId,
+        ref: 'article'
+    },
+    message: String,
+    respondTo: {
+        id: Schema.Types.ObjectId,
+        ref: 'comment'
+    },
+    createTime: {
+        type: Date
+    },
+    author: String,
+    authorAvatar: {
+        type: String,
+        default: ''
+    },
+    likes: {
+        type: Number,
+        default: 0
     }
-    async find (articleId, limit = null, skip = null) {
-        let result = null
-        try {
-            result = await Comment.find({
-                article: articleId
-            })
-            .populate('respondTo')
-            .select('message respondTo createTime author authorAvatar likes')
-            .sort({
-                createTime: 1
-            })
-            .limit(limit)
-            .skip(skip)
-            .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.map(item => item.toObject())
-    }
-    async findOne (id) {
-        let result = null
-        try {
-            result = await Comment.findOne({
-                _id: id
-            })
-            .populate('respondTo')
-            .select('message respondTo createTime author authorAvatar likes')
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.toObject()
-    }
-    async count () {
-        let result = null
-        try {
-            result = await Comment.count().exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result
-    }
-}
-module.exports = new CommentModel()
+})
+
+commentSchema.set('toJSON', {
+    getters: true,
+    virtuals: true
+})
+commentSchema.set('toObject', {
+    getters: true,
+    virtuals: true
+})
+
+commentSchema.path('createTime').get(function (v) {
+    return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+})
+
+module.exports = mongoose.model('comment', commentSchema)

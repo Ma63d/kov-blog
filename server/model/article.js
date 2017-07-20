@@ -1,159 +1,60 @@
 /**
- * Created by chuck7 on 16/8/11.
+ * @file article schema
+ * @author chuck7 (chuck7liu@gmail.com)
+ * @data 17/5/25
  */
-const {logger} = require('../util')
 
-const Article = require('../schema/article')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-class ArticleModel {
-    /**
-     * @param {Object} option                 参数选项
-     * @param {String} option.title,
-     * @param {Number} option.visits,
-     * @param {Date}   option.createTime,
-     * @param {Date}   option.lastEditTime,
-     * @param {String} option.excerpt,        摘要
-     * @param {String} option.content,
-     * @param {Array}  option.comments
-     * */
-    async create (option) {
-        const article = new Article(option)
-        let result = null
-        try {
-            result = article.save()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result
+const utils = require('../util')
+
+const articleSchema = new Schema({
+    title: String,
+    visits: {
+        type: Number,
+        default: 0
+    },
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'tag'
+    }],
+    createTime: {
+        type: Date
+    },
+    lastEditTime: {
+        type: Date,
+        default: Date.now
+    },
+    excerpt: String,
+    content: String,
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'comment'
+    }]
+}, {
+    versionKey: false,
+    skipVersioning: {
+        tags: true
     }
-    async find (sort = null, limit = null, skip = null) {
-        let result = null
-        try {
-            result = await Article.find()
-            .populate('tags')
-            .select('title visits tags createTime lastEditTime excerpt')
-            .sort(sort)
-            .limit(limit)
-            .skip(skip)
-            .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.map(item => item.toObject())
-    }
-    async findOne (id, sort = null, limit = null, skip = null) {
-        let searchParam = {
-            _id: id
-        }
-        let result = null
-        try {
-            result = await Article.findOne(searchParam)
-            .populate('tags')
-            .select('title visits tags createTime lastEditTime excerpt')
-            .sort({
-                createTime: -1,
-                ...sort
-            })
-            .limit(limit)
-            .skip(skip)
-            .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.toObject()
-    }
-    async update (id, modifyParam) {
-        let result = null
-        try {
-            result = await Article.findByIdAndUpdate(id, {
-                $set: modifyParam
-            }, {
-                new: true
-            }).exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.toObject()
-    }
-    async findWithTag (tag) {
-        let result = null
-        try {
-            result = await Article.find({
-                tags: {
-                    '$all': [tag]
-                }
-            })
-            .select('title createTime lastEditTime')
-            .sort({
-                createTime: -1
-            })
-            .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.map(item => item.toObject())
-    }
-    async findPrev (id) {
-        let result = null
-        try {
-            result = Article.findOne({_id: {$gt: id}}, 'title _id')
-                .sort({
-                    _id: -1
-                })
-                .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.toObject()
-    }
-    async findNext (id) {
-        let result = null
-        try {
-            result = Article.findOne({_id: {$gt: id}}, 'title _id').exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.toObject()
-    }
-    async incVisits (article) {
-        if (article) {
-            try {
-                await article.update({$inc: {visits: 1}}).exec()
-            } catch (e) {
-                logger.error(e)
-                throw e
-            }
-        }
-    }
-    async deleleTag (tagId) {
-        try {
-            await Article.update({},
-                {
-                    $pull: {
-                        tags: tagId
-                    }
-                })
-                .exec()
-        } catch (e) {
-            logger.error(e)
-        }
-    }
-    async count () {
-        let result = null
-        try {
-            result = await Article.count().exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result
-    }
+})
+
+articleSchema.set('toJSON', {
+    getters: true,
+    virtuals: true
 }
-module.exports = new ArticleModel()
+)
+articleSchema.set('toObject', {
+    getters: true,
+    virtuals: true
+})
+
+articleSchema.path('createTime').get(function (v) {
+    return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+})
+articleSchema.path('lastEditTime').get(function (v) {
+    return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+})
+
+const article = mongoose.model('article', articleSchema)
+module.exports = article

@@ -9,6 +9,10 @@ module.exports = {
         name: 'ValidationError',
         message: 'Value for one of the parameters in request is invalid.'
     },
+    noneTokenError: {
+        name: 'noneTokenError',
+        message: `No token found in http header 's filed 'Authorization' .`
+    },
     invalidTokenError: {
         name: 'InvalidTokenError',
         message: 'Invalid token.'

@@ -1,123 +1,58 @@
 /**
- * Created by chuck7 on 16/9/14.
+ * @file
+ * @author chuck7 (chuck7liu@gmail.com)
+ * @data 17/5/25
  */
-const logger = require('../util').logger
 
-const Draft = require('../schema/draft')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-class DraftModel {
-    /**
-     * @param {Object}  option                 参数选项
-     * @param {String}  option.title,
-     * @param {Number}  option.visits,
-     * @param {Date}    option.createTime,
-     * @param {Date}    option.lastEditTime,
-     * @param {String}  option.excerpt,
-     * @param {String}  option.content,
-     * @param {Id}      option.article          对应的文章 Id
-     * @param {Boolean} option.draftPublished   是否已经发布
-     * */
-    async create (option) {
-        const draft = new Draft(option)
-        let result = null
-        try {
-            result = draft.save()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result
-    }
+const utils = require('../util')
 
-    async find (tag) {
-        let draftArr = null
-        try {
-            let searchParam = {}
-            if (tag) {
-                searchParam = {
-                    '$all': [tag]
-                }
-            }
-            draftArr = await Draft.find(searchParam)
-                .populate('tags')
-                .select('title tags createTime lastEditTime excerpt article draftPublished')
-                .sort({
-                    lastEditTime: -1
-                })
-                .exec()
-            const resultArr = []
-            if (draftArr.length) {
-                draftArr.forEach((draft, index, arr) => {
-                    draft = draft.toObject()
-                    resultArr.push(draft)
-                })
-            }
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return draftArr && draftArr.map(item => item.toObject())
-    }
+const draftSchema = new Schema({
+    title: String,
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'tag'
+    }],
+    createTime: {
+        type: Date
+    },
+    lastEditTime: {
+        type: Date,
+        default: Date.now
+    },
+    excerpt: String,
+    content: String,
+    article: {
+        type: Schema.Types.ObjectId,
+        ref: 'tag'
+    },
+    draftPublished: Boolean
+}, {
+    versionKey: false,
+    skipVersioning: { tags: true }
+})
 
-    async findOne (id, sort = null, limit = null, skip = null) {
-        let result = null
-        try {
-            result = await Draft.findOne({
-                _id: id
-            })
-                .populate('tags')
-                .select('title tags createTime lastEditTime excerpt article draftPublished content')
-                .sort(sort)
-                .limit(limit)
-                .skip(skip)
-                .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result && result.toObject()
-    }
-    async update (id, modifyParam) {
-        let result = null
-        try {
-            result = await Draft
-                .findByIdAndUpdate(id, {
-                    $set: modifyParam
-                }, {
-                    new: true
-                })
-                .populate('tags')
-                .exec()
-        } catch (e) {
-            logger.error(e)
-            throw e
-        }
-        return result.toObject()
-    }
-    async delete (id) {
-        let result = null
-        try {
-            result = await Draft.remove({
-                _id: id
-            }).exec()
-        } catch (e) {
-            logger.error(e)
-        }
-        return result
-    }
-    async deleleTag (tagId) {
-        try {
-            await Draft.update({},
-                {
-                    $pull: {
-                        tags: tagId
-                    }
-                })
-                .exec()
-        } catch (e) {
-            logger.error(e)
-        }
-    }
-}
+draftSchema.set('toJSON', {
+    getters: true,
+    virtuals: true
+})
+draftSchema.set('toObject', {
+    getters: true,
+    virtuals: true
+})
 
-module.exports = new DraftModel()
+draftSchema
+    .path('createTime')
+    .get(function (v) {
+        return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+    })
+draftSchema
+    .path('lastEditTime')
+    .get(function (v) {
+        return utils.formatDate(new Date(v), 'yyyy-MM-dd hh:mm:ss')
+    })
+
+const draft = mongoose.model('draft', draftSchema)
+module.exports = draft

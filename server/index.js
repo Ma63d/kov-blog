@@ -47,7 +47,7 @@ mongoose.Promise = global.Promise
         if ((ctx.status === 404 && err.status === undefined) || err.status === 500) {
             utils.logger.error('server error')
             utils.logger.error(err)
-            utils.logger.error(ctx)
+            utils.logger.error(ctx, 'error happens with follow ctx.')
         }
         utils.print(err)
     })

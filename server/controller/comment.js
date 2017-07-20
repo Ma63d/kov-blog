@@ -6,8 +6,9 @@
 
 const utils = require('../util/index')
 
-const BaseAction = require('./base').BaseAction
-const __before = require('./base').beforeFunc
+const BaseAOP = require('../util/aop').BaseAOP
+const __before = require('../util/aop').beforeFunc
+const main = require('../util/aop').main
 
 const errorList = require('../error')
 
@@ -17,7 +18,7 @@ const {
     comments: ROUTER_NAME
 } = require('../config').routerName
 
-const Comment = require('../model/comment.js')
+const CommentService = require('../service/comment.js')
 
 module.exports.init = async router => {
     router.post(`/${ROUTER_NAME}`, new ActionCreate().getAOPMiddleWare())
@@ -34,7 +35,7 @@ module.exports.init = async router => {
     }
  */
 
-class ActionCreate extends BaseAction {
+class ActionCreate extends BaseAOP {
     static schema = Joi.object().keys({
         article: Joi.objectId().required(),
         message: Joi.string().required(),
@@ -56,7 +57,7 @@ class ActionCreate extends BaseAction {
         }
         return next()
     }
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const {
             article,
             message,
@@ -70,7 +71,7 @@ class ActionCreate extends BaseAction {
         let result = null
 
         try {
-            result = await Comment.create({
+            result = await CommentService.create({
                 article,
                 message,
                 createTime,
@@ -80,7 +81,6 @@ class ActionCreate extends BaseAction {
                 likes
             })
         } catch (e) {
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
@@ -96,7 +96,7 @@ class ActionCreate extends BaseAction {
     }
 }
 
-class ActionList extends BaseAction {
+class ActionList extends BaseAOP {
     static schema = Joi.object().keys({
         article: Joi.objectId().required(),
         limit: Joi.number().optional(),
@@ -124,7 +124,7 @@ class ActionList extends BaseAction {
         return next()
     }
 
-    async main (ctx, next) {
+    async [main] (ctx, next) {
         const article = ctx.query.article
 
         const limit = ~~ctx.query.limit || 10
@@ -137,8 +137,8 @@ class ActionList extends BaseAction {
         }
         try {
             const [articleArr, totalNumber] = await Promise.all([
-                Comment.find(article, limit, skip),
-                Comment.count()
+                CommentService.find(article, limit, skip),
+                CommentService.count()
             ])
             ctx.status = 200
 
@@ -151,7 +151,6 @@ class ActionList extends BaseAction {
             }
         } catch (e) {
             utils.print(e)
-            utils.logger.error(ctx, 'error happens with follow ctx.')
             ctx.throw(500, errorList.storageError.name, {
                 message: errorList.storageError.message
             })
