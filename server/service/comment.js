@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Comment = require('../model/comment')
 
-class CommentModel extends Comment {
+class CommentService extends Comment {
     async create (option) {
         const comment = new Comment(option)
         let result = null
@@ -62,4 +62,4 @@ class CommentModel extends Comment {
         return result
     }
 }
-module.exports = new CommentModel()
+module.exports = new CommentService()

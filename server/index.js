@@ -20,6 +20,7 @@ const onerror = require('koa-onerror')
 const mongoose = require('mongoose')
 const controllers = require('./controller/index.js')
 const utils = require('./util/index.js')
+const mw = require('./middleware/index.js')
 
 mongoose.Promise = global.Promise
 
@@ -55,6 +56,7 @@ mongoose.Promise = global.Promise
     app.use(bodyParser())
 
     await controllers.init(router)
+    router.use(mw.contextLogger)
     app.use(router.routes())
     app.use(router.allowedMethods())
 

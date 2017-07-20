@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const User = require('../model/user')
 
-class UserModel {
+class UserService {
     /**
      * @param {Object}  option                 参数选项
      * @param {String}  option.title,
@@ -59,4 +59,4 @@ class UserModel {
     }
 }
 
-module.exports = new UserModel()
+module.exports = new UserService()

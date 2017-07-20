@@ -4,8 +4,9 @@
 const {logger} = require('../util')
 
 const Article = require('../model/article')
+const memoize = require('../util/memoize')
 
-class ArticleModel {
+class ArticleService {
     /**
      * @param {Object} option                 参数选项
      * @param {String} option.title,
@@ -27,6 +28,8 @@ class ArticleModel {
         }
         return result
     }
+
+    @memoize
     async find (sort = null, limit = null, skip = null) {
         let result = null
         try {
@@ -43,6 +46,8 @@ class ArticleModel {
         }
         return result && result.map(item => item.toObject())
     }
+
+    @memoize
     async findOne (id, sort = null, limit = null, skip = null) {
         let searchParam = {
             _id: id
@@ -156,4 +161,4 @@ class ArticleModel {
         return result
     }
 }
-module.exports = new ArticleModel()
+module.exports = new ArticleService()

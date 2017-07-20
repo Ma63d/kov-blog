@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Me = require('../model/me')
 
-class MeModel {
+class MeService {
     /**
      * @param {Object} option                 参数选项
      * @param {String} option.content
@@ -45,4 +45,4 @@ class MeModel {
     }
 }
 
-module.exports = new MeModel()
+module.exports = new MeService()

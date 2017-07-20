@@ -16,7 +16,7 @@ jwt = thenifyAll(jwt, {}, ['verify'])
 
 const errorList = require('../error')
 
-const timeRecorder = new WeakMap();
+const timeRecorder = new WeakMap()
 
 class VerifyToken extends BaseAOP {
     async [__before] (ctx, next) {

@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Draft = require('../model/draft')
 
-class DraftModel {
+class DraftService {
     /**
      * @param {Object}  option                 参数选项
      * @param {String}  option.title,
@@ -120,4 +120,4 @@ class DraftModel {
     }
 }
 
-module.exports = new DraftModel()
+module.exports = new DraftService()

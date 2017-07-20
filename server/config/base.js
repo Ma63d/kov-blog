@@ -48,5 +48,10 @@ module.exports = {
         tokens: 'tokens',
         comments: 'comments',
         me: 'me'
+    },
+
+    cache: {
+        size: 5,
+        maxAge: 20 * 60 * 1000 // 20 min
     }
 }

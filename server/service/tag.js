@@ -5,7 +5,7 @@ const logger = require('../util').logger
 
 const Tag = require('../model/tag')
 
-class TagModel {
+class TagService {
     /**
      * @param {Object}  option                 参数选项
      * @param {String}  option.name
@@ -91,4 +91,4 @@ class TagModel {
     }
 }
 
-module.exports = new TagModel()
+module.exports = new TagService()
