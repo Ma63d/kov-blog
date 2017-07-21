@@ -5,7 +5,7 @@
 **近期正在开发, 增加了 SSR/PWA 的2.0.0版本即将上线, 敬请期待!**
 
 
-博客预览地址:[http://chuckliu.me](http://chuckliu.me)
+博客预览地址:[http://chuckliu.me](http://chuckliu.me) (暂时无法访问，最近备案被封了)
 ![博客](http://oddbl4fim.bkt.clouddn.com/QQ20160926-1@2x.png)
 ![后台](http://oddbl4fim.bkt.clouddn.com/QQ20160926-4.png)
 
