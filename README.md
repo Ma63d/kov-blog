@@ -1,4 +1,5 @@
 # kov-blog
+[v2版本正在开发当中...](https://github.com/Ma63d/kov-blog/tree/v2)
 
 > a blog platform built with vue, koa and mongo. 使用vue,koa和mongo搭建的博客页面和markdown语法的博客编写平台,自动保存草稿。
 
