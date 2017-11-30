@@ -9,6 +9,11 @@ Vue.use(Router)
 Vue.filter('markdown', markdown);
 
 const router = new Router()
+router.beforeEach(to => {
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    to.next()
+})
 routes(router)
 router.start(Blog, 'blog')
 
